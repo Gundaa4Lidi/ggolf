@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="fileService" class="com.galaxy.ggolf.rest.FileService">
+		<constructor-arg ref="userManager" />
+		<constructor-arg ref="userDetailManager"/>
+	</bean>
+	<bean id="userManager" class="com.galaxy.ggolf.manager.UserManager">
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="userLogRecDAO"/>
+	    <constructor-arg ref="configDAO"/>
+	</bean>
+	<bean id="userDetailManager" class="com.galaxy.ggolf.manager.UserDetailManager">
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="userDetailDAO"/>
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="userDetailDAO" class="com.galaxy.ggolf.dao.UserDetailDAO">
+	</bean>
+	<bean id="configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
+	</bean>
+</beans>

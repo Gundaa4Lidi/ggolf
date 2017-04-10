@@ -1,0 +1,585 @@
+
+
+/* Generic styles */
+.bold {
+	font-weight: bold;
+}
+
+.nobold {
+	font-weight: normal !important;
+}
+
+.black {
+	color: black !important;
+}
+
+.red {
+	color: #ef5350;
+}
+
+.orange {
+	color: #ff6600;
+}
+
+.green {
+	color: #4caf50
+}
+
+.to-left {
+	text-align: left !important;
+}
+
+.to-center {
+	text-align: center !important;
+}
+
+
+/* Hot-court icon sizes */
+.icon-size {
+	font-size: 15px;
+}
+
+.big-icon-size {
+	font-size: 17px;
+}
+
+
+/* Club details */
+.listing-icon-size {
+	font-size: 14px;
+}
+
+.rate-font {
+	font-size: 11px;
+}
+
+.pro-but {
+	padding: 8px 25px !important;
+	font-size: 15px !important;
+}
+
+.com-mar {
+	margin-bottom: 10px !important;
+}
+
+.no-margin {
+	margin-bottom: 0px !important;
+	display: none !important;
+}
+
+.cbook-pad {
+	padding: 10px 35px 30px !important;
+}
+
+
+/* Orders */
+.order-font {
+	font-size: 17px;
+}
+
+.order-font2 {
+	font-size: 16px;
+}
+
+.order-but1 {
+	background-color: #ffb74d;
+}
+
+.order-but2 {
+	background-color: #9575cd;
+}
+
+.order-but3 {
+	background-color: #66BB6A;
+}
+
+.order-font-bot {
+	font-size: 13px;
+}
+
+.mar-bot {
+	margin-bottom: 30px !important;
+}
+
+.pad-bot {
+	padding-bottom: 15px !important;
+}
+
+.tb-head {
+	font-size:15px; 
+	font-weight:bold; 
+	padding:18px !important;
+}
+
+.head-bg {
+	background-color: #e0e0e0;
+}
+
+/* Club search */
+.no-mar {
+	margin: 0px !important;
+}
+
+.but-mar {
+	margin-right: 70px;
+}
+
+
+
+/* Club booking */
+
+.book-head {
+    color: black;
+    background-color: #e0e0e0;
+    padding: 15px;
+    font-weight: bold !important;
+}
+
+.booking-but {
+	color: #fff;
+    background-color: #29b6f6;
+}
+
+.but-font {
+	font-size: 14px
+}
+
+.detail-width {
+	max-width: 300px !important;
+}
+
+.col-red {
+	color: #ef5350;
+}
+
+.first-nav {
+	max-width: 100% !important;
+	margin: 0px !important;
+}
+
+.table.first-table {
+	border: 1px solid #f9f9f9;
+}
+
+.table.first-table > tbody > tr > td {
+	border-top: 0px;
+	padding: 13px;
+}
+
+.table.first-table td:nth-child(2) {
+	width: 70%;	
+	text-align: left;
+}
+
+
+.sbox1 {
+	width: 30% !important;
+	text-align: center;
+	background-color: white !important;
+}
+
+.confirm-s {
+	font-size: 15px;
+	background-color:#a5d6a7;
+	font-weight: bold;
+}
+
+.pay {
+	font-size: 15px; 
+	background-color:#a5d6a7;
+}
+
+.pay2 {
+	font-size: 15px; 
+	background-color:#bbdefb;
+}
+
+.cost-col {
+	background-color:#a5d6a7
+}
+
+.pos-stat {
+	position: static !important;
+}
+
+.c-size {
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.p-size {
+	font-size: 15px;
+	color: #ff6600; 
+}
+
+.pad1 {
+	padding: 15px 35px 20px 35px !important;
+}
+
+.pad2 {
+	padding: 15px 35px 30px 35px !important;
+}
+
+.temp-pad {
+	padding: 20px 0 35px !important;
+}
+
+.temp-pad2 {
+	padding: 0px 35px 40px 35px !important;
+}
+
+.temp-pad3 {
+	padding: 20px 0 5px !important;
+}
+
+.temp-pad4 {
+	padding: 5px 0 15px !important;
+}
+
+.temp-pad5 {
+	padding: 30px 35px 20px !important;
+}
+
+.temp-pad6 {
+	padding-bottom: 20px !important;
+}
+
+.temp-mar {
+	margin-bottom: 5px !important;
+}
+
+.temp-mar2 {
+	margin-bottom: 25px !important;
+    background-color: #fff9c4;
+    padding: 10px;
+}
+
+.temp-mar3 {
+	margin-bottom: 30px !important;
+}
+
+.temp-mar4 {
+	margin-bottom: 10px !important;
+}
+
+
+/* Carousel */
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+    margin: auto;
+    height: 334.5px !important;
+}
+
+
+/* Profile */
+th.name {
+	width: 215px !important; 
+}
+
+th.long-name {
+	width: 350px !important; 
+}
+
+.table.club-table td:nth-child(5) {
+	color: #ff6600;
+}
+
+.table.club-table td:nth-child(6) {
+	font-weight: bold;
+	color: black;
+}
+
+.table.shop-table td:nth-child(4) {
+	color: #ff6600;
+}
+
+.table.shop-table td:nth-child(5) {
+	font-weight: bold;
+	color: black;
+}
+
+.shop-margin {
+	margin: 20px;
+}
+
+.change-margin {
+	margin: 40px;
+}
+
+.edit-font {
+	font-size: 13px !important;
+}
+
+.new-edit-font {
+	font-size: 13px !important;
+}
+
+.edit-data {
+	width:30% !important; 
+	margin:auto !important;
+}
+
+.nav-col {
+	color: black !important;
+}
+
+.pro-color {
+	color: #4caf50;
+}
+
+.like-font {
+	font-size: 14px;
+}
+
+.edit-mar {
+	margin-bottom: 20px !important;
+}
+
+
+
+/* Front-page booking */
+.time {
+	border: 1px solid #828282;
+}
+
+.time > tbody > tr > th {
+	padding: 5px 7px 5px;
+    background-color: #e0e0e0;
+    font-size: 14px;
+}
+
+.time tr:nth-child(5) {
+	border-top: 1px solid #828282;
+}
+.time tr:nth-child(9) {
+	border-top: 1px solid #828282;
+}
+
+.time > tbody > tr > td {
+	border-top: 0px;
+	padding: 0px;
+}
+
+.time td a {
+	width: auto !important;
+	height: auto !important;
+	display: block;
+	padding: 6px 7px;
+	color: black;
+	font-size: 13px !important;
+}
+
+.time a:hover {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+.dropdown-area {
+	min-width: 635px !important;
+}
+
+.place-pos {
+	padding: 0px !important;
+	top: 37px !important;
+}
+
+.real-no-pad {
+	padding: 10px 20px 0px !important;
+}
+
+.fpad {
+	padding-bottom: 10px !important;
+}
+
+.place-mar {
+	margin-top: 10px;
+    margin-bottom: 19px;
+}
+
+.table.place > tbody > tr > td {
+	border-top: 0px;
+	padding: 0px;
+}
+
+.table.place td a {
+	width: auto !important;
+	height: auto !important;
+	display: block;
+	padding: 11px 7px;
+	color: black;
+	font-size: 13px !important;
+}
+
+.table.place a:hover {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+
+
+/* Club list table */ 
+.top-pad {
+	padding: 10px 15px !important;
+}
+
+.table.clist {
+	margin-bottom: 0px;
+}
+
+.table.clist > tbody > tr > td {
+	border-top: 0px;
+	padding: 0px;
+}
+
+.table.clist td a {
+	width: auto !important;
+	height: auto !important;
+	display: block;
+	padding: 5px 7px;
+	color: black;
+	font-size: 14px !important;
+}
+
+.table.clist a:hover {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+
+.table.clist a:active {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+.bot-pad {
+	padding: 0px 20px 10px !important;
+}
+
+.table.clist-bot > tbody > tr > th {
+	padding: 25px 8px 8px;
+    vertical-align: middle;
+    text-align: left;
+    border-top: 0px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.table.clist-bot > tbody > tr > td {
+	border-top: 0px;
+	padding: 0px;
+	text-align: left;
+}
+
+.table.clist-bot td a {
+	width: auto !important;
+	height: auto !important;
+	display: block;
+	padding: 7px;
+	color: #0a6ebd !important;
+	font-size: 14px !important;
+}
+
+.table.clist-bot a:hover {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+.table.clist-bot a:active {
+	background-color: #66bb6a;
+    color: white !important;
+}
+
+.table.clist-bot td:nth-child(even) {
+	color: #ff6600;
+	font-weight: bold;
+	padding-right: 10px;
+}
+
+.cnew-mar {
+	margin: 0px 0px 10px !important;
+}
+
+input.text{
+	text-align:center;
+	padding:10px 20px;
+}
+
+.profile__img > img{
+	 border-radius: 50%;
+}
+
+.new-contact__upload{
+	left: 1px;
+	top: 1px;
+}
+ .cropArea {
+  background: #E4E4E4;
+  overflow: hidden;
+  width:100%;
+  height:250px;
+}
+ .cropArea_Croped {
+  background: #E4E4E4;
+  border-radius:50%;
+  overflow: hidden;
+  width:200px;
+  height:200px;
+}
+
+.view__body{
+	position: relative;
+	height: auto;
+}
+.view__content{
+	padding-bottom: 60px;
+}
+
+.view__footer{
+	position: absolute;
+	bottom: 0;
+	min-width: 100%;
+}
+.rmd-contact-list > li > button {
+	padding: .5em 2.5em;
+    font-size: .8em;
+    color: #83c73a;
+    border: 1px solid #182906;
+    background-color: transparent;
+    outline: 0;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+.form-group > label {
+  font-weight: normal;
+  pointer-events: none;
+  padding-left: 2px;
+  width: 100%;
+  font-size: 14px;
+  margin-bottom: 0px;
+  color: #000000;
+}
+.form-control {
+  display: block;
+  width: 100%;
+  height: 35px;
+  padding: 8px 13px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #2e353b;
+  background-color: transparent;
+  background-image: none;
+  border: 1px solid #eeeeee;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+.form-control:focus {
+  border-color: #03A9F4;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(180, 180, 180, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075), 0 0 8px rgba(180, 180, 180, 0.6);
+}

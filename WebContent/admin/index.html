@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="GolfApp">
+<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>高尔夫后台管理</title>
+
+        <!-- Vendors -->
+        <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+		<link rel="stylesheet" href="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-csp.css">
+
+        <!-- Material design colors -->
+        <link href="../vendors/bower_components/material-design-iconic-font/dist/css/material-design-iconic-font.min.css" rel="stylesheet">
+
+        <!-- CSS animations -->
+        <!-- <link rel="stylesheet" href="../vendors/bower_components/animate.css/animate.min.css"> -->
+
+		<!-- Select 2 - Custom Selects -->
+        <link rel="stylesheet" href="../vendors/bower_components/select2/dist/css/select2.min.css">
+		
+		
+        <!-- SweetAlert - Custom Alerts -->
+        <link rel="stylesheet" href="../vendors/bower_components/sweetalert/dist/sweetalert.css">
+        
+        <!-- Light Gallery -->
+		<link rel="stylesheet" href="../vendors/bower_components/lightgallery/dist/css/lightgallery.min.css">
+        
+        <!-- NgImgCrop -->
+        <link rel="stylesheet" href="../node_modules/ng-img-crop_famicity/compile/unminified/ng-img-crop.css">
+        
+        <!-- Angular Material -->
+       	<link rel="stylesheet" href="../node_modules/angular-material/angular-material.min.css">
+        <!-- Angular-Tooltips -->
+        <link rel="stylesheet" href="../node_modules/angular-tooltips/dist/angular-tooltips.min.css">
+		<!-- Font-Awesome -->
+		<link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css">
+		<!-- Videogular -->
+		<link href="../node_modules/videogular-themes-default/videogular.min.css" rel="stylesheet">
+
+		<!-- 核心样式表 -->
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/froala_editor.min.css" />
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/froala_style.min.css" />
+		<!-- 各个插件样式表，按需求使用 -->
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/char_counter.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/code_view.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/colors.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/emoticons.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/file.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/fullscreen.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/image.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/image_manager.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/line_breaker.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/quick_insert.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/table.css">
+		<link rel="stylesheet" href="../node_modules/froala-editor/css/plugins/video.css">
+		<!-- 主题样式表，可选择使用 -->
+		<link href="../node_modules/froala-editor/css/themes/dark.min.css" rel="stylesheet" type="text/css" />
+		<link href="../node_modules/froala-editor/css/themes/red.min.css" rel="stylesheet" type="text/css" />
+		<link href="../node_modules/froala-editor/css/themes/gray.min.css" rel="stylesheet" type="text/css" />
+		<link href="../node_modules/froala-editor/css/themes/royal.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Site -->
+        <link rel="stylesheet" href="../css/app_1.min.css">
+        <link rel="stylesheet" href="../css/app_2.min.css">
+        <!-- <link rel="stylesheet" href="../css/app.css"> -->
+        <link rel="stylesheet" href="css/admin.css">
+        
+        <!-- jQuery -->
+        <script src="../node_modules/jquery/dist/jquery.min.js"></script>
+		<!-- Select2 -->
+        <script src="../node_modules/select2/dist/js/select2.min.js"></script>
+
+		<!-- Include Froala Editor -->
+		<script src="../node_modules/froala-editor/js/froala_editor.min.js"></script>
+
+		<!-- Include Froala Editor Plugins -->
+		<script src="../node_modules/froala-editor/js/plugins/align.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/char_counter.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/code_beautifier.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/code_view.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/colors.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/emoticons.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/entities.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/file.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/font_family.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/font_size.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/fullscreen.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/image.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/image_manager.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/inline_style.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/line_breaker.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/link.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/lists.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/paragraph_format.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/paragraph_style.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/quote.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/save.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/table.min.js"></script>
+		<script src="../node_modules/froala-editor/js/plugins/video.min.js"></script>
+		<script src="../node_modules/froala-editor/js/languages/zh_cn.js"></script>
+        <!-- Angular -->
+        <script src="../node_modules/angular/angular.js"></script>
+
+		<script src="../node_modules/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+
+		<script src="../node_modules/angular-froala/src/angular-froala.js"></script>
+
+        <!-- Angular Aria -->
+        <script src="../node_modules/angular-aria/angular-aria.min.js"></script>
+		<!-- Angular Animate -->
+        <script src="../node_modules/angular-animate/angular-animate.min.js"></script>
+        <!-- Angular Messages -->
+        <script src="../node_modules/angular-messages/angular-messages.min.js"></script>
+        <!-- Angular Material -->
+        <script src="../node_modules/angular-material/angular-material.min.js"></script>
+        <!-- Angular-Tooltips -->
+        <script src="../node_modules/angular-tooltips/dist/angular-tooltips.min.js"></script>
+        
+		<script src="../node_modules/angular-ui-select2/src/select2.js"></script>
+        
+        <script src="../js/ng-file-upload.min.js"></script>
+        <script src="../vendors/kindeditor-all-min.js"></script>
+		<script src="../vendors/zh-CN.js"></script>
+		<script src="../vendors/angular-kindeditor.js"></script>
+		
+        <!-- Page Loader JS -->
+        <script src="../js/page-loader.min.js" async></script>
+
+		<!-- App Directive -->
+		<script src="directive/activeNav.js"></script>
+		<script src="directive/lightgallery.js"></script>
+		<script src="directive/errSrc.js"></script>
+		<script src="directive/scrollTop.js"></script>
+		<script src="directive/selectAddress.js"></script>
+		<!-- App Constant -->
+		<script src="constant/appConfig.js"></script>
+		<script src="constant/cities.js"></script>
+		<!-- App Config -->
+		<!--<script src="config/config.js"></script>-->
+		<!-- App Controller -->
+		<script src="page/user/UserCtrl.js"></script>
+		<script src="page/user/CoachCtrl.js"></script>
+        <script src="page/staff/StaffCtrl.js"></script>
+		<script src="page/club/ClubPageCtrl.js"></script>
+        <script src="page/club/ClubCtrl.js"></script>
+		<script src="page/club/ClubDetailCtrl.js"></script>
+		<script src="page/course/CoursePageCtrl.js"></script>
+		<script src="page/course/CourseCtrl.js"></script>
+		<script src="page/course/CourseDetailCtrl.js"></script>
+        <script src="page/data/DataCtrl.js"></script>
+		<script src="page/message/UserMsgPageCtrl.js"></script>
+		<script src="page/message/UserMsgCtrl.js"></script>
+		<script src="page/message/UserMsgDataCtrl.js"></script>
+		<script src="page/message/SystemMsgPageCtrl.js"></script>
+		<script src="page/message/SystemMsgCtrl.js"></script>
+		<script src="page/message/SystemMsgDataCtrl.js"></script>
+		<script src="page/article/ArticlePageCtrl.js"></script>
+		<script src="page/article/ArticleCtrl.js"></script>
+		<script src="page/article/ArticleDataCtrl.js"></script>
+		<script src="page/comment/CommentCtrl.js"></script>
+        <script src="AppCtrl.js"></script>
+       
+
+    </head>
+
+    <body ng-controller="PageController" data-ng-init="load()">
+        <!-- Start page loader -->
+        <div id="page-loader" >
+            <div class="page-loader__spinner"></div>
+        </div>
+        <!-- End page loader -->
+
+        <header id="header-alt">
+            <a href="" class="header-alt__trigger hidden-lg" data-rmd-action="block-open" data-rmd-target="#main__sidebar">
+                <i class="zmdi zmdi-menu"></i>
+            </a>
+
+            <a href="index.html" class="header-alt__logo hidden-xs">高尔夫后台管理系统</a>
+
+            <ul class="header-alt__menu">
+                <li>
+                    <a href="" data-rmd-action="block-open" data-rmd-target=".header-alt__search-wrap" data-rmd-backdrop-class="backdrop--search">
+                        <i class="zmdi zmdi-search"></i>
+                    </a>
+                </li>
+                <li class="dropdown">
+                    <a href="" data-toggle="dropdown"><i class="zmdi zmdi-notifications"></i></a>
+
+                    <div class="dropdown-menu dropdown-menu--lg pull-right">
+                        <div class="list-group__header">
+                            NOTIFICATIONS
+                        </div>
+                        <div class="list-group">
+                            <a class="list-group-item media" href="">
+                                <div class="pull-right">
+                                    <img class="list-group__img img-circle" width="40" height="40" src="../img/demo/people/1.jpg" alt="">
+                                </div>
+                                <div class="media-body list-group__text">
+                                    <strong>David Belle</strong>
+                                    <small>Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                </div>
+                            </a>
+                            
+                            <a href="" class="view-more">View all</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="dropdown">
+                    <a href="" data-toggle="dropdown"><i class="zmdi zmdi-email"></i></a>
+
+                    <div class="dropdown-menu dropdown-menu--lg pull-right">
+                        <div class="list-group">
+                            <div class="list-group__header">
+                                MESSAGES
+                            </div>
+                            <a class="list-group-item media" href="">
+                                <div class="pull-left">
+                                    <img class="list-group__img img-circle" width="40" height="40" src="../img/demo/people/1.jpg" alt="">
+                                </div>
+                                <div class="media-body list-group__text">
+                                    <strong>David Belle</strong>
+                                    <small>Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                </div>
+                            </a>
+                           
+
+                            <a class="view-more" href="">View all</a>
+                        </div>
+                    </div>
+                </li>
+                <li class="hidden-xs">
+                    <a href="../index.shtml"><i class="zmdi zmdi-home"></i></a>
+                    
+                </li>
+                <li class="header-alt__profile dropdown">
+                    <a href="" data-toggle="dropdown">
+                        <img ng-src="{{currentStaffHead}}" alt="" err-src="../img/user_empty.png">
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                    	<li><p style="padding:10px 20px;">昵称：{{currentStaffName}}</p></li>
+                    	<li><p style="padding:10px 20px;">账号：{{currentStaffID}}</p></li>
+                    	<li><p style="padding:10px 20px;">职位：{{Position}}</p></li>
+                    	<li><a href="#update-head" data-toggle="modal"><i class="fa fa-user-circle-o fa-fw" aria-hidden="true"></i>修改头像</a></li>
+                        <li><a href="#update-password" data-toggle="modal"><i class="fa fa-lock fa-fw" aria-hidden="true"></i>修改密码</a></li>
+                        <li><a href=""><i class="fa fa-cog fa-fw" aria-hidden="true"></i>账号设置</a></li>
+                        <li><a href="" ng-click="logOff()"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>登出</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="header-alt__search-wrap">
+                <form class="header-alt__search">
+                    <input type="text" placeholder="Search...">
+
+                    <i class="zmdi zmdi-long-arrow-left" data-rmd-action="block-close" data-rmd-target=".header-alt__search-wrap"></i>
+                </form>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="main__sidebar">
+                <a class="hidden-lg main__block-close" href="" data-rmd-action="block-close" data-rmd-target="#main__sidebar">
+                    <i class="zmdi zmdi-long-arrow-left"></i>
+                </a>
+                <nav ui-nav class="navi">
+                	<ul class="nav article-menu">
+	                    <li ng-class="{active: page==1.1 || page==1.2}">
+	                    	<a href="#" active-nav><i class="zmdi zmdi-home"></i>用户管理</a>
+	                    	<ul class="nav article-menu">
+	                    		<li>
+                            		<a href  active-nav ng-click="navigate(1.1)">
+		                                <span class="font-bold">用户信息</span>
+		   							</a>
+                            	</li>
+                            	<li>
+                            		<a href  active-nav ng-click="navigate(1.2)">
+		                                <span class="font-bold">教练信息</span>
+		   							</a>
+                            	</li>
+	                    	</ul>
+	                   	</li>
+	                    <li ng-class="{active: page==2.1 || page==2.2}">
+	                    	<a href="#" active-nav ><i class="zmdi zmdi-chart"></i>消息管理</a>
+	                    	<ul class="nav article-menu">
+	                    		<li>
+                            		<a href  active-nav ng-click="navigate(2.1)">
+		                                <span class="font-bold">系统消息</span>
+		   							</a>
+                            	</li>
+                            	<li>
+                            		<a href  active-nav ng-click="navigate(2.2)">
+		                                <span class="font-bold">用户消息</span>
+		   							</a>
+                            	</li>
+	                    	</ul>
+	                   	</li>
+	                    <li ng-class="{active: page==3}">
+	                    	<a href="#" active-nav ng-click="navigate(3)"><i class="zmdi zmdi-view-list"></i>管理员</a>
+	                   	</li>
+	                    <li ng-class="{active: page==4}">
+	                    	<a href="#" active-nav ng-click="navigate(4)"><i class="zmdi zmdi-assignment "></i>球场管理</a>
+	                   	</li>
+	                    <li ng-class="{active: page==5}">
+	                    	<a href="#" active-nav ng-click="navigate(5)"><i class="zmdi zmdi-check-circle"></i>教练场管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==6}">
+	                    	<a href="#" active-nav ng-click="navigate(6)"><i class="zmdi zmdi-file-text"></i>文章管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==7}">
+	                    	<a href="#" active-nav ng-click="navigate(7)"><i class="zmdi zmdi-account-box"></i>订单管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==8}">
+	                    	<a href="#" active-nav ng-click="navigate(8)"><i class="zmdi zmdi-calendar"></i>档案管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==9}">
+	                    	<a href="#" active-nav ng-click="navigate(9)"><i class="zmdi zmdi-help"></i>数据管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==10}">
+	                    	<a href="#" active-nav ng-click="navigate(10)"><i class="zmdi zmdi-check-circle"></i>申请管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==11}">
+	                    	<a href="#" active-nav ng-click="navigate(11)"><i class="zmdi zmdi-time"></i>评论管理</a>
+	                   	</li>
+	                   	<li ng-class="{active: page==12}">
+	                    	<a href="#" active-nav ng-click="navigate(12)"><i class="zmdi zmdi-time"></i>直播管理</a>
+	                   	</li>
+	                </ul>
+                </nav>
+                
+            </aside>
+
+            <ng-include src="currentPage"></ng-include>
+            <!-- <footer id="footer-alt">
+                Copyright © 2016 Roost Real Estate
+
+                <ul class="footer-alt__menu">
+                    <li><a href="">Home</a></li>
+                    <li><a href="">Dashboard</a></li>
+                    <li><a href="">Reports</a></li>
+                    <li><a href="">Support</a></li>
+                    <li><a href="">Contact</a></li>
+                </ul>
+            </footer> -->
+			<div scroll-top href="html" side="left" title="返回顶部"></div>
+		</main>
+
+		<!-- Update-password modal -->
+		<div class="modal fade" id="update-password" data-backdrop="static"
+			data-keyboard="false" >
+			<div class="modal-dialog" style="width:350px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<!-- <a href="" class="mdc-text-indigo-A100 pull-right" style="font-size:15px;fon" data-dismiss="modal"
+						aria-hidden="true">&times;</a> -->
+						<h4 class="modal-title">修改密码</h4>
+					</div>
+					<div class="modal-body">
+						<form class="card new-contact" style="margin-bottom: 0px;">
+							<div class="col col-md-12">
+								<div class="form-group">
+									<label>当前密码</label>
+									<input type="password" ng-model="currentPassword" class="form-control">
+								</div>
+							</div>
+							<div class="col col-md-12">
+								<div class="form-group">
+									<label>新密码</label>
+									<input type="password" ng-model="newPassword" class="form-control">
+								</div>
+							</div>
+							<div class="col col-md-12">
+								<div class="form-group">
+									<label>确认密码</label>
+									<input type="password" ng-model="confirmPassword" class="form-control">
+								</div>
+							</div>
+							<!-- <div class="input-group margin-bottom-sm">
+							  <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+							  <input class="form-control" type="text" placeholder="Email address">
+							</div> -->
+						</form>
+					</div>
+					<div class="modal-footer" style="padding: 0 30px 10px;">
+						<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+						<button type="button" class="btn btn-primary" ng-click="changepwd()">保存</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END modal -->
+
+	<!-- update-to-head modal -->
+	<div class="modal fade" id="update-head" data-backdrop="static"
+		data-keyboard="false" >
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<a href="#update-to-staff" class="top-nav__back" data-toggle="modal" data-dismiss="modal"></a>
+					<h4 class="modal-title">剪切图片</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col col-md-2">
+							<button class="btn btn-primary" ngf-select ngf-change="handleFileSelect($files)">选择图片</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-md-7">
+							<div class="cropArea">
+								<img-crop image="staffImage" result-image="staffCroppedImage"
+								area-type="square"  area-details="cropDetails"></img-crop>
+							</div>
+						</div>
+						<div class="col col-md-5">
+							<div class="cropArea_Croped ">
+								<img ng-src="{{staffCroppedImage}}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer" style="padding: 0 30px 10px;">
+					<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="imgSave(staffCroppedImage)">保存</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- End modal -->
+
+        <!-- Javascript -->
+
+
+        <!-- Bootstrap -->
+        <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+
+        <!-- Waves button ripple effects -->
+        <script src="../vendors/bower_components/Waves/dist/waves.min.js"></script>
+
+        <!-- Calendar -->
+        <!--
+	        <script src="../vendors/bower_components/moment/min/moment-with-locales.min.js"></script>
+	        <script src="../vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+ 		-->
+        <!-- Select 2 - Custom Selects -->
+
+        <!-- SweetAlert - Custom Alerts -->
+        <script src="../vendors/bower_components/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="../node_modules/ng-sweet-alert/ng-sweet-alert.js"></script>
+
+
+        <!-- Ng-Img-Crop -->
+        <script src="../node_modules/ng-img-crop_famicity/compile/unminified/ng-img-crop.js"></script>
+
+        <!-- Light Gallery -->
+		<script src="../vendors/bower_components/lightgallery/dist/js/lightgallery-all.min.js"></script>
+
+        <!-- ClampJs - Clamp lines -->
+        <script src="../vendors/bower_components/Clamp.js/clamp.min.js"></script>
+
+        <!-- Charts -->
+        <script src="../vendors/bower_components/Flot/jquery.flot.js"></script>
+
+        <script src="../vendors/bower_components/Flot/jquery.flot.pie.js"></script>
+        <script src="../vendors/bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
+        <script src="../vendors/bower_components/Flot/jquery.flot.resize.js"></script>
+
+        <script src="../vendors/bower_components/bootstrap/js/tm.pagination.js"></script>
+        <script src="../node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+		<script src="../node_modules/videogular/videogular.js"></script>
+		<script src="../node_modules/videogular-controls/vg-controls.js"></script>
+		<script src="../node_modules/videogular-overlay-play/vg-overlay-play.js"></script>
+		<script src="../node_modules/videogular-poster/vg-poster.js"></script>
+		<script src="../node_modules/videogular-buffering/vg-buffering.js"></script>
+
+        <!-- IE9 Placeholder -->
+        <!--[if IE 9 ]>
+        <script src="../vendors/bower_components/jquery-placeholder/jquery.placeholder.min.js"></script>
+        <![endif]-->
+
+        <!-- Site functions and actions -->
+        <script src="../js/app.min.js"></script>
+
+        <!-- Demo only -->
+        <script src="../js/demo/demo.js"></script>
+        <script src="../js/demo/charts/line-chart.js"></script>
+        <script src="../js/demo/charts/pie-chart.js"></script>
+
+    </body>
+</html>

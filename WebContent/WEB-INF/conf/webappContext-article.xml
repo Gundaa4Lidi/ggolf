@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+    <bean id="articleService" class="com.galaxy.ggolf.rest.ArticleService">
+	    <constructor-arg ref="articleManager"/>
+	    <constructor-arg ref="commentManager"/>
+	</bean>
+	
+    <bean id="articleManager" class="com.galaxy.ggolf.manager.ArticleManager">
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="articleCategoryDAO"/>
+	    <constructor-arg ref="articleTypeDAO"/>
+	    <constructor-arg ref="articleContentDAO"/>
+	    <constructor-arg ref="articleSubjectDAO"/>
+	</bean>
+    <bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
+	    <constructor-arg ref="commentDAO"/>
+	    <constructor-arg ref="likeDAO"/>
+	</bean>
+	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+    <bean id="articleDAO" class="com.galaxy.ggolf.dao.ArticleDAO">
+	</bean>
+	<bean id="articleCategoryDAO" class="com.galaxy.ggolf.dao.ArticleCategoryDAO">
+	</bean>
+	<bean id="articleTypeDAO" class="com.galaxy.ggolf.dao.ArticleTypeDAO">
+	</bean>
+	<bean id="articleSubjectDAO" class="com.galaxy.ggolf.dao.ArticleSubjectDAO">
+	</bean>
+	<bean id="articleContentDAO" class="com.galaxy.ggolf.dao.ArticleContentDAO">
+	</bean>
+</beans>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Roost Documentation</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/prism.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/lightgallery.min.css" />
+        <link href="style/style.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <header id="header">
+            <div class="header__logo">Roost Documentation</div>
+
+            <div class="header__links">
+                <a href="">Demo</a>
+                <a href="">Purchase</a>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="sidebar" data-spy="affix" data-offset-top="72">
+                <ul class="sidebar__links">
+                    <li>
+                        <span class="sidebar__title">Getting Started</span>
+                        <ul>
+                            <li><a href="index.html#getting-started">What's Included</a></li>
+                            <li><a href="index.html#css-name">CSS Naming Conventions</a></li>
+                            <li><a href="index.html#compiling-css-js">Compiling CSS and JavaScript</a></li>
+                            <li><a href="index.html#using-less">Using LESS</a></li>
+                            <li><a href="index.html#third-party-vendors">Third Party Vendors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">Basic Template</span>
+                        <ul>
+                            <li><a href="basic-template.html#front-end">Front-end</a></li>
+                            <li><a href="basic-template.html#dashboard">Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">CSS</span>
+
+                        <ul>
+                            <li><a href="css.html#page-headers">Page Headers</a></li>
+                            <li><a href="css.html#un-list">Unordered Lists</a></li>
+                            <li><a href="css.html#containers">Containers</a></li>
+                            <li><a href="css.html#pagination">Pagination</a></li>
+                            <li><a href="css.html#media-object">Media Object</a></li>
+                            <li><a href="css.html#action-header">Action Header</a></li>
+                            <li><a href="css.html#action-icons">Action Icons</a></li>
+                            <li><a href="css.html#cards">Cards</a></li>
+                            <li><a href="css.html#list-groups">List Groups</a></li>
+                            <li><a href="generic-classes.html">Generic Classes</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Form</span>
+
+                        <ul>
+                            <li><a href="form.html#form-groups">Form Groups</a></li>
+                            <li><a href="form.html#custom-selects">Custom Selects</a></li>
+                            <li><a href="form.html#input-sliders">Input Sliders</a></li>
+                            <li><a href="form.html#checkbox-radio">Checkboxes & Radios</a></li>
+                            <li><a href="form.html#wysiwyg-editor">WYSIWYG Editor</a></li>
+                            <li><a href="form.html#autoheight-textarea">Auto-height Textarea</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Site Components</span>
+
+                        <ul>
+                            <li><a href="site-components.html#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li><a href="site-components.html#dynamic-sidebars">Dynamic Sidebars</a></li>
+                            <li><a href="site-components.html#responsive-tabs">Responsive Tabs</a></li>
+                            <li><a href="site-components.html#scroll-to">Scroll To</a></li>
+                            <li><a href="site-components.html#icon-toggles">Icon Toggles</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Bootstrap Components</span>
+                        <ul>
+                            <li><a href="bootstrap-components.html#dropdown">Dropdown</a></li>
+                            <li><a href="bootstrap-components.html#tabs">Tabs</a></li>
+                            <li><a href="bootstrap-components.html#tooltips">Tooltips</a></li>
+                            <li><a href="bootstrap-components.html#modal">Modal</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Others</span>
+
+                        <ul>
+                            <li><a href="others-icons.html#material-icons">Material Design Icons</a></li>
+                            <li><a href="others-colors.html#material-icons">Material Design Colors</a></li>
+                            <li><a href="others-animations.html#css-animations">CSS Animations</a></li>
+                            <li><a href="others.html#custom-alerts">Custom Alerts</a></li>
+                            <li><a href="others.html#lightbox">Lightbox</a></li>
+                            <li><a href="others.html#calendar">Calendar</a></li>
+                            <li><a href="others.html#ratings">Ratings</a></li>
+                            <li><a href="others.html#social-network">Social Network Sharing</a></li>
+                            <li><a href="others.html#text-clamping">Text Clamping</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content">
+                <div class="content__wrapper">
+                    <div class="content__title">
+                        <h2>Others</h2>
+                    </div>
+
+                    <div class="card" id="custom-alerts">
+                        <div class="card__title">
+                            <h2>SweetAlert 2 - Custom Javascript Alerts</h2>
+                        </div>
+
+                        <p>SweetAlert 2 is beautiful replacement for javascript alert. SweetAlert automatically centers itself on the page and looks great no matter if you're using a desktop computer, mobile or tablet. It's even highly customizeable, as you can see below!</p>
+
+                        <p>More examples and detailed documentation at <a target="_blank" href="https://limonte.github.io/sweetalert2/">https://limonte.github.io/sweetalert2/</a></p>
+                        <div class="lightbox">
+                            <a class="img-thumbnail" href="img/alert/1.jpg"><img src="img/alert/1.jpg" alt=""></a>
+                            <a class="img-thumbnail" href="img/alert/2.jpg"><img src="img/alert/2.jpg" alt=""></a>
+                            <a class="img-thumbnail" href="img/alert/3.jpg"><img src="img/alert/3.jpg" alt=""></a>
+                        </div>
+
+                        <h4 class="card__sub">SweetAlert Examples</h4>
+
+                        <p>In order to use SweetAlert on your website, first you must include it's JavaScript and CSS asset files.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/sweetalert/dist/sweetalert.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/sweetalert/dist/sweetalert.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <br>
+
+                        <p>A basic message:</p>
+
+                        <div class="lightbox">
+                            <a href="img/alert/basic.jpg">
+                                <img src="img/alert/basic.jpg" class="img-thumbnail" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-js">swal('Any fool can use a computer')</code></pre>
+
+                        <br>
+
+                        <p>A success message!:</p>
+
+                        <div class="lightbox">
+                            <a href="img/alert/success.gif">
+                                <img src="img/alert/success.gif" class="img-thumbnail" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-js">swal(
+'Good job!',
+'You clicked the button!',
+'success'
+)</code></pre>
+                        <br>
+
+
+                        <p>A title with a text under:</p>
+
+                        <div class="lightbox">
+                            <a href="img/alert/text-under.jpg">
+                                <img src="img/alert/text-under.jpg" class="img-thumbnail" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-js">swal(
+    'The Internet?',
+    'That thing is still around?',
+    'question'
+    )</code></pre>
+
+                        <br>
+
+                        <p>A warning message, with a function attached to the "Confirm"-button":</p>
+
+                        <div class="lightbox">
+                            <a href="img/alert/warning.gif">
+                                <img src="img/alert/warning.gif" class="img-thumbnail" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-js">swal({
+    title: 'Are you sure?',
+    text: "You won't be able to revert this!",
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+    }).then(function() {
+    swal(
+    'Deleted!',
+    'Your file has been deleted.',
+    'success'
+    );
+})</code></pre>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+
+                        <ul>
+                            <li><code>/dashboard/listings.html</code></li>
+                            <li><code>/dashboard/leads.html</code></li>
+                            <li><code>/dashboard/tasks-lists.html</code></li>
+                            <li><code>/dashboard/contacts.html</code></li>
+                            <li><code>/dashboard/groups.html</code></li>
+                            <li><code>/dashboard/group-details.html</code></li>
+                            <li><code>/dashboard/notes.html</code></li>
+                            <li><code>/dashboard/calendar.html</code></li>
+                            <li><code>/dashboard/questions-answers.html</code></li>
+                            <li><code>/dashboard/questions-answers-detail.html</code></li>
+                        </ul>
+                    </div>
+
+                    <div class="card" id="lightbox">
+                        <div class="card__title">
+                            <h2>LightGallery - Lightbox</h2>
+                        </div>
+
+
+                        <p>A customizable, modular, responsive, lightbox gallery plugin for jQuery.</p>
+
+                        <p>The main features include responsive layout, touch support for mobile devices, youtube and vimeo support, slide and fade effects, CSS transitions with jQuery fallback, image captions and descriptions, font icon support and many more.</p>
+
+                        <p>Official plugin site and detailed documentation at <a target="_blank" href="http://sachinchoolur.github.io/lightGallery/">http://sachinchoolur.github.io/lightGallery/</a></p>
+
+                        <p>In order to use LightGallery on your website, first you must include it's JavaScript and CSS asset files.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/lightgallery/dist/css/lightgallery.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/lightgallery/dist/js/lightgallery.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Basic Example</h4>
+
+                        <p>Click on the image below to see the preview.</p>
+
+                        <div class="lightbox">
+                            <a href="img/animation-img.jpg">
+                                <img class="img-thumbnail" src="img/animation-img.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;lightbox&#x22;&#x3E;
+    &#x3C;a href=&#x22;img/animation-img.jpg&#x22;&#x3E;
+        &#x3C;img class=&#x22;img-thumbnail&#x22; src=&#x22;img/animation-img.jpg&#x22; alt=&#x22;&#x22;&#x3E;
+    &#x3C;/a&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/listing-detail.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="calendar">
+                        <div class="card__title">
+                            <h2>FullCalendar - JavaScript event calendar</h2>
+                        </div>
+
+                        <p>FullCalendar is a drag-n-drop jQuery plugin for displaying events on a full-sized calendar.</p>
+
+                        <p>Official site and detailed documentation at <a target="_blank" href="https://fullcalendar.io">https://fullcalendar.io</a></p>
+
+                        <h4 class="card__sub">Basic Calendar Example</h4>
+
+                        <p>In order to use FullCalendar, you must include it's CSS and javascript asset files on your website.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/fullcalendar/dist/fullcalendar.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/fullcalendar/dist/fullcalendar.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <div class="lightbox">
+                            <a href="img/calendar/1.png">
+                                <img src="img/calendar/1.png" class="img-thumbnail" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-javascript">$('#calendar').fullCalendar({
+    // put your options and callbacks here
+})</code></pre>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/dashboard/index.html</code></li>
+                            <li><code>/dashboard/calendar.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="ratings">
+                        <div class="card__title">
+                            <h2>RateYo! - Ratings</h2>
+                        </div>
+
+                        <p>RateYo! is a tiny and flexible jQuery star rating plugin, it uses SVG to render rating, so no images required. just create a <code>&#x3C;div/&#x3E;</code>, throw some styles, initialize and thats it!.</p>
+
+                        <p>Please visit <a target="_blank" href="http://rateyo.fundoocode.ninja/">http://rateyo.fundoocode.ninja/</a> for information and detailed documentation.</p>
+
+                        <br>
+
+                        <div class="lightbox">
+                            <a href="img/ratings/1.jpg">
+                                <img class="img-thumbnail" src="img/ratings/1.jpg" alt="">
+                            </a>
+                            <a href="img/ratings/2.jpg">
+                                <img class="img-thumbnail" src="img/ratings/2.jpg" alt="">
+                            </a>
+                            <a href="img/ratings/3.jpg">
+                                <img class="img-thumbnail" src="img/ratings/3.jpg" alt="">
+                            </a>
+                        </div>
+
+                        <br>
+
+                        <p>In order to use RateYo in your web page, make sure to include the following CSS/JS assets directly from <code>vendors/bower_components</code>.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/rateYo/min/css/jquery.rateyo.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/rateYo/min/js/jquery.rateyo.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <p>You can initiate RateYo ratings with any element with class of <code>.rmd-rate</code>.</p>
+
+                        <p>e.g</p>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;rmd-rate&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+
+                        <p>In Roost, RateYo is customized to fit more contents and you can use the following data-attributes to customize the output:</p>
+
+                        <ol>
+                            <li>
+                                <p><code>data-rate-value</code> (optional): Pre rated stars</p>
+                                <p>e.g: data-rate-value="3"</p>
+                            </li>
+
+                            <li>
+                                <p><code>data-rate-readonly</code> (optional): Make RateYo read-only so users can't rate</p>
+                                <p>e.g: data-rate-readonly="true"</p>
+                            </li>
+                        </ol>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;rmd-rate&#x22; data-rate-value=&#x22;3&#x22; data-rate-readonly=&#x22;true&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/listings-list.html</code></li>
+                            <li><code>/listing-detail.html</code></li>
+                            <li><code>/mortgage.html</code></li>
+                            <li><code>/mortgage-detail.html</code></li>
+                            <li><code>/mortgage-detail-reviews.html</code></li>
+                            <li><code>/mortgage-detail-disclaimer.html</code></li>
+                            <li><code>/agents.html</code></li>
+                            <li><code>/agent-detail.html</code></li>
+                            <li><code>/agent-detail-properties.html</code></li>
+                            <li><code>/agent-detail-reviews.html</code></li>
+                            <li><code>/profile.html</code></li>
+                            <li><code>/profile-public.html</code></li>
+                            <li><code>/profile-searches.html</code></li>
+                            <li><code>/profile-listings.html</code></li>
+                            <li><code>/profile-agents.html</code></li>
+                        </ol>
+
+                    </div>
+
+                    <div class="card" id="social-network">
+                        <div class="card__title">
+                            <h2>jsSocials - Social Network Sharing</h2>
+                        </div>
+
+                        <p>jsSocials is a simple social network sharing jQuery plugin. It's flexible and easily extensible. Configure visual appearance. Choose one of several themes provided. Add any yet unsupported social network if needed.</p>
+
+                        <p>Roost uses it's own theming for jsSocial and highly recommended to use as it provided in the template.</p>
+
+                        <p>In Roost jsSocial is used with <a href="css.html#action-icons">Action Icons</a>. You may consider adding extra styles if you want to use this plugin outside <a href="css.html#action-icons">Action Icons</a>.</p>
+
+                        <p>For more information and detailed documentation, please head on to <a href="http://js-socials.com/" target="_blank">http://js-socials.com/</a></p>
+
+                        <br>
+
+                        <div class="lightbox">
+                            <a href="img/social/1.gif">
+                                <img class="img-thumbnail img-thumbnail--ful" src="img/social/1.gif" alt="">
+                            </a>
+                        </div>
+
+                        <br>
+
+                        <p>In Roost, jsSocial is initiated with class <code>.rmd-share</code>. You can use this class on any given element to include the basic set of sharing networks which are Facebook, Twitter, Google Plus and LinkedIn. Please refer <code>/js/inc/functions.js</code> to alter the default social networks and properties of this plugin.</p>
+
+                        <p>In order to use jsSocial in your web page, make sure to include the following JS asset file right directly from <code>/vendors/bower_components</code></p>
+
+                        <p>Please note that, no need of any CSS file to include as Roost uses it's own theme.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/jssocials/dist/js/jssocials.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Basic Example</h4>
+                        <p>This example also uses <a href="css.html#action-icons">Action Icons</a> to show how exactly the jsSocial used in the template. </p>
+
+                        <ul class="tab-nav tab-nav--justified">
+                            <li class="active"><a href="#social-html" data-toggle="tab">HTML</a></li>
+                            <li><a href="#social-js" data-toggle="tab">Javascript</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="social-html">
+                                <pre><code class="language-html">&#x3C;div class=&#x22;actions&#x22;&#x3E;
+    &#x3C;div class=&#x22;dropdown&#x22;&#x3E;
+        &#x3C;a href=&#x22;&#x22; data-toggle=&#x22;dropdown&#x22;&#x3E;&#x3C;i class=&#x22;zmdi zmdi-share&#x22;&#x3E;&#x3C;/i&#x3E;&#x3C;/a&#x3E;
+
+        &#x3C;div class=&#x22;dropdown-menu pull-right rmd-share&#x22;&#x3E;
+            &#x3C;div&#x3E;&#x3C;/div&#x3E;
+        &#x3C;/div&#x3E;
+    &#x3C;/div&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="social-js">
+                                <br>
+
+                                <p>You can find the exact code below at <code>/js/inc/functions.js</code></p>
+
+                                <pre><code class="language-js">if($(&#x27;.rmd-share&#x27;)[0]) {
+    $(&#x27;.rmd-share &#x3E; div&#x27;).jsSocials({
+        shares: [
+            {
+                share: &#x22;facebook&#x22;,
+                label: &#x22;&#x22;,
+                logo: &#x22;zmdi zmdi-facebook&#x22;,
+                shareIn: &#x22;blank&#x22;,
+                css: &#x22;rmds-item mdc-bg-indigo-400 animated bounceIn&#x22;
+            },
+            {
+                share: &#x22;twitter&#x22;,
+                label: &#x22;&#x22;,
+                logo: &#x22;zmdi zmdi-twitter&#x22;,
+                shareIn: &#x22;blank&#x22;,
+                css: &#x22;rmds-item mdc-bg-cyan-500 animated bounceIn&#x22;
+            },
+            {
+                share: &#x22;googleplus&#x22;,
+                label: &#x22;&#x22;,
+                logo: &#x22;zmdi zmdi-google&#x22;,
+                shareIn: &#x22;blank&#x22;,
+                css: &#x22;rmds-item mdc-bg-red-400 animated bounceIn&#x22;
+            },
+            {
+                share: &#x22;linkedin&#x22;,
+                label: &#x22;&#x22;,
+                logo: &#x22;zmdi zmdi-linkedin&#x22;,
+                shareIn: &#x22;blank&#x22;,
+                css: &#x22;rmds-item mdc-bg-blue-600 animated bounceIn&#x22;
+            }
+        ]
+    });
+}</code></pre>
+
+                                <p>As you can see, this plugin is highly customizable and you can chose your icons, labels, CSS classes and pretty everything you need.</p>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/listing-detail.html</code></li>
+                            <li><code>/mortgage-detail.html</code></li>
+                            <li><code>/mortgage-detail-reviews.html</code></li>
+                            <li><code>/mortgage-detail-disclaimer.html</code></li>
+                            <li><code>/agent-detail.html</code></li>
+                            <li><code>/agent-detail-properties.html</code></li>
+                            <li><code>/agent-detail-reviews.html</code></li>
+                            <li><code>/profile.html</code></li>
+                            <li><code>/profile-searches.html</code></li>
+                            <li><code>/profile-listings.html</code></li>
+                            <li><code>/profile-agents.html</code></li>
+                            <li><code>/profile-public.html</code></li>
+                            <li><code>/blog-details.html</code></li>
+                        </ol>
+
+
+                    </div>
+
+                    <div class="card" id="text-clamping">
+                        <div class="card__title">
+                            <h2>Clamp.js - Text Clamping</h2>
+                        </div>
+
+                        <p>Clamps an HTML element by adding ellipsis to it if the content inside is too long.</p>
+
+                        <p>In Roost Clamp.js is used to clamp overflown lines in note listing at <code>/dashboard/notes.html</code></p>
+
+                        <p>In order to use Clamp.js, you must include the following JS asset file from <code>/vendors/bower_cpmponents</code></p>
+
+                        <p>For more information and detailed documentation, head on to it's official Github repository <a href="https://github.com/josephschmitt/Clamp.js" target="_blank">https://github.com/josephschmitt/Clamp.js</a></p>
+
+                        <pre><code class="language-html">&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/Clamp.js/clamp.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Sample Usage</h4>
+
+                        <pre><code class="language-js">//Single line
+$clamp(myHeader, {clamp: 1});
+
+//Multi-line
+$clamp(myHeader, {clamp: 3});
+
+//Auto-clamp based on available height
+$clamp(myParagraph, {clamp: &#x27;auto&#x27;});
+
+//Auto-clamp based on a fixed element height
+$clamp(myParagraph, {clamp: &#x27;35px&#x27;});</code></pre>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/dashboard/notes.html</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/prism.js"></script>
+        <script src="js/lightgallery.min.js"></script>
+        <script src="js/functions.js"></script>
+    </body>
+</html>

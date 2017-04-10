@@ -1,0 +1,167 @@
+<div ng-controller="UserMsgDataController" ng-init="load()">
+    <section id="main__content">
+        <div class="action-header-alt">
+            <a href="" class="top-nav__back" style="top:10px;" ng-click="back()" title="返回"></a>
+        </div>
+
+        <div class="main__container questions-answers">
+            <div class="questions-answers__main media">
+                <div class="pull-left">
+                    <img ng-src="{{UserMsgData.SenderPhoto}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">
+
+                    <!--<div class="questions-answers__voting">
+                        <span>
+                            <input type="radio" name="qa-voting" checked>
+                            <i class="zmdi zmdi-thumb-up"></i>
+                        </span>
+                        <span>
+                            <input type="radio" name="qa-voting">
+                            <i class="zmdi zmdi-thumb-down"></i>
+                        </span>
+                    </div>-->
+                </div>
+                <div class="media-body">
+                    <p>{{UserMsgData.Details}}</p>
+
+                    <div class="questions-answers__attrs">
+                        <a href=""><i class="zmdi zmdi-account"></i>{{UserMsgData.SenderName}}</a>
+                        <span><i class="zmdi zmdi-calendar"></i> {{UserMsgData.Created_TS.substring(0,19)}}</span>
+
+                        <!--<div class="actions questions-answers__actions">-->
+                            <!--<div class="actions__toggle">-->
+                                <!--<input type="checkbox" checked>-->
+                                <!--<i class="zmdi zmdi-star-border"></i>-->
+                                <!--<i class="zmdi zmdi-star"></i>-->
+                            <!--</div>-->
+
+                            <!--<a href="#flag-question" data-toggle="modal">-->
+                                <!--<i class="zmdi zmdi-flag"></i>-->
+                            <!--</a>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="questions-answers__main media">
+                <div class="pull-left">
+                    <img ng-src="{{criticsHead}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">
+                </div>
+                <div class="media-body">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <textarea rows="3" cols="1" class="form-control" ng-model="writeComment" ng-click="Write()" placeholder="写下你的评论......" style="font-size: 13px;background: beige;"></textarea>
+                    </div>
+                    <div class="h-50" ng-show="write">
+                        <a href="" class="btn-send" ng-click="sendComment()">发送</a>
+                        <a href="" class="btn-cancel" ng-click="cancelComment()">取消</a>
+                    </div>
+                </div>
+            </div>
+            <!-- 评论列表 -->
+            <div class="card list-group blog-comment">
+
+                <div class="list-group__header clearfix">
+                    <span class="pull-left">累计评论 {{commentData.count}}</span>
+
+                    <!--<a href="" data-rmd-action="scroll-to" data-rmd-target="#blog-comment" data-rmd-offset="23" class="pull-right">发表点评</a>-->
+                </div>
+
+                <div id="comment{{$index}}" class="list-group-item media" ng-repeat="comment in commentData.comment">
+                    <div class="pull-left">
+                        <img err-src="../img/user_empty.png" ng-src="{{comment.UserHead}}" class="list-group__img img-circle" width="50" height="50" alt="">
+                        <div class="blog-comment__up" ng-show="comment.likeCount > 0"><span>+{{comment.likeCount}}</span></div>
+                    </div>
+                    <div class="media-body list-group__text">
+                        <strong>{{comment.UserName}}</strong>
+                        <small>{{comment.Created_TS.substring(0,19)}}</small>
+                        <p class="m-t-15 f-18">{{comment.Memo}}</p>
+
+                        <div class="actions actions--blog-comment dropdown">
+                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                            <ul class="dropdown-menu dropdown-menu--icon pull-right">
+                                <li><a href="" ng-click="likes(comment)"><i class="zmdi zmdi-thumb-up"></i> +1</a></li>
+                                <li><a href="" ng-click="Reply($index,comment)"><i class="zmdi zmdi-comment-more"></i>回复</a></li>
+                                <li ng-if="comment.UserID === criticsID"><a href="" ng-click="remove(comment)"><i class="zmdi zmdi-close-circle"></i>删除</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="list-group-sub" >
+                        <div class="sub-comment" ng-repeat="sub in comment.replyData.comment">
+                            <p class="f-16">
+                                <a href="#">{{sub.UserName}}</a>:
+                                <span class="f-16">
+                                    <a href="">@{{sub.ReplyName}}</a>
+                                    {{sub.Memo}}
+                                </span>
+                            </p>
+                            <div class="f-12">
+                                <small>{{sub.Created_TS.substring(0,19)}}</small>
+                                <a href="#" ng-click="Reply($parent.$index,sub)"><i class="fa fa-commenting-o fa-fw" aria-hidden="true"></i>回复</a>
+                                <a href="#" id="removeSub" ng-if="sub.UserID === criticsID" ng-click="remove(sub)">删除</a>
+                            </div>
+                        </div>
+                        <div class="m-b-10 p-b-10" ng-if="(comment.replyData.count - comment.replyData.comment.length)>0">
+                            <span>还有{{comment.replyData.count - comment.replyData.comment.length}}条回复,<a href="#" ng-click="loadReply($index,comment)">点击查看</a></span>
+                        </div>
+                        <div class="m-b-10 p-b-10" ng-if="packUp && $index === commentIndex.index">
+                            <a href="" ng-click="pack_up($index,comment)">
+                                <span>收起回复</span>
+                            </a>
+                        </div>
+                        <div id="addComment{{$index}}" class="m-b-10 p-b-10" ng-show="comment.replyData">
+                            <a href="" ng-click="Reply($index,comment)"><i class="fa fa-pencil" aria-hidden="true"></i>
+                                <span>新添加评论</span>
+                            </a>
+                        </div>
+                        <div ng-if="reply && $index === commentIndex.index">
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <textarea rows="3" cols="1" id="textFocus" class="form-control" ng-model="currentComment.currentMemo" placeholder="写下你的评论......" style="font-size: 13px;background: beige;"></textarea>
+                            </div>
+                            <div class="h-50">
+                                <a href="" class="btn-send" ng-click="sendReply($index,comment)">发送</a>
+                                <a href="" class="btn-cancel" ng-click="cancelReply()">取消</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="not_comment" ng-show="commentData.count=='0'">
+                    <span>没有任何评论</span>
+                </div>
+            </div>
+            <div class="load-more">
+                <a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Flag question modal -->
+    <div class="modal fade note-view" id="flag-question" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Flag this question</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select class="select2">
+                            <option>Select Reason</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                            <option>Option 4</option>
+                            <option>Option 5</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control textarea-autoheight" placeholder="Message..."></textarea>
+                        <i class="form-group__bar"></i>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-link">Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

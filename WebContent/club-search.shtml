@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="">
+	
+	<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+	
+    <head>
+    
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>【高尔夫】 球场搜索</title>
+        
+		<!--#include file="./inc/inc_css.html"-->
+        
+    </head>
+
+    <body>
+    	<!-- Page Loader JS -->
+        <script src="js/page-loader.min.js" async></script>
+    	<!-- Start page loader -->
+        <div id="page-loader" >
+            <div class="page-loader__spinner"></div>
+        </div>
+        <!-- End page loader -->
+        <!--#include file="./inc/headerbox.html"-->
+
+        <section class="section">
+            <div class="container">
+            
+                <header class="section__title">
+                    <h2><b>球场搜索</b></h2>
+                </header>
+				
+				<!-- 球场搜索 -->
+                <div class="row">       	
+                    <div class="card">
+                        <div class="card__body">
+                        
+							<form class="form-inline">
+							
+								<!-- 地区 -->
+								<div class="form-group but-mar">
+									
+									<!-- Dropdown textbox -->
+								    <input type="text" class="form-control" id="dropdownMenu1" data-toggle="dropdown" placeholder="地区">
+								    
+								    <!-- Dropdown menu -->
+									<ul class="dropdown-menu dropdown-area place-pos" aria-labelledby="dropdownMenu1">
+	
+				                        <div class="card__body real-no-pad">
+				                        
+					                        <h5 class="place-mar">地区（可直接输入中文名/ 拼音/ 省市缩写字母）</h5>
+					                        
+											<!-- Nav tabs -->
+											<ul class="nav nav-tabs" role="tablist">
+											
+											  <li class="nav-item active">
+											    <a class="nav-link black" data-toggle="tab" href="#first" role="tab">热门城市</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#second" role="tab">国内省份</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#third" role="tab">ABCDE</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#fourth" role="tab">FGHIJ</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#fifth" role="tab">KLMNO</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#sixth" role="tab">PQRST</a>
+											  </li>
+											  
+											  <li class="nav-item">
+											    <a class="nav-link black" data-toggle="tab" href="#seventh" role="tab">UVWXYZ</a>
+											  </li>
+											</ul>
+										
+											<!-- Tab panes -->
+											<div class="tab-content">
+											
+											  <!-- 热门城市 -->
+											  <div class="tab-pane active" id="first" role="tabpanel">
+							  					
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+							  					
+											  </div>
+											  
+											  <!-- 国内省份 -->
+											  <div class="tab-pane" id="second" role="tabpanel">
+											  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+												
+											  </div>
+											  
+											  <!-- ABCDE -->
+											  <div class="tab-pane" id="third" role="tabpanel">
+							  													  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+												
+											  </div>
+											  
+											  <!-- FGHIJ -->
+											  <div class="tab-pane" id="fourth" role="tabpanel">
+							  													  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+												
+											  </div>
+											 
+											  <!-- KLMNO -->
+											  <div class="tab-pane" id="fifth" role="tabpanel">
+							  													  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+												
+											  </div>
+											  
+											  <!-- PQRST -->
+											  <div class="tab-pane" id="sixth" role="tabpanel">
+							  													  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  
+												</table>
+												
+											  </div>
+											  
+											  <!-- UVWXYZ -->
+											  <div class="tab-pane" id="seventh" role="tabpanel">
+							  													  
+							  					<table class="table table-sm place">
+							  					
+												  <tbody>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												    <tr>
+												      <td><a href="">中国</a></td>
+												      <td><a href="">被股</a></td>
+												      <td><a href="">阿斯</a></td>
+												      <td><a href="">阿萨</a></td>
+												      <td><a href="">啊啊</a></td>
+												      <td><a href="">啊啊啊</a></td>
+												      <td><a href="">水水</a></td>
+												    </tr>
+												  </tbody>
+												  
+												</table>
+												
+											  </div>
+											  
+											</div>
+									
+										</div>
+										
+								  	</ul>
+									
+									<i class="form-group__bar"></i>
+								</div>
+							
+							  	<!-- 打球日期 -->
+								<div class="form-group but-mar">
+
+									<div class="dropdown">
+								                 	
+									  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+									    打球日期</button>
+								 
+									</div>
+								
+								</div>
+							  	
+				                <!-- 打球时间 -->
+								<div class="form-group but-mar">
+								  
+				                	<div class="dropdown">
+				                	
+				                	  <!-- Dropdown button -->
+									 <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+									   打球时间</button>
+				 
+									 <!-- Dropdown menu -->
+									  <ul class="dropdown-menu place-pos" aria-labelledby="dropdownMenu1">
+									    <li>
+									    
+									    <table class="time">	   
+										  
+										  <tbody>
+										  	<tr>
+										  	  <th><span class="time-font">上午</span></th>
+										  	  <th></th>
+										  	  <th></th>
+										  	  <th></th>
+										  	</tr>
+										    <tr>
+										      <td><a href="">6:00</a></td>
+										      <td><a href="">6:30</a></td>
+										      <td><a href="">7:00</a></td>
+										      <td><a href="">7:30</a></td>
+										    </tr>
+										    <tr>
+										      <td><a href="">8:00</a></td>
+										      <td><a href="">8:30</a></td>
+										      <td><a href="">9:00</a></td>
+										      <td><a href="">9:30</a></td>
+										    </tr>
+										    <tr>
+										      <td><a href="">10:00</a></td>
+										      <td><a href="">10:30</a></td>
+										      <td><a href="">11:00</a></td>
+										      <td><a href="">11:30</a></td>
+										    </tr>
+										    <tr>
+										      <th><span class="time-font">中午</span></th>
+										      <th></th>
+										  	  <th></th>
+										  	  <th></th>
+										    </tr>
+										    <tr>
+										      <td><a href="">12:00</a></td>
+										      <td><a href="">12:30</a></td>
+										      <td><a href="">13:00</a></td>
+										      <td><a href="">13:30</a></td>
+										    </tr>
+										    <tr>
+										      <td><a href="">14:00</a></td>
+										      <td><a href="">14:30</a></td>
+										      <td><a href="">15:00</a></td>
+										      <td><a href="">15:30</a></td>
+										    </tr>
+										    <tr>
+										      <td><a href="">16:00</a></td>
+										      <td><a href="">16:30</a></td>
+										      <td><a href="">17:00</a></td>
+										      <td><a href="">17:30</a></td>
+										    </tr>
+										    <tr>
+										      <th><span class="time-font">晚上</span></th>
+										      <th></th>
+										  	  <th></th>
+										  	  <th></th>
+										    </tr>
+										    <tr>
+										      <td><a href="">18:00</a></td>
+										      <td><a href="">18:30</a></td>
+										      <td><a href="">19:00</a></td>
+										      <td><a href="">19:30</a></td>
+										    </tr>
+										    <tr>
+										      <td><a href="">20:00</a></td>
+										      <td></td>
+										      <td></td>
+										      <td></td>
+										    </tr>
+										  </tbody>
+										  
+										</table>
+										
+										</li>
+									  </ul>
+									  
+									</div>
+				
+								 </div>
+							  
+							  	<!-- 球场关键字 -->
+								<div class="form-group but-mar">
+								
+								    <input type="text" class="form-control" placeholder="球场关键字">
+									
+								    <i class="form-group__bar"></i>
+								</div>
+							  	
+							  	<!-- 搜索Button -->
+							  	<div class="form-group but-mar">
+							  	
+									<a href="" data-rmd-action="scroll-to" data-rmd-target="#club-search" data-rmd-offset="140"> 
+									<button class="btn btn-primary pro-but">搜索</button></a>
+									
+								</div>
+								
+								<!-- 排序 -->
+								<div class="form-group">
+								
+									<div class="action-header__item action-header__item--sort hidden-xs no-mar">
+									<br>
+									<span class="action-header__small"><br>排序 ：</span>
+									
+						              <select class="select2">
+						                  <option>默认推荐排序</option>
+						                  <option>价格从低到高</option>
+						                  <option>价格从高到低</option>
+						              </select>
+						              
+									</div>
+									
+								</div>
+		                
+							</form>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 球场列表 -->
+                <div class="row" id="club-search">
+				
+                    <div class="col-md-8">
+						<div class="card">
+	                        <div class="card__body">
+	                        
+								<!-- 导航标签 -->
+								<ul class="nav nav-tabs" role="tablist">
+								
+								  <li class="nav-item active">
+								    <a class="nav-link black" data-toggle="tab" href="#nnfirst" role="tab">列表方式查看</a>
+								  </li>
+								  
+								  <li class="nav-item">
+								    <a class="nav-link black" data-toggle="tab" href="#nnsecond" role="tab">地图方式查看</a>
+								  </li>
+								  
+								  <li class="nav-item navbar-right">
+								    <a class="nav-link black" href="club-list.shtml" role="tab">所有球场</a>
+								  </li>
+								  
+								</ul>
+									
+								<!-- 标签 -->
+								<div class="tab-content">
+								
+								  <!-- 列表方式查看 -->
+								  <div class="tab-pane active" id="nnfirst" role="tabpanel">
+								  
+									  <br>
+									  
+									  <div class="row">
+									  	<div class="listings-list">
+									  	
+									  		<!-- 球场 1 -->
+					                        <div class="listings-grid__item">
+					                            <a href="club-details.shtml" class="media">
+					                            
+					                                <div class="pull-left listings-grid__main">
+					                                    <img src="img/demo/listing/thumbs/15.jpg" alt="" height="123">
+					                                    <div class="listings-grid__price"><span class="orange">￥500 起</span></div>
+					                                </div>
+					
+					                                <div class="media-body">
+					                                
+					                                    <div class="listings-grid__body">
+					                                        <small>北京市通州区潞城镇胡各庄林场</small>
+					                                        <h4><span class="bold">北京大运河高尔夫球场</span></h4>
+					                                    </div>
+					
+					                                    <ul class="listings-grid__attrs">
+					                                        <li><i class="glyphicon glyphicon-record listing-icon-size"></i> 18 洞</li>
+					                                        &emsp;
+					                                        <li><i class="glyphicon glyphicon-flag listing-icon-size"></i> 72 杆</li>
+					                                        &emsp;
+					                                        <li><i class="zmdi zmdi-directions-walk listing-icon-size"></i> 7000 码</li>
+					                                    </ul>
+					                                    
+					                                </div>
+					                                
+					                            </a>
+					                        </div>
+					                        
+					                        <!-- 球场 2 -->
+					                        <div class="listings-grid__item">
+					                            <a href="club-details.shtml" class="media">
+					                            
+					                                <div class="pull-left listings-grid__main">
+					                                    <img src="img/demo/listing/thumbs/14.jpg" alt="" height="123">
+					                                    <div class="listings-grid__price"><span class="orange">￥800 起</span></div>
+					                                </div>
+					
+					                                <div class="media-body">
+					                                
+					                                    <div class="listings-grid__body">
+					                                        <small>你好吗啊啊啊啊啊啊啊</small>
+					                                        <h4><span class="bold">啊大恶恶去看查看</span></h4>
+					                                    </div>
+					
+					                                    <ul class="listings-grid__attrs">
+					                                        <li><i class="glyphicon glyphicon-record listing-icon-size"></i> 228 洞</li>
+					                                        &emsp;
+					                                        <li><i class="glyphicon glyphicon-flag listing-icon-size"></i> 71 杆</li>
+					                                        &emsp;
+					                                        <li><i class="zmdi zmdi-directions-walk listing-icon-size"></i> 8000 码</li>
+					                                    </ul>
+					                                    
+					                                </div>
+					                                
+					                            </a>
+					                        </div>
+					
+					                        <nav class="text-center">
+					                            <ul class="pagination">
+					                                <li>
+					                                    <a href="#" aria-label="Previous">
+					                                        <i class="zmdi zmdi-chevron-left"></i>
+					                                    </a>
+					                                </li>
+					                                <li class="active"><a href="#">1</a></li>
+					                                <li><a href="#">2</a></li>
+					                                <li><a href="#">3</a></li>
+					                                <li><a href="#">4</a></li>
+					                                <li><a href="#">5</a></li>
+					                                <li>
+					                                    <a href="#" aria-label="Next">
+					                                        <i class="zmdi zmdi-chevron-right"></i>
+					                                    </a>
+					                                </li>
+					                            </ul>
+					                        </nav>
+					                    
+					                    </div>      
+								  	  </div>
+								  
+								  </div>
+								  
+								  <!-- 地图方式查看 -->
+								  <div class="tab-pane" id="nnsecond" role="tabpanel">
+								  	
+									  <br>
+									  
+									  <p>地图这里</p>
+									  
+								  </div>
+								  
+								</div>
+								
+	                        </div>
+                    	</div>
+                    </div>
+					
+					<!-- 侧栏 -->
+                    <div id="inquire" class="col-md-4 rmd-sidebar-mobile">
+                    
+                       <!-- 周边球场 -->
+                        <div class="card">
+                        
+                            <div class="card__header">
+                                <h2><span class="bold">您浏览过的球场</span></h2>
+                            </div>
+
+                            <div class="list-group list-group--striped">
+                            
+                                <a href="" class="list-group-item media">
+                                
+                                    <div class="pull-left">
+                                        <img src="img/demo/listing/thumbs/2.jpg" alt="" class="list-group__img" width="125">
+                                    </div>
+                                    
+                                    <div class="media-body list-group__text">
+                                    
+                                        <p>北京京华高尔夫球场</p>
+                                        <small><span class="orange">￥500</span>&emsp;&emsp;&emsp;相距1.88公里</small>
+                                    </div>
+                                </a>
+								
+                                <a href="" class="list-group-item media">
+                                
+                                    <div class="pull-left">
+                                        <img src="img/demo/listing/thumbs/3.jpg" alt="" class="list-group__img" width="125">
+                                    </div>
+                                    
+                                    <div class="media-body list-group__text">
+                                    
+                                        <p>北京大宗高尔夫球场</p>
+                                        <small><span class="orange">￥450</span>&emsp;&emsp;&emsp;相距2.07公里</small>
+                                    </div>
+                                </a>
+								
+                                <a href="" class="list-group-item media">
+                                
+                                    <div class="pull-left">
+                                        <img src="img/demo/listing/thumbs/4.jpg" alt="" class="list-group__img" width="125">
+                                    </div>
+                                    
+                                    <div class="media-body list-group__text">
+                                    
+                                        <p>北京叠泉乡村球场</p>
+                                        <small><span class="orange">￥768</span>&emsp;&emsp;&emsp;相距15.89公里</small>
+                                    </div>
+                                </a>
+								
+								                        
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+                </div>
+                
+            </div>
+        </section>
+
+        <!--#include file="./inc/footer.html"-->
+
+    </body>
+            
+    <!--#include file="./inc/inc_script.html"-->
+	
+</html>

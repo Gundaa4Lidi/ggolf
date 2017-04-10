@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="userDetailService" class="com.galaxy.ggolf.rest.UserDetailService">
+        <!-- <constructor-arg ref="sessionManager"/> -->
+	    <constructor-arg ref="userDetailManager"/>
+	    <constructor-arg ref="userManager"/>
+	</bean>
+	<bean id="userDetailManager" class="com.galaxy.ggolf.manager.UserDetailManager">
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="userDetailDAO"/>
+	</bean>
+	<bean id="userManager" class="com.galaxy.ggolf.manager.UserManager">
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="userLogRecDAO"/>
+	    <constructor-arg ref="configDAO"/>
+	</bean>
+	<bean id="userLogRecDAO" class="com.galaxy.ggolf.dao.UserLogRecDAO">
+	</bean>
+	<bean id="configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="userDetailDAO" class="com.galaxy.ggolf.dao.UserDetailDAO">
+	</bean>
+	<!-- <bean id="sessionManager" class="com.galaxy.ggolf.manager.SessionManager">
+	</bean> -->
+</beans>

@@ -1,0 +1,572 @@
+<div ng-controller="ArticleController" data-ng-init="load()">
+	<section id="main__content">
+     <div class="action-header-alt">
+         <div class="action-header__item action-header__item--search">
+             <form>
+                 <input type="text" placeholder="Search for notes...">
+             </form>
+         </div>
+
+         <div class="action-header__item action-header__add">
+             <a href="#new-note" data-toggle="modal" class="btn btn-danger btn-sm" ng-click="addArticle()" ng-show="currentType.TypeID">新增文章</a>
+         </div>
+
+         <div class="action-header__item action-header__item--sort hidden-xs">
+             <span class="action-header__small">Sort by :</span>
+			<select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" style="width:auto; position:relative;">
+            	<option>Newest to Oldest</option>
+                 <option>Oldest to Newest</option>
+                 <option>Frequently Opened</option>
+            </select>
+            
+         </div>
+     </div>
+   	<div class="height-as-pagecontent">
+     <div class="row">
+     	<div class="col col-md-3 col-sm-4" >
+   			<div class="main__container" style="background: white; height: calc(100vh - 80px);">
+		        <nav ui-nav class="navbar">
+		        	<ul class="nav artice-menu">
+   						<li>
+   							<a href  active-nav>
+   								<i class="fa fa-plus" aria-hidden="true"></i>
+                                <span class="font-bold" >新增文集</span>
+   							</a>
+   							<ul class="nav artice-menu">
+                            	<li>
+                            		<form class="card new-contact" style="margin-bottom: 0px;">
+										<div class="input-group margin-bottom-sm">
+										  <!-- <span class="input-group-addon"><i class="fa fa-book fa-fw"></i></span> -->
+										  <div class="input-group-btn">
+									        <button type="button" class="btn btn-default dropdown-toggle" ng-init="Sub='头条'" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{Sub}}<span class="caret"></span></button>
+									        <ul class="dropdown-menu pull-right" style="min-width: 0">
+									          <li ng-click="selectSub('0')"><a href="#">头条</a></li>
+									          <li ng-click="selectSub('1')"><a href="#">专题</a></li>
+									        </ul>
+									        
+									      </div>
+									      <input type="text" class="form-control" ng-model="Category" maxlength="16" placeholder="请输入文集名" aria-label="Text input with dropdown button">
+										  <div class="input-group-btn">
+										  	<button type="button" class="btn btn-info" ng-click="addCategory(Category)">提交</button>
+										  </div>
+										</div>
+									</form>
+                            	</li>
+                            </ul>
+   						</li>
+   					</ul>
+		        </nav>
+   				<nav ui-nav class="navbar" style="overflow: auto;height: 97%;">
+                    <ul class="nav artice-menu " >
+                        <li ng-repeat="ac in Categories">
+                            <a href class="auto" active-nav ng-click="check(ac)">
+                                <i class="glyphicon glyphicon-calendar icon text-info-dker"></i>
+                                <span class="font-bold" >{{ac.CategoryName}}</span>
+                            </a>
+                            <ul class="nav artice-menu">
+                            	<li ng-repeat="at in ac.articleType">
+                            		<a href="" ng-click="check2(at)" active-nav>
+                            			<i class="fa fa-sitemap" aria-hidden="true"></i>
+                                        <span>{{at.TypeName}}</span>
+                                    </a>
+                                    <ul class="nav artice-menu">
+                                    	<li ng-repeat="as in at.articleSubject">
+                                    		<a href="" ng-click="checkSub(as)" active-nav>
+                                    			<span>{{as.SubjectName}}</span>
+                                    		</a>
+                                    		<div class="actions list-category__actions" ng-show="as.SubjectID == currentSubject.SubjectID" >
+                                    			<div class="dropdown">
+	                                    			<a href="" data-toggle="dropdown"><i class="fa fa-cog fa-fw"></i></a>
+					                                <ul class="dropdown-menu pull-right">
+					                                    <li><a href="#edit_subject" data-toggle="modal" ><i class="fa fa-edit fa-fw"></i>修改专题</a></li>
+					                                    <li><a href="" ng-click="remove(currentCategory.CategoryID,currentType.TypeID,currentSubject.SubjectID)"><i class="fa fa-remove fa-fw"></i>删除专题</a></li>
+					                                </ul>
+                                    			</div>
+                                    		</div>
+                                    	</li>
+                                    </ul>
+                                    <div class="actions list-category__actions" ng-show="at.TypeID == currentType.TypeID">
+			                            <div class="dropdown">
+			                                <a href="" data-toggle="dropdown"><i class="fa fa-cog fa-fw"></i></a>
+			                                <ul class="dropdown-menu pull-right">
+			                                    <li><a href="#edit_type" data-toggle="modal" ><i class="fa fa-edit fa-fw"></i>修改文集类别</a></li>
+			                                    <li ng-show="currentCategory.SubOrNot=='1'"><a href="#edit_subject" data-toggle="modal" ng-click="addSubject()"><i class="fa fa-edit fa-fw"></i>新增专题</a></li>
+			                                    <li><a href="" ng-click="remove(currentCategory.CategoryID,currentType.TypeID)"><i class="fa fa-remove fa-fw"></i>删除文集类别</a></li>
+			                                </ul>
+			                            </div>
+			                        </div>
+                            	</li>
+                            </ul>
+                            <div class="actions list-category__actions" ng-show="ac.CategoryID == currentCategory.CategoryID">
+	                            <div class="dropdown">
+	                                <a href="" data-toggle="dropdown"><i class="fa fa-cog fa-fw"></i></a>
+	                                <ul class="dropdown-menu pull-right">
+	                                    <li><a href="#edit_Category" data-toggle="modal"><i class="fa fa-edit fa-fw"></i>修改文集名</a></li>
+	                                    <li><a href="#edit_type" data-toggle="modal" ng-click="addType()"><i class="fa fa-plus fa-fw"></i>新增文集类别</a></li>
+	                                    <li><a href="" ng-click="remove(currentCategory.CategoryID)"><i class="fa fa-remove fa-fw"></i>删除文集</a></li>
+	                                </ul>
+	                            </div>
+	                        </div>
+                        </li>
+                        
+                     </ul>
+                   </nav>
+                   <!-- 回收站 -->
+                   <div class="recycle_bin">
+                   		<a href="#recycle_bin" data-toggle="modal" tooltips tooltip-side="top" tooltip-template="回收站" ng-click="getRecycle_bin()">
+                   			<i class="fa fa-trash fa-3x fa-fw" aria-hidden="true"></i>
+              			</a>
+                   </div>
+   			</div>
+     	</div>
+     	<div class="col col-md-9 col-sm-8">
+     		<div class="main__container" style="height: calc(100vh - 80px);">
+		         <!--<header class="main__title">
+		             <h1>文章类型:&nbsp;&nbsp;{{currentType.TypeName}}</h1>
+		         </header>-->
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="list-group list-group--block contact-lists">
+							<div class="list-group__header text-left">共{{TotalArticle}}篇文章
+							</div>
+							<div class="overflow__auto2">
+								<div class="list-group__wrap" ng-repeat="art in currentType.article">
+									<a class="list-group-item media" href="#new-note"
+									   data-toggle="modal" ng-click="editArticle(art)">
+										<!-- <div class="pull-left">
+                                            <img ng-src="{{art.Cover}}" class="list-group__img img-circle"
+                                                width="80" height="80" alt="" err-src="../img/user_empty.png">
+                                        </div> -->
+										<div class="pull-left">
+											<img ng-src="{{art.Cover}}" alt="" width="80" err-src="../img/user_empty.png">
+										</div>
+
+										<div class="media-body list-group__text" style="font-family: '黑体'">
+											<div class="col col-md-10 col-sm-8">
+												<div class="notes_title">
+													<p>{{art.Title}}</p>
+												</div>
+											</div>
+											<div class="col col-md-10 col-sm-8">
+												<div class="notes_content">
+													<p>{{art.Content}}</p>
+												</div>
+											</div>
+										</div>
+									</a>
+									<div class="actions list-group__actions">
+										<div class="dropdown">
+											<a href="" data-toggle="dropdown"><i
+													class="zmdi zmdi-more-vert"></i></a>
+											<ul class="dropdown-menu pull-right">
+												<li><a href="#new-note" data-toggle="modal"
+													   ng-click="editArticle(art)">修改</a></li>
+												<!--<li><a ng-click="remove(art.CategoryID,art.TypeID,art.Subject,art.ArticleID)">删除</a></li>-->
+												<li><a ng-click="removeArt(art)">删除</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="list-group__date">
+										<i class="fa fa-calendar" aria-hidden="true"></i>
+										<strong>{{art.Created_TS}}</strong>
+										<!-- <strong>{{item.Created_TS}}</strong> -->
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="load-more">
+                    <a href=""><i class="zmdi zmdi-refresh-alt"></i>加载更多文章</a>
+                </div> -->
+		     </div>
+     	</div>
+     	</div>
+    </div> 
+ </section>
+ 
+ <!-- New note modal -->
+ <div class="modal fade note-view" id="new-note" data-backdrop="static" data-keyboard="false">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+             <div class="article_title">
+                 <input type="text" class="form-control article_title_input" ng-model="currentArticle.Title"  placeholder="文章标题">
+             </div>
+             <form class="card" style="margin-bottom: 0px;">
+				<div class="col-sm-12 col-md-12 text-center">
+			        <a href="#img-check" data-toggle="modal" data-dismiss="modal" class="thumbnail">
+			            <img ng-src="{{currentArticle.Cover}}" alt="" err-src="../img/select_cover.jpg"> 
+			        </a>
+			        <i class="new-contact__upload zmdi zmdi-camera" ngf-select ngf-change="upload($files)" ></i>
+			    </div>
+				<div class="card__body">
+					<div class="row">
+						<!-- <div class="col-sm-6">
+							<div class="form-group">
+								<label>来源于</label> 
+								<input type="text" ng-model="currentArticle.RootIN" class="form-control">
+							</div>
+						</div> -->
+
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label>封面路径</label> 
+								<input type="text" ng-model="currentArticle.Cover" class="form-control">
+							</div>
+						</div>
+
+						<div class="col-sm-12">
+							<div class="form-group">
+								<label>文章简介</label> 
+								<textarea rows="" cols="" class="form-control" ng-model="currentArticle.Content"></textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+
+             <div class="modal-footer modal-footer--bordered">
+                 <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                 <button type="button" class="btn btn-info" ng-click="saveArticle()">提交</button>
+             </div>
+         </div>
+     </div>
+ </div>
+ 
+ <!-- New note modal -->
+ <div class="modal fade note-view" id="img-check" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+         	<div class="modal-header">
+	           	 <button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+	             <!-- <div class="article_title">
+	                 <input type="text" class="form-control article_title_input" ng-model="currentArticle.Title"  placeholder="文章标题">
+	             </div> -->
+	             <h1 class="modal-title" id="myModalLabel">
+					{{currentArticle.Title}}
+				</h1>
+         	</div>
+            <!--  <pre class="pre-scrollable">
+            	<img ng-src="{{currentArticle.Cover}}" alt="" max-width="720px" err-src="../img/user_empty.png"> 
+             </pre> -->
+             <form class="card" style="margin-bottom: 0px;">
+				<div class="col-sm-12 col-md-12 text-center">
+			        <a href="#" class="thumbnail">
+			            <img ng-src="{{currentArticle.Cover}}" alt="" err-src="../img/user_empty.png"> 
+			        </a>
+			        <i class="new-contact__upload zmdi zmdi-camera" ngf-select ngf-change="upload($files)" ></i>
+			    </div>
+			</form>
+			
+            <div class="modal-footer text-center modal-footer--bordered">
+                <button type="button" class="btn btn-link"  href="#new-note" data-toggle="modal" data-dismiss="modal">返回</button>
+            </div>
+         </div>
+     </div>
+ </div>
+
+
+<!-- update-to-head modal -->
+<div class="modal fade" id="update-to-cover" data-backdrop="static"
+	data-keyboard="false" style="font-family: '黑体'; font: #000;">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a href="#update-to-staff" class="top-nav__back" data-toggle="modal" data-dismiss="modal"></a>
+				<h4 class="modal-title">剪切图片</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<input type="file" id="fileInput" />
+				</div>
+				<div class="row">
+					<div class="col col-md-12 form-group">
+						<div class="cropArea">
+							<img-crop image="coverImage" result-image="coverCroppedImage" 
+							area-type="square"  area-details="cropDetails"></img-crop>
+						</div>
+					</div>
+					<div class="col col-md-12 form-group"> 
+						<div class="cropArea_CoverCroped ">
+							<img ng-src="{{coverCroppedImage}}">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer" style="padding: 0 30px 10px;">
+				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" href="#update-to-staff" 
+				 data-toggle="modal"  ng-click="imgSave(staffCroppedImage)">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End modal -->
+
+
+ <!-- New note modal -->
+ <!-- <div class="modal fade note-view" id="new-note" data-backdrop="static" data-keyboard="false">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+             <div class="note-view__field">
+                 <input type="text" class="form-control" placeholder="Note Title">
+             </div>
+
+             <div class="note-view__field note-view__field--tag">
+                 <div class="note-view__label hidden-xs">Tag</div>
+
+                 <div class="color-tag">
+                     <span class="color-tag__default">
+                         <input type="radio" value="color-tag__default" name="new-note-tag" checked>
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-blue-400">
+                         <input type="radio" value="mdc-bg-blue-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-teal-400">
+                         <input type="radio" value="mdc-bg-teal-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-red-400">
+                         <input type="radio" value="mdc-bg-red-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-pink-400">
+                         <input type="radio" value="mdc-bg-pink-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-lime-400">
+                         <input type="radio" value="mdc-bg-lime-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-green-400">
+                         <input type="radio" value="mdc-bg-green-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-cyan-400">
+                         <input type="radio" value="mdc-bg-cyan-400" name="new-note-tag">
+                         <i></i>
+                     </span>
+                 </div>
+             </div>
+
+             <div class="keditor" ng-model="content" data-config="config"></div>
+
+             <div class="modal-footer modal-footer--bordered">
+                 <button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>
+                 <button type="button" class="btn btn-link">Create</button>
+             </div>
+         </div>
+     </div>
+ </div> -->
+ 
+ <div class="modal fade" id="edit_type">
+    <div class="modal-dialog" style="width:350px;">
+        <div class="modal-content">
+        	<div class="modal-header">
+				<h4 class="modal-title">文集类别</h4>
+			</div>
+            <div class="modal-body">
+                <form class="card new-contact" style="margin-bottom: 0px;">
+                	
+					<div class="input-group margin-bottom-sm">
+					  <div class="input-group-btn">
+				        <button type="button" class="btn btn-default dropdown-toggle" ng-init="currentType.TypeKey" ng-disabled=""  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{currentType.TypeKey}}<span class="caret"></span></button>
+				        <ul class="dropdown-menu pull-right" style="min-width: 0">
+				          <li ng-repeat="key in selects"><a href="#" ng-click="selectKey(key.type)" >{{key.type}}</a></li>
+				        </ul>
+				      </div>
+					  <input class="form-control" type="text" maxlength="16" ng-model="currentType.TypeName" placeholder="请输入文集类型">
+					</div>
+				</form>
+            </div>
+            <div class="modal-footer" style="padding: 0 30px 10px;">
+				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveType(currentType.TypeName)">提交</button>
+			</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit_subject">
+    <div class="modal-dialog" style="width:350px;">
+        <div class="modal-content">
+        	<div class="modal-header">
+				<h4 class="modal-title">专题</h4>
+			</div>
+            <div class="modal-body">
+                <form class="card new-contact" style="margin-bottom: 0px;">
+					<div class="input-group margin-bottom-sm">
+					  <span class="input-group-addon"><i class="fa fa-book fa-fw"></i></span>
+					  <input class="form-control" type="text" maxlength="16" ng-model="currentSubject.SubjectName" placeholder="请输入专题名称">
+					</div>
+				</form>
+            </div>
+            <div class="modal-footer" style="padding: 0 30px 10px;">
+				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveSub(currentSubject.SubjectName)">提交</button>
+			</div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit_Category">
+    <div class="modal-dialog" style="width:350px;">
+        <div class="modal-content">
+        	<div class="modal-header">
+				<h4 class="modal-title">文集</h4>
+			</div>
+            <div class="modal-body">
+                <form class="card new-contact" style="margin-bottom: 0px;">
+					<div class="input-group margin-bottom-sm">
+					  <span class="input-group-addon"><i class="fa fa-book fa-fw"></i></span>
+					  <input class="form-control" type="text" maxlength="16" ng-model="currentCategory.CategoryName" placeholder="请输入文集名">
+					</div>
+				</form>
+            </div>
+            <div class="modal-footer" style="padding: 0 30px 10px;">
+				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveCategory(currentCategory.CategoryName)">提交</button>
+			</div>
+        </div>
+    </div>
+</div>
+
+ <!-- View note -->
+ <div class="modal fade note-view" id="edit-note" data-backdrop="static" data-keyboard="false">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+             <div class="note-view__field">
+                 <input type="text" class="form-control" placeholder="Note Title" value="Morbi leo risus porta consectetur vestibulum eros">
+             </div>
+
+             <div class="note-view__field note-view__field--tag">
+                 <div class="note-view__label hidden-xs">Tag</div>
+                 <div class="color-tag">
+                     <span class="color-tag__default">
+                         <input type="radio" value="color-tag__default" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-blue-400">
+                         <input type="radio" value="mdc-bg-blue-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-teal-400">
+                         <input type="radio" value="mdc-bg-teal-400" name="edit-note-tag" checked>
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-red-400">
+                         <input type="radio" value="mdc-bg-red-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-pink-400">
+                         <input type="radio" value="mdc-bg-pink-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-lime-400">
+                         <input type="radio" value="mdc-bg-lime-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-green-400">
+                         <input type="radio" value="mdc-bg-green-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                     <span class="mdc-bg-cyan-400">
+                         <input type="radio" value="mdc-bg-cyan-400" name="edit-note-tag">
+                         <i></i>
+                     </span>
+                 </div>
+             </div>
+
+			<div class="keditor" ng-model="content" data-config="config">
+				 Nulla vitae elit libero, a pharetra augue. Vestibulum id ligula porta felis euismod semper. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta sem malesuada magna mollis euismod. Cras mattis consectetur purus sit amet fermentum. Donec id elit non mi porta gravida at eget metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			</div>
+             <!-- <textarea ueditor>
+                 Nulla vitae elit libero, a pharetra augue. Vestibulum id ligula porta felis euismod semper. Donec id elit non mi porta gravida at eget metus. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Etiam porta sem malesuada magna mollis euismod. Cras mattis consectetur purus sit amet fermentum. Donec id elit non mi porta gravida at eget metus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+             </textarea> -->
+
+             <div class="modal-footer modal-footer--bordered">
+                 <button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>
+                 <button type="button" class="btn btn-link">Update</button>
+             </div>
+         </div>
+     </div>
+ </div>
+  <div class="modal fade note-view" id="recycle_bin" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+     <div class="modal-dialog modal-lg">
+         <div class="modal-content">
+         	<div class="modal-header">
+	           	 <button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+	             <!-- <div class="article_title">
+	                 <input type="text" class="form-control article_title_input" ng-model="currentArticle.Title"  placeholder="文章标题">
+	             </div> -->
+	             <h1 class="modal-title">
+					回收站
+				</h1>
+         	</div>
+           
+             <div class="modal-body">
+				<div class="list-group list-group--block contact-lists ">
+					<div class="list-group__header text-left">共{{TotalRecycle}}篇文章</div>
+					<div class="row overflow__auto">
+						<div class="list-group__wrap" ng-repeat="art in recycles">
+							<a class="list-group-item media">
+								<!-- <div class="pull-left">
+									<img ng-src="{{art.Cover}}" class="list-group__img img-circle" 
+										width="80" height="80" alt="" err-src="../img/user_empty.png">
+								</div> -->
+								<div class="pull-left">
+						            <img ng-src="{{art.Cover}}" alt="" width="80" err-src="../img/user_empty.png"> 
+							    </div>
+								
+								<div class="media-body list-group__text" style="font-family: '黑体'">
+									<div class="row">
+										<div class="col col-md-10 col-sm-8">
+											<div class="notes_title">
+						                     	<p>{{art.Title}}</p>
+						                    </div>
+										</div>
+									</div>
+									<br>
+									<div class="row">
+										<div class="col col-md-10 col-sm-8">
+											<div class="notes_content">
+						                     	<p>{{art.Content}}</p>
+						                    </div>
+										</div>
+										
+									</div>
+								</div>
+							</a>
+							<div class="actions list-group__actions">
+								<div class="dropdown">
+									<a href="" data-toggle="dropdown"><i
+										class="zmdi zmdi-more-vert"></i></a>
+									<ul class="dropdown-menu pull-right">
+										<li><a href="#" ng-click="restore(art)">还原</a></li>
+										<li><a href="#" ng-click="deleteArticle(art.ArticleID)">删除</a></li>
+									</ul>
+								</div>
+							</div>
+							<div class="list-group__date">
+								<i class="fa fa-calendar" aria-hidden="true"></i> <strong>{{art.Created_TS}}</strong>
+								<!-- <strong>{{item.Created_TS}}</strong> -->
+							</div>
+						</div>
+					</div>
+				</div>
+			 </div>	
+			
+            <div class="modal-footer text-center modal-footer--bordered">
+                <button type="button" class="btn btn-link"  data-dismiss="modal">关闭</button>
+            </div>
+         </div>
+     </div>
+ </div>
+	
+</div>

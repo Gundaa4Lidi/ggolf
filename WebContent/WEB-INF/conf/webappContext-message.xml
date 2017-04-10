@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="messageService" class="com.galaxy.ggolf.rest.MessageService">
+		<constructor-arg ref="messageManager" />
+		<constructor-arg ref="userManager"/>
+		<constructor-arg ref="locationSessionManager"/>
+		<constructor-arg ref="commentManager"/>
+	</bean>
+	
+	<bean id="messageManager" class="com.galaxy.ggolf.manager.MessageManager">
+		<constructor-arg ref="messageDAO" />
+		<constructor-arg ref="notifyListDAO"/>
+		<constructor-arg ref="userDAO"/>
+		<constructor-arg ref="commentDAO"/>
+		<constructor-arg ref="likeDAO"/>
+	</bean>
+	<bean id="userManager" class="com.galaxy.ggolf.manager.UserManager">
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="userLogRecDAO"/>
+	    <constructor-arg ref="configDAO"/>
+	</bean>
+	
+	<bean id="locationSessionManager" class="com.galaxy.ggolf.manager.LocationSessionManager">
+	</bean>
+	
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
+	</bean>
+	<bean id="notifyListDAO" class="com.galaxy.ggolf.dao.NotifyListDAO">
+	</bean>
+	<bean id="userLogRecDAO" class="com.galaxy.ggolf.dao.UserLogRecDAO">
+	</bean>
+	<bean id="configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
+	</bean>
+	<bean id="messageCloseService" class="com.galaxy.ggolf.manager.MessageCloseService">
+	    <constructor-arg ref="messageDAO"/>
+	</bean>
+	<bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
+	    <constructor-arg ref="commentDAO"/>
+	    <constructor-arg ref="likeDAO"/>
+	</bean>
+	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+</beans>

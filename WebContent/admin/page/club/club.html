@@ -1,0 +1,150 @@
+<div ng-controller="ClubController" data-ng-init="load()">
+    <section>
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="getClubList()">
+                </form>
+            </div>
+
+            <div class="action-header__item action-header__add">
+                <a class="btn btn-danger btn-sm" ng-click="addClub()">新建球场</a>
+            </div>
+        </div>
+
+        <div class="main__container" ng-show="TotalClub > 0">
+            <header class="main__title">
+                <h1>球场管理</h1>
+            </header>
+            <div class="row listings-grid">
+                <div class="col-md-3 col-sm-4 col-xs-8"  ng-repeat="item in clubList | filter:keyword">
+                    <div class="listings-grid__item">
+                        <a href="" ng-click="openItem(item)">
+                            <div class="listings-grid__main">
+                                <img ng-src="{{item.ClubPhoto}}" err-src='../img/club/1.jpg' alt="" height="160px">
+                                <div class="listings-grid__price">${{item.Price}}</div>
+                            </div>
+
+                            <div class="listings-grid__body list__title">
+                                <h4><a href="" ng-click="checkClub(item)">{{item.ClubName}}</a></h4>
+                            </div>
+
+                            <ul class="listings-grid__attrs">
+                                <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}} 洞</li>
+                                <li><i class="glyphicon glyphicon-flag icon-size"></i> {{item.TotalStemNum}}杆</li>
+                                <li><i class="zmdi zmdi-directions-walk big-icon-size"></i> 2393 码</li>
+                            </ul>
+                        </a>
+                        <div class="actions list-group__actions" style="top: 235px;">
+                            <div class="dropdown">
+                                <a href="" ng-click="removeClub(item)"><i class="zmdi zmdi-delete"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="load-more">
+                <a href="" ng-click="loading()"><i ng-if="loadMore" class="zmdi zmdi-refresh-alt"></i> {{loadMore?'加载更多':'没有更多了'}}</a>
+            </div>
+        </div>
+        <div class="main__container" align="center" ng-show="TotalClub<=0">
+            <h1>无练习场资料</h1>
+        </div>
+    </section>
+    <!-- New note modal -->
+    <div class="modal fade note-view" id="new-club" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width: 600px;">
+            <div class="modal-content">
+                <form name="clubForm" class="ng-pristine ng-valid" ng-submit="submitForm(clubForm.$valid)" novalidate>
+                    <div class="m-b-0 form-group article_title" ng-class="{ 'has-error' : clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine }">
+                        <input type="text" name="ClubName" class="form-control article_title_input" ng-model="currentClub.ClubName" placeholder="球场名称" required>
+                        <p ng-show="clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine" class="help-block">必填项</p>
+                    </div>
+                    <div class="card__body" >
+                        <div class="col-md-12 text-center">
+                            <a href="" tooltips tooltip-side="top" tooltip-template="球场Logo">
+                                <img src="../img/plus.png" err-src="../img/user_empty.png" class="img-circle" width="80px" height="80px" alt="">
+                            </a>
+                        </div>
+                        <!--<div class="col-md-2">-->
+                        <!--</div>-->
+                        <div class="col-md-12 text-center">
+                            <div uib-carousel active="active" interval="myInterval" no-pause="pause" no-wrap="noWrapSlides">
+                                <div uib-slide ng-repeat="slide in currentClub.ClubPhoto track by $index" index="$index">
+                                    <a href="">
+                                        <img ng-src="{{slide}}" err-src="../img/select_cover.jpg"  height="350px">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <a href="" ng-click="selectImg($index)" ng-dblclick="deleteImg($index)" ng-repeat="image in currentClub.ClubPhoto track by $index"
+                                   tooltips tooltip-side="top" tooltip-template="双击删除" >
+                                    <img ng-src="{{image}}" err-src="../img/user_empty.png" width="50px" height="50px">
+                                </a>
+                                <a href="" ngf-select ngf-change="upload($files)" ng-show="currentClub.ClubPhoto.length<9||!currentClub.ClubPhoto"
+                                   tooltips tooltip-side="top" tooltip-template="添加图片">
+                                    <img src="../img/plus.png" width="50px" height="50px" alt="">
+                                </a>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine }">
+                                    <label>详细地址<span style="color: red">*</span></label>
+                                    <input select-address p="p" c="c" a="a" d="d" name="ClubAddress" ng-model="Address" placeholder="请选择所在地" type="text" class="form-control" required>
+                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">必填项</p>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine }">
+                                    <label>总杆数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalStemNum" ng-model="currentClub.TotalStemNum" class="form-control" required>
+                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine }">
+                                    <label>总洞数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalHole" ng-model="currentClub.TotalHole" class="form-control" required>
+                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine }">
+                                    <label>联系电话<span style="color: red">*</span></label>
+                                    <input type="text" name="ClubPhoneNumber" ng-model="currentClub.ClubPhoneNumber" class="form-control" required>
+                                    <p ng-show="clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine }">
+                                    <label>价格<span style="color: red">*</span></label>
+                                    <input type="text" name="Price" ng-model="currentClub.Price" class="form-control" required>
+                                    <p ng-show="clubForm.Price.$invalid && !clubForm.Price.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && !clubForm.DiscountPrice.$pristine }">
+                                    <label>优惠价</label>
+                                    <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer modal-footer--bordered">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-info" ng-disabled="clubForm.$invalid">提交</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>

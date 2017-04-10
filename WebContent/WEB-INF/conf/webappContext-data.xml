@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="configService" class="com.galaxy.ggolf.rest.ConfigService">
+		<constructor-arg ref="common_configManager" />
+		<!-- <constructor-arg ref="sessionManager"/> -->
+	</bean>
+	<bean id="common_configManager" class="com.galaxy.ggolf.manager.Common_configManager">
+	    <constructor-arg ref="common_configDAO" />
+	</bean>
+	
+	<bean id="common_configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
+	</bean>
+</beans>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="">
+
+	<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+	
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>【高尔夫】 关于我们</title>
+        
+		<!--#include file="./inc/inc_css.html"-->
+        
+    </head>
+
+    <body>
+    	<!-- Page Loader JS -->
+        <script src="js/page-loader.min.js" async></script>
+    	<!-- Start page loader -->
+        <div id="page-loader" >
+            <div class="page-loader__spinner"></div>
+        </div>
+        <!-- End page loader -->
+        <!--#include file="./inc/headerbox.html"-->
+
+
+        <section class="section">
+            <div class="container">
+                <header class="section__title">
+                    <h2>关于我们</h2>
+                </header>
+
+                <div class="row">
+                    <div class="card faq__item">
+                        <div class="card__body">
+							<p>云高致力于成为高尔夫领域全球领先的互联网企业，建立基于移动互联网以高尔夫为主题的社交服务平台，进而成为中国运动休闲领域的标志性公司，
+							并呈现最先进的高尔夫行业全面信息化解决方案。</p>
+							
+							<p>云高的信息化产品与解决方案融合了云计算、物联网、IT服务托管等最前端的信息技术。</p>
+							
+							<p>深圳市云高信息技术股份有限公司成立于2011年6月，于2011年12月获得德讯科技有限公司天使投资，成为“德讯系”成员企业。</p>
+							
+							<p>
+							<span class="bold">我们的价值观：</span><br>
+							<span class="bold">热爱</span> &emsp;从热爱高尔夫出发，热爱事业，热爱客户，热爱同事，热爱所有爱高尔夫的人。<br>
+							<span class="bold">专注</span> &emsp;植根于高尔夫产业，围绕高尔夫人群的核心需求精耕细作。<br>
+							<span class="bold">分享</span> &emsp;同客户分享便利与增值，同员工分享创新与发展，同投资者分享长期价值，同爱高尔夫的人分享快乐
+							</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!--#include file="./inc/footer.html"-->
+        
+    </body>
+    
+    <!--#include file="./inc/inc_script.html"-->
+	
+</html>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="clubService" class="com.galaxy.ggolf.rest.ClubService">
+	    <constructor-arg ref="clubManager"/>
+	    <constructor-arg ref="clubDetailManager"/>
+	    <constructor-arg ref="commentManager"/>
+	</bean>
+	<bean id="clubManager" class="com.galaxy.ggolf.manager.ClubManager">
+	    <constructor-arg ref="clubDAO"/>
+	</bean>
+	<bean id="clubDetailManager" class="com.galaxy.ggolf.manager.ClubDetailManager">
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="clubDetailDAO"/>
+	    <constructor-arg ref="clubFairwayDAO"/>
+	</bean>
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="clubDetailDAO" class="com.galaxy.ggolf.dao.ClubDetailDAO">
+	</bean>
+	<bean id="clubFairwayDAO" class="com.galaxy.ggolf.dao.ClubFairwayDAO">
+	</bean>
+	<bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
+	    <constructor-arg ref="commentDAO"/>
+	</bean>
+	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+</beans>

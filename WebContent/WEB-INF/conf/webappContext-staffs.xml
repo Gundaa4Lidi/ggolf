@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="staffService" class="com.galaxy.ggolf.rest.StaffService">
+		<constructor-arg ref="staffManager" />
+		<constructor-arg ref="staffSessionManager" />
+	</bean>
+
+	<bean id="staffDAO" class="com.galaxy.ggolf.dao.StaffDAO">
+	</bean>
+	
+	<bean id="staffManager" class="com.galaxy.ggolf.manager.StaffManager">
+		<constructor-arg ref="staffDAO" />
+	</bean>
+	
+	<bean id="staffSessionManager" class="com.galaxy.ggolf.manager.StaffSessionManager">
+	</bean>
+</beans>

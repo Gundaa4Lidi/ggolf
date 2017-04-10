@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="">
+
+	<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+	
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>【高尔夫】 球场订单编号：524330</title>
+        
+		<!--#include file="./inc/inc_css.html"-->
+        
+    </head>
+
+    <body>
+    	<!-- Page Loader JS -->
+        <script src="js/page-loader.min.js" async></script>
+    	<!-- Start page loader -->
+        <div id="page-loader" >
+            <div class="page-loader__spinner"></div>
+        </div>
+        <!-- End page loader -->
+        <!--#include file="./inc/headerbox.html"-->
+
+        <section class="section">
+            <div class="container container--sm">
+            
+                <header class="section__title">
+                    <h2><b>球场订单编号：</b>524330</h2>
+                </header>
+				
+				<div class="card">
+	                <div class="card__body">
+	                
+	                	<!-- 订单信息上 -->
+		                <div class="card__sub row rmd-stats">
+		                
+		                    <div class="col-xs-4">
+		                        <div class="rmd-stats__item order-but1">
+		                            <h2><span class="order-font">2016-12-31&emsp;04:12PM</span></h2>
+		                            <small>下单日期</small>
+		                        </div>
+		                    </div>
+		                    
+		                    <div class="col-xs-4">
+		                        <div class="rmd-stats__item order-but2">
+		                            <h2><span class="order-font2">¥9880 (在线预付金额¥9880)</span></h2>
+		                            <small>订单金额</small>
+		                        </div>
+		                    </div>
+		                    
+		                    <div class="col-xs-4">
+		                        <div class="rmd-stats__item order-but3">
+		                            <h2><span class="order-font">已完成/已取消/等待确认</span></h2>
+		                            <small>订单状态</small>
+		                        </div>
+		                    </div>
+		                    
+		                    <form class="form-inline pull-right">
+		                	  <button type="submit" class="btn btn-primary">取消订单</button>
+							  <a href="club-order-info.shtml"><button type="submit" class="btn btn-primary">刷新</button></a>
+							  <button type="submit" class="btn btn-primary">立即支付</button>
+	
+							</form>
+		                    
+		                </div>
+						
+						<!-- 订单信息下 -->
+		                <div class="card__sub mar-bot">
+		                    
+		                    <table class="table table-striped first-table">
+											  
+								<tbody>
+								  	
+								  	<tr>
+								      	<td class="to-center tb-head head-bg" colspan="2">订单信息</td>
+								    </tr>
+								    <tr>
+								    	<td>提供商家：</td>
+								    	<td>Golf007</td>
+								    </tr>
+								    <tr>
+								      	<td>预订球场：</td>
+								      	<td><a href="club-details.shtml">北京大运河高尔夫球场</a></td>
+								    </tr>
+								    <tr>
+								      	<td>球场地址：</td>
+								      	<td>北京市通州区潞城镇胡各庄林场</td>
+								    </tr>
+								    <tr>
+								    	<td>打球日期：</td>
+								    	<td>2017-01-03</td>
+								    </tr>
+								    <tr>
+								    	<td>打球时间：</td>
+								    	<td>07:30 PM</td>
+								    </tr>
+								    <tr>
+								    	<td>服务包括：</td>
+								    	<td>18洞果岭/僮/车/柜</td>
+								    </tr>
+								    <tr>
+								    	<td>预订人数：</td>
+								    	<td>1人</td>
+								    </tr>
+								    
+								</tbody>
+							  
+							</table>
+								
+		                </div>
+						
+						<!-- 打球人信息 -->
+		                <div class="card__sub mar-bot">
+		                
+		                    <table class="table table-striped first-table">
+											  
+								<tbody>
+								  	
+								  	<tr>
+								      	<td class="to-center tb-head head-bg" colspan="2">打球人信息</td>
+								    </tr>
+								    <tr>
+								    	<td>打 球 人  ：</td>
+								    	<td>asdasd</td>
+								    </tr>
+								    <tr>
+								      	<td>联系手机：</td>
+								      	<td>13794111636972</td>
+								    </tr>
+								    
+								</tbody>
+							  
+							</table>
+								
+		                </div>
+		                
+		                <!-- 支付信息 -->
+		                <div class="card__sub mar-bot">
+		                    
+		                    <table class="table table-striped first-table">
+											  
+								<tbody>
+								  	
+								  	<tr>
+								      	<td class="to-center tb-head head-bg" colspan="2">支付信息</td>
+								    </tr>
+								    <tr>
+								    	<td>支付类型：</td>
+								    	<td>全额预付</td>
+								    </tr>
+								    
+								</tbody>
+							  
+							</table>
+							
+		                </div>
+		                
+		                <!-- 预订说明 -->
+		                <div class="card__sub">
+		                    
+		                    <table class="table table-striped first-table">
+											  
+								<tbody>
+								  	
+								  	<tr>
+								      	<td class="to-center tb-head head-bg" colspan="2">预订说明</td>
+								    </tr>
+								    <tr>
+								    	<td>只接受4天内预订，提前一天预订，不接受当天预订，请留意！。提前24小时，当日取消扣200/人</td>
+								    </tr>
+								    
+								</tbody>
+							  
+							</table>
+		                    
+		                </div>
+						
+						<!-- 球场联系方法 -->
+		                <div class="card__sub order-font-bot">
+		                
+		                    <h4>&emsp;球场联系方法</h4>
+		
+		                    <ul class="rmd-contact-list">
+		                        <li>&emsp;<i class="zmdi zmdi-phone"></i>电话：01089582988</li>
+		                        <li>&emsp;<i class="zmdi zmdi-pin"></i>地址：北京市通州区潞城镇胡各庄林场</li>
+		                    </ul>
+		                    
+		                </div>
+		                
+		            </div>
+		            
+	            </div>
+                
+            </div>
+        </section>
+
+        <!--#include file="./inc/footer.html"-->
+        
+    </body>
+            
+    <!--#include file="./inc/inc_script.html"-->
+	
+</html>

@@ -1,0 +1,198 @@
+<div ng-controller="SystemDataController" ng-init="load()">
+    <section id="main__content">
+        <div class="action-header-alt">
+            <a href="" class="top-nav__back" style="top:10px;" ng-click="back()" title="返回"></a>
+        </div>
+
+        <div class="main__container questions-answers">
+            <div class="questions-answers__main media">
+                <div class="pull-left">
+                    <img ng-src="{{SystemMsgData.SenderPhoto}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">
+
+                    <!--<div class="questions-answers__voting">
+                        <span>
+                            <input type="radio" name="qa-voting" checked>
+                            <i class="zmdi zmdi-thumb-up"></i>
+                        </span>
+                        <span>
+                            <input type="radio" name="qa-voting">
+                            <i class="zmdi zmdi-thumb-down"></i>
+                        </span>
+                    </div>-->
+                </div>
+                <div class="media-body">
+                    <p>{{SystemMsgData.Details}}</p>
+
+                    <div class="questions-answers__attrs">
+                        <a href=""><i class="zmdi zmdi-account"></i>{{SystemMsgData.SenderName}}</a>
+                        <span><i class="zmdi zmdi-calendar"></i> {{SystemMsgData.Created_TS.substring(0,19)}}</span>
+
+                        <div class="actions questions-answers__actions">
+                            <div class="actions__toggle">
+                                <input type="checkbox" checked>
+                                <i class="zmdi zmdi-star-border"></i>
+                                <i class="zmdi zmdi-star"></i>
+                            </div>
+
+                            <a href="#flag-question" data-toggle="modal">
+                                <i class="zmdi zmdi-flag"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="questions-answers__main media">
+                <div class="pull-left">
+                    <img ng-src="{{commentHead}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">
+                </div>
+                <div class="media-body">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <textarea rows="3" cols="1" class="form-control" ng-model="writeComment" ng-click="Write()" placeholder="写下你的评论......" style="font-size: 13px;background: beige;"></textarea>
+                    </div>
+                    <div class="pull-right" ng-show="write">
+                        <button class="btn" ng-click="cancelComment()">取消</button>
+                        <button class="btn btn-primary" ng-click="sendComment()">发送</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 评论列表 -->
+            <div class="card list-group blog-comment">
+
+                <div class="list-group__header clearfix">
+                    <span class="pull-left">累计评论 2</span>
+
+                    <!--<a href="" data-rmd-action="scroll-to" data-rmd-target="#blog-comment" data-rmd-offset="23" class="pull-right">发表点评</a>-->
+                </div>
+
+                <div class="list-group-item media">
+                    <div class="pull-left">
+                        <img src="../img/demo/people/4.jpg" ng-src="{{}}" class="list-group__img img-circle" width="50" height="50" alt="">
+                        <div class="blog-comment__up"><span>+5</span></div>
+                    </div>
+                    <div class="media-body list-group__text">
+                        <strong>137****0166</strong>
+                        <small>2016-05-19</small>
+                        <p class="m-t-15"></p>
+
+                        <div class="actions actions--blog-comment dropdown">
+                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                            <ul class="dropdown-menu dropdown-menu--icon pull-right">
+                                <li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item media">
+                    <div class="pull-left">
+                        <img src="../img/demo/people/5.jpg" class="list-group__img img-circle" width="50" height="50" alt="">
+                        <div class="blog-comment__up"><span>+12</span></div>
+                    </div>
+                    <div class="media-body list-group__text">
+                        <strong>137****5555</strong>
+                        <small>2016-05-19</small>
+                        <p class="m-t-15">mollis interdum. Fusce dapibus, tellus ac cursus commodo, tortor mauris
+                            condimentum nibh, ut fermentum massa justo sit amet risus. Nulla vitae elit libero, a pharetra augue.</p>
+
+                        <div class="actions actions--blog-comment dropdown">
+                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                            <ul class="dropdown-menu dropdown-menu--icon pull-right">
+                                <li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!--<div class="list-group list-group&#45;&#45;block questions-answers__reply">
+                <div class="list-group__header text-left m-0">
+                    Total 2 replies
+
+                    <a href="" class="pull-right"><span class="hidden-xs">VIEW REPLY</span></a>
+                </div>
+
+                <div class="list-group-item">
+                    <div class="">
+
+                    </div>
+                    <p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Maecenas sed diam eget risus varius blandit sit amet non magna. Nulla vitae elit libero, a pharetra augue. Donec id elit non mi porta gravida at eget metus. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Donec id elit non mi porta gravida at eget metus.</p>
+                    <p>Cras mattis consectetur purus sit amet fermentum. Nulla vitae elit libero, a pharetra augue. Sed posuere consectetur est at lobortis. Aenean lacinia bibendum nulla sed consectetur. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
+                    <div class="list-group__attrs">
+                        <div><i class="zmdi zmdi-calendar"></i> 10/08/2016</div>
+                        <div class="mdc-text-green-500"><i class="zmdi zmdi-thumb-up"></i> 198</div>
+                    </div>
+
+                    <div class="actions list-group__actions">
+                        <div class="dropdown">
+                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                            <ul class="dropdown-menu dropdown-menu&#45;&#45;icon pull-right">
+                                <li><a href=""><i class="zmdi zmdi-edit"></i> Edit</a></li>
+                                <li><a href="" data-demo-action="delete-listing"><i class="zmdi zmdi-delete"></i> Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group-item">
+                    <p>Cras mattis consectetur purus sit amet fermentum. Nullam id dolor id nibh ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper nulla non metus auctor fringilla. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui.</p>
+
+                    <div class="list-group__attrs">
+                        <div><i class="zmdi zmdi-calendar"></i> 9/08/2016</div>
+                        <div class="mdc-text-green-500"><i class="zmdi zmdi-thumb-up"></i> 21</div>
+                    </div>
+
+                    <div class="actions list-group__actions">
+                        <div class="dropdown">
+                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                            <ul class="dropdown-menu dropdown-menu&#45;&#45;icon pull-right">
+                                <li><a href=""><i class="zmdi zmdi-edit"></i> Edit</a></li>
+                                <li><a href="" data-demo-action="delete-listing"><i class="zmdi zmdi-delete"></i> Delete</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="form-group">
+                        <textarea class="form-control textarea-autoheight" placeholder="Reply Question..."></textarea>
+                        <i class="form-group__bar"></i>
+                    </div>
+                    <button class="btn btn-primary">Reply</button>
+                </div>
+            </div>-->
+        </div>
+    </section>
+
+    <!-- Flag question modal -->
+    <div class="modal fade note-view" id="flag-question" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Flag this question</h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <select class="select2">
+                            <option>Select Reason</option>
+                            <option>Option 2</option>
+                            <option>Option 3</option>
+                            <option>Option 4</option>
+                            <option>Option 5</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <textarea class="form-control textarea-autoheight" placeholder="Message..."></textarea>
+                        <i class="form-group__bar"></i>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>
+                    <button type="button" class="btn btn-link">Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

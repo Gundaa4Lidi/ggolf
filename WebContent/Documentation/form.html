@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Roost Documentation</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/prism.css" rel="stylesheet">
+        <link rel="stylesheet" href="style/style.css">
+
+    </head>
+    <body>
+        <header id="header">
+            <div class="header__logo">Roost Documentation</div>
+
+            <div class="header__links">
+                <a href="">Demo</a>
+                <a href="">Purchase</a>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="sidebar" data-spy="affix" data-offset-top="72">
+                <ul class="sidebar__links">
+                    <li>
+                        <span class="sidebar__title">Getting Started</span>
+                        <ul>
+                            <li><a href="index.html#getting-started">What's Included</a></li>
+                            <li><a href="index.html#css-name">CSS Naming Conventions</a></li>
+                            <li><a href="index.html#compiling-css-js">Compiling CSS and JavaScript</a></li>
+                            <li><a href="index.html#using-less">Using LESS</a></li>
+                            <li><a href="index.html#third-party-vendors">Third Party Vendors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">Basic Template</span>
+                        <ul>
+                            <li><a href="basic-template.html#front-end">Front-end</a></li>
+                            <li><a href="basic-template.html#dashboard">Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">CSS</span>
+
+                        <ul>
+                            <li><a href="css.html#page-headers">Page Headers</a></li>
+                            <li><a href="css.html#un-list">Unordered Lists</a></li>
+                            <li><a href="css.html#containers">Containers</a></li>
+                            <li><a href="css.html#pagination">Pagination</a></li>
+                            <li><a href="css.html#media-object">Media Object</a></li>
+                            <li><a href="css.html#action-header">Action Header</a></li>
+                            <li><a href="css.html#action-icons">Action Icons</a></li>
+                            <li><a href="css.html#cards">Cards</a></li>
+                            <li><a href="css.html#list-groups">List Groups</a></li>
+                            <li><a href="generic-classes.html">Generic Classes</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Form</span>
+
+                        <ul>
+                            <li><a href="form.html#form-groups">Form Groups</a></li>
+                            <li><a href="form.html#custom-selects">Custom Selects</a></li>
+                            <li><a href="form.html#input-sliders">Input Sliders</a></li>
+                            <li><a href="form.html#checkbox-radio">Checkboxes & Radios</a></li>
+                            <li><a href="form.html#wysiwyg-editor">WYSIWYG Editor</a></li>
+                            <li><a href="form.html#autoheight-textarea">Auto-height Textarea</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Site Components</span>
+
+                        <ul>
+                            <li><a href="site-components.html#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li><a href="site-components.html#dynamic-sidebars">Dynamic Sidebars</a></li>
+                            <li><a href="site-components.html#responsive-tabs">Responsive Tabs</a></li>
+                            <li><a href="site-components.html#scroll-to">Scroll To</a></li>
+                            <li><a href="site-components.html#icon-toggles">Icon Toggles</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Bootstrap Components</span>
+                        <ul>
+                            <li><a href="bootstrap-components.html#dropdown">Dropdown</a></li>
+                            <li><a href="bootstrap-components.html#tabs">Tabs</a></li>
+                            <li><a href="bootstrap-components.html#tooltips">Tooltips</a></li>
+                            <li><a href="bootstrap-components.html#modal">Modal</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Others</span>
+
+                        <ul>
+                            <li><a href="others-icons.html#material-icons">Material Design Icons</a></li>
+                            <li><a href="others-colors.html#material-icons">Material Design Colors</a></li>
+                            <li><a href="others-animations.html#css-animations">CSS Animations</a></li>
+                            <li><a href="others.html#custom-alerts">Custom Alerts</a></li>
+                            <li><a href="others.html#lightbox">Lightbox</a></li>
+                            <li><a href="others.html#calendar">Calendar</a></li>
+                            <li><a href="others.html#ratings">Ratings</a></li>
+                            <li><a href="others.html#social-network">Social Network Sharing</a></li>
+                            <li><a href="others.html#text-clamping">Text Clamping</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content">
+                <div class="content__wrapper">
+                    <div class="content__title">
+                        <h2>Form</h2>
+                    </div>
+
+                    <div class="card" id="form-groups">
+                        <div class="card__title">
+                            <h2>Form Groups</h2>
+                        </div>
+
+                        <p>Form groups is used to wrap elements which are required for a single form field.</p>
+                        
+                        <p><img class="img-thumbnail" src="img/form/basic.gif" width="320" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;form-group&#x22;&#x3E;
+    &#x3C;input type=&#x22;text&#x22; class=&#x22;form-control&#x22; placeholder=&#x22;Name&#x22;&#x3E;
+
+    &#x3C;i class=&#x22;form-group__bar&#x22;&#x3E;&#x3C;/i&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <p>Note that, <code>&#x3C;i class=&#x22;form-group__bar&#x22;&#x3E;&#x3C;/i&#x3E;</code> is required inside <code>.form-group</code> to animate blue bar right beneath the text field.</p>
+
+
+                        <h4 class="card__sub">Form group modifier classes</h4>
+
+                        <ol>
+                            <li>
+                                <p><code>.form-group--float</code>: Floating label on focus.</p>
+
+                                <p><img class="img-thumbnail" src="img/form/float.gif" width="320" alt=""></p>
+
+                                <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--float&#x22;&#x3E;
+    &#x3C;input type=&#x22;text&#x22; class=&#x22;form-control&#x22; placeholder=&#x22;Name&#x22;&#x3E;
+
+    &#x3C;label&#x3E;Name&#x3C;/label&#x3E;
+
+    &#x3C;i class=&#x22;form-group__bar&#x22;&#x3E;&#x3C;/i&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+                                <br>
+                            </li>
+
+                            <li>
+                                <p><code>.form-group--centered</code>: Center aligned texts.</p>
+
+                                <p><img class="img-thumbnail" src="img/form/center.jpg" alt=""></p>
+
+                                <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--centered&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+                                <br>
+                            </li>
+
+                            <li>
+                                <p><code>.form-group--active</code>: Shows blue bar beneath the text field.</p>
+
+                                <p><img class="img-thumbnail" src="img/form/active.jpg" alt=""></p>
+
+                                <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--active&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+                                <br>
+                            </li>
+
+                            <li>
+                                <p><code>.form-group--light</code>: Used for darker backgrounds.</p>
+
+                                <p><img class="img-thumbnail" src="img/form/dark.jpg" alt=""></p>
+
+                                <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--light&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+
+                                <p>Usage in template:</p>
+
+                                <ol type="I">
+                                    <li><code>/mortgage.html</code></li>
+                                    <li><code>/listings-list.html</code></li>
+                                    <li><code>/blog-list.html</code></li>
+                                    <li><code>/roost/contact.html</code></li>
+                                </ol>
+
+                                <br>
+                            </li>
+
+                            <li>
+                                <p><code>.form-group--range</code>: This adds extra padding on top and used to wrap input slider fields.</p>
+
+                                <p><img class="img-thumbnail" src="img/form/range.jpg" alt=""></p>
+
+                                <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--range&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="custom-selects">
+                        <div class="card__title">
+                            <h2>Select 2 - Custom Selects</h2>
+                        </div>
+
+                        <p>Select2 gives you a customizable select box with support for searching, tagging, remote data sets, infinite scrolling, and many other highly used options. Official website and detailed documentation at <a href="https://select2.github.io/">https://select2.github.io/</a></p>
+
+                        <br>
+
+                        <p>In order to use Select2, you must include JavaScript and CSS asset files on your website.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/select2/dist/css/select2.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/select2/dist/js/select2.full.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Single Select</h4>
+
+                        <p><img class="img-thumbnail" src="img/select/select.jpg" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;select class=&#x22;select2&#x22;&#x3E;
+    &#x3C;option value=&#x22;&#x22;&#x3E;Single Family Home&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22;&#x3E;Condo&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22;&#x3E;Townhome&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22;&#x3E;Room&#x3C;/option&#x3E;
+&#x3C;/select&#x3E;</code></pre>
+
+                        <p>You can transform any select element to a stylish select2 by simply adding the class <code>.select2</code></p>
+
+                        <h4 class="card__sub">Multiple select boxes</h4>
+
+                        <p>Select2 also supports multi-value select boxes. The select below is declared with the <code>multiple</code> attribute.</p>
+                        
+                        <p><img class="img-thumbnail" src="img/select/multi.jpg" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;select class=&#x22;select2&#x22; multiple&#x3E;
+    &#x3C;option value=&#x22;&#x22; selected=&#x22;&#x22;&#x3E;Sollicitudin&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22; selected=&#x22;&#x22;&#x3E;Pellentesque&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22; selected=&#x22;&#x22;&#x3E;Inceptos&#x3C;/option&#x3E;
+    &#x3C;option value=&#x22;&#x22; selected=&#x22;&#x22;&#x3E;Dapibus&#x3C;/option&#x3E;
+&#x3C;/select&#x3E;</code></pre>
+                    </div>
+
+                    <div class="card" id="input-sliders">
+                        <div class="card__title">
+                            <h2>noUiSlider - Input Slider</h2>
+                        </div>
+
+                        <p>noUiSlider is a range slider without bloat. It offers a ton off features, and it is as small, lightweight and minimal as possible, which is great for mobile use on the many supported devices, including iPhone, iPad, Android devices & Windows (Phone) 8 desktops, tablets and all-in-ones. It works on desktops too, of course!</p>
+
+                        <p>To read more noUiSlider and official documentation, head on to <a target="_blank" href="http://refreshless.com/nouislider/">http://refreshless.com/nouislider/</a>.</p>
+
+                        <br>
+
+                        <p>In order to use noUiSlider, you must include JavaScript and CSS asset files on your website.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;vendors/bower_components/nouislider/distribute/nouislider.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;vendors/bower_components/nouislider/distribute/nouislider.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+
+                        <h4 class="card__sub">Basic Example</h4>
+
+                        <img class="img-thumbnail" src="img/slider/basic.jpg" alt="">
+
+                        <div>
+                            <ul class="tab-nav tab-nav--justified">
+                                <li class="active"><a data-toggle="tab" href="#noUiSlider-basic-html">HTML</a></li>
+                                <li><a data-toggle="tab" href="#noUiSlider-basic-js">Javascript</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="noUiSlider-basic-html">
+                                    <pre><code class="language-html">&#x3C;div id=&#x22;slider-basic&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+                                </div>
+                                <div class="tab-pane" id="noUiSlider-basic-js">
+                                <pre><code class="language-js">var sliderBasic = document.getElementById(&#x27;slider-basic&#x27;);
+
+noUiSlider.create(sliderBasic, {
+&#x9;start: 100,
+    range: {
+        &#x27;min&#x27;: 0,
+        &#x27;max&#x27;: 1000
+    }
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="card__sub">Range Slider</h4>
+
+                        <img class="img-thumbnail" src="img/slider/range.jpg" alt="">
+
+                        <div>
+                            <ul class="tab-nav tab-nav--justified">
+                                <li class="active"><a data-toggle="tab" href="#noUiSlider-range-html">HTML</a></li>
+                                <li><a data-toggle="tab" href="#noUiSlider-range-js">Javascript</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="noUiSlider-range-html">
+                                    <pre><code class="language-html">&#x3C;div id=&#x22;slider-range&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+                                </div>
+                                <div class="tab-pane" id="noUiSlider-range-js">
+                                <pre><code class="language-js">var sliderRange = document.getElementById(&#x27;slider-range&#x27;);
+
+noUiSlider.create(sliderRange, {
+&#x9;start: [20, 80],
+&#x9;connect: true,
+&#x9;range: {
+    &#x9;&#x9;&#x27;min&#x27;: 0,
+    &#x9;&#x9;&#x27;max&#x27;: 100
+&#x9;}
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="card__sub">Complete Slider with values and labels</h4>
+
+                        <img class="img-thumbnail" src="img/slider/complete.jpg" alt="">
+
+                        <div>
+                            <ul class="tab-nav tab-nav--justified">
+                                <li class="active"><a data-toggle="tab" href="#noUiSlider-complete-html">HTML</a></li>
+                                <li><a data-toggle="tab" href="#noUiSlider-complete-js">Javascript</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="noUiSlider-complete-html">
+                                    <pre><code class="language-html">&#x3C;div class=&#x22;form-group form-group--range&#x22;&#x3E;
+    &#x3C;label&#x3E;Price Range&#x3C;/label&#x3E;
+    &#x3C;div class=&#x22;input-slider-values clearfix&#x22;&#x3E;
+        &#x3C;div class=&#x22;pull-left&#x22;&#x3E;&#x3C;span&#x3E;$&#x3C;/span&#x3E;&#x3C;span id=&#x22;slider-complete-upper&#x22;&#x3E;&#x3C;/span&#x3E;&#x3C;/div&#x3E;
+        &#x3C;div class=&#x22;pull-right&#x22;&#x3E;&#x3C;span&#x3E;$&#x3C;/span&#x3E;&#x3C;span id=&#x22;slider-complete-lower&#x22;&#x3E;&#x3C;/span&#x3E;&#x3C;/div&#x3E;
+    &#x3C;/div&#x3E;
+    &#x3C;div id=&#x22;slider-complete&#x22;&#x3E;&#x3C;/div&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+                                </div>
+                                <div class="tab-pane" id="noUiSlider-complete-js">
+                                <pre><code class="language-js">var sliderComplete = document.getElementById(&#x27;slider-complete&#x27;);
+var sliderCompleteValues = [
+    document.getElementById(&#x27;slider-complete-upper&#x27;),
+    document.getElementById(&#x27;slider-complete-lower&#x27;)
+]
+
+noUiSlider.create (sliderComplete, {
+    start: [12000, 70000],
+    connect: true,
+    range: {
+        &#x27;min&#x27;: 12000,
+        &#x27;max&#x27;: 70000
+    }
+});
+
+sliderComplete.noUiSlider.on(&#x27;update&#x27;, function( values, handle ) {
+    sliderCompleteValues[handle].innerHTML = values[handle];
+});</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/index.html</code></li>
+                            <li><code>/listings-grid.html</code></li>
+                            <li><code>/listings-list.html</code></li>
+                            <li><code>/agents.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="checkbox-radio">
+                        <div class="card__title">
+                            <h2>Checkboxes and Radios</h2>
+                        </div>
+
+                        <p>Custom checkboxes and radios are available in Roost with multiple UI variants.</p>
+
+                        <h4 class="card__sub">Default (stacked)</h4>
+
+                        <p><img class="img-thumbnail" src="img/checkbox-radio/basic.jpg" alt=""></p>
+                        <pre><code class="language-html">&#x3C;!-- Checkbox --&#x3E;
+&#x3C;div class=&#x22;checkbox&#x22;&#x3E;
+    &#x3C;label&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;
+        &#x3C;i class=&#x22;input-helper&#x22;&#x3E;&#x3C;/i&#x3E;
+        Hide Street number on listing
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;
+
+&#x3C;!-- Radio --&#x3E;
+&#x3C;div class=&#x22;radio&#x22;&#x3E;
+    &#x3C;label&#x3E;
+        &#x3C;input type=&#x22;radio&#x22;&#x3E;
+        &#x3C;i class=&#x22;input-helper&#x22;&#x3E;&#x3C;/i&#x3E;
+        Hide U/Floor/Block on listing
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+
+                        <h4 class="card__sub">Basic Inline Example</h4>
+
+                        <p>Use the <code>.checkbox-inline</code> or <code>.radio-inline</code> classes on a series of checkboxes or radios for controls that appear on the same line.</p>
+                        
+                        <p><img class="img-thumbnail" src="img/checkbox-radio/inline.jpg" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;!-- Checkbox --&#x3E;
+&#x3C;div class=&#x22;checkbox checkbox-inline&#x22;&#x3E;
+    &#x3C;label&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;
+        &#x3C;i class=&#x22;input-helper&#x22;&#x3E;&#x3C;/i&#x3E;
+        1
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;
+
+&#x3C;!-- Radio --&#x3E;
+&#x3C;div class=&#x22;radio radio-inline&#x22;&#x3E;
+    &#x3C;label&#x3E;
+        &#x3C;input type=&#x22;radio&#x22;&#x3E;
+        &#x3C;i class=&#x22;input-helper&#x22;&#x3E;&#x3C;/i&#x3E;
+        3
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Toggle Buttons</h4>
+
+                        <p>Add <code>data-toggle="buttons"</code> to a <code>.btn-group</code> containing checkbox or radio inputs to enable toggling in their respective styles.</p>
+                        
+                        <p><img class="img-thumbnail" src="img/checkbox-radio/buttons.jpg" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;!-- Checkbox --&#x3E;
+&#x3C;div class=&#x22;btn-group&#x22; data-toggle=&#x22;buttons&#x22;&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect&#x22;&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;1
+    &#x3C;/label&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect&#x22;&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;2
+    &#x3C;/label&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect active&#x22;&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;3
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;
+
+&#x3C;!-- Radio --&#x3E;
+&#x3C;div class=&#x22;btn-group&#x22; data-toggle=&#x22;buttons&#x22;&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect&#x22;&#x3E;
+        &#x3C;input type=&#x22;radio&#x22; name=&#x22;options&#x22; id=&#x22;option1&#x22;&#x3E;1
+    &#x3C;/label&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect&#x22;&#x3E;
+        &#x3C;input type=&#x22;radio&#x22; name=&#x22;options&#x22; id=&#x22;option2&#x22;&#x3E;2
+    &#x3C;/label&#x3E;
+    &#x3C;label class=&#x22;btn waves-effect active&#x22;&#x3E;
+        &#x3C;input type=&#x22;radio&#x22; name=&#x22;options&#x22; id=&#x22;option3&#x22;&#x3E;3
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Character toggles (checkbox only)</h4>
+
+                        <p>Character toggles displays a character with a nice UI and on mouse hover, it's transform into a normal checkbox.</p>
+                        
+                        <p><img class="img-thumbnail" src="img/checkbox-radio/char.jpg" alt=""></p>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;checkbox checkbox--char&#x22;&#x3E;
+    &#x3C;label&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;
+        &#x3C;span class=&#x22;checkbox__helper&#x22;&#x3E;
+            &#x3C;i class=&#x22;mdc-bg-amber-400&#x22;&#x3E;A&#x3C;/i&#x3E; &#x3C;!-- You can use any color classes here --&#x3E;
+        &#x3C;/span&#x3E;
+    &#x3C;/label&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <br>
+
+                        <p>Usage in template:</p>
+                        <ol>
+                            <li><code>/submit-property.html</code></li>
+                            <li><code>/dashboard/index.html</code></li>
+                            <li><code>/dashboard/tasks-lists.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="wysiwyg-editor">
+                        <div class="card__title">
+                            <h2>Trumbowyg - WYSIWYG Editor</h2>
+                        </div>
+
+                        <p>Trumbowyg is a Light, translatable and customisable jQuery plugin. Beautiful design, generates semantic code, comes with a powerful API.</p>
+
+                        <p>In Roost, we use Trumbowyg in <code>/dashboard/notes.html</code> to write notes.</p>
+
+                        <p>For more information and detailed documentation, please visit <a href="https://alex-d.github.io/Trumbowyg/">https://alex-d.github.io/Trumbowyg/</a></p>
+
+                        <p>In order to use Trumbowyg, first you must include JavaScript and CSS asset files on your website.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- CSS --&#x3E;
+&#x3C;link rel=&#x22;stylesheet&#x22; href=&#x22;../vendors/bower_components/trumbowyg/dist/ui/trumbowyg.min.css&#x22;&#x3E;
+
+&#x3C;!-- JS --&#x3E;
+&#x3C;script src=&#x22;../vendors/bower_components/trumbowyg/dist/trumbowyg.min.js&#x22;&#x3E;&#x3C;/script&#x3E;</code></pre>
+
+                        <p><img class="img-thumbnail" src="img/editor/editor.jpg" alt=""></p>
+
+                        <br>
+
+                        <ul class="tab-nav tab-nav--justified">
+                            <li class="active"><a data-toggle="tab" href="#editor-html">HTML</a></li>
+                            <li><a data-toggle="tab" href="#editor-js">Javascript</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="active tab-pane" id="editor-html">
+                                <pre><code class="language-html">&#x3C;div class=&#x22;editor&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="editor-js">
+                                <pre><code class="language-js">$(&#x27;.editor&#x27;).trumbowyg();</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" id="autoheight-textarea">
+                        <div class="card__title">
+                            <h2>Autosize Textarea</h2>
+                        </div>
+
+                        <p>Autosize is a small, stand-alone script to automatically adjust textarea height.</p>
+
+                        <p>For more information and detailed documentation, please visit <a href="http://www.jacklmoore.com/autosize/">http://www.jacklmoore.com/autosize/</a></p>
+
+                        <br>
+
+                        <p><img class="img-thumbnail" src="img/autosize/autosize.gif" alt=""></p>
+
+                        <pre><code class="language-js">autosize($(&#x27;textarea&#x27;));</code></pre>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/prism.js"></script>
+    </body>
+</html>

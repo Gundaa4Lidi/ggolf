@@ -1,0 +1,69 @@
+<div ng-controller="ArticleDataController" ng-init="load()">
+    <section id="main__content">
+        <div class="action-header-alt">
+            <div class="col col-md-2">
+                <a href="" class="top-nav__back reBack" ng-click="back()" title="返回"></a>
+            </div>
+
+            <div class="col col-md-4 pull-right" ng-if="!ArticleData.ReleaseOrNot">
+                <button type="submit" class="btn btn-send" style="margin: 0;"  ng-show="editor" data-toggle="modal" href="#root_in">发布</button>
+                <button class="btn" style="float: right;font-size: 16px;" ng-click="editData()">{{editor?'取消':'编辑'}}</button>
+            </div>
+            <div class="col col-md-4 pull-right" ng-if="ArticleData.ReleaseOrNot==='Y'">
+                <a href="" class="a_btn">已发布</a>
+            </div>
+        </div>
+
+        <div class="main__container">
+            <div ng-show="editor" froala="froalaOptions" ng-model="articleHtml"></div>
+            <div ng-show="!editor" froala-view="articleHtml"></div>
+        </div>
+    </section>
+    <div class="modal fade note-view" id="root_in" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width: 370px;">
+            <div class="modal-content">
+                <div class="article_title">
+                    <input type="text" class="form-control article_title_input" ng-model="ArticleData.Title"  placeholder="文章标题">
+                </div>
+                <form class="card" style="margin-bottom: 0px;">
+                    <div class="col-sm-12 col-md-12 text-center">
+                        <a href="#" class="thumbnail">
+                            <img ng-src="{{ArticleData.Cover}}" alt="" err-src="../img/select_cover.jpg">
+                        </a>
+                        <i class="new-contact__upload zmdi zmdi-camera" ngf-select ngf-change="upload($files)" ></i>
+                    </div>
+                    <div class="card__body">
+                        <div class="row">
+                             <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>来源于</label>
+                                    <input type="text" ng-model="ArticleData.RootIN" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>封面路径</label>
+                                    <input type="text" ng-model="ArticleData.Cover" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>文章简介</label>
+                                    <textarea rows="" cols="" class="form-control" ng-model="ArticleData.Content"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-info" ng-click="releaseArticle()" >确认发布</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

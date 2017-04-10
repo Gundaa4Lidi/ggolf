@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html lang="en" ng-app="">
+
+	<!--[if IE 9 ]><html lang="en" class="ie9"><![endif]-->
+	
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <title>【高尔夫】 联系我们</title>
+        
+		<!--#include file="./inc/inc_css.html"-->
+        
+    </head>
+
+    <body>
+    	<!-- Page Loader JS -->
+        <script src="js/page-loader.min.js" async></script>
+    	<!-- Start page loader -->
+        <div id="page-loader" >
+            <div class="page-loader__spinner"></div>
+        </div>
+        <!-- End page loader -->
+    
+        <!--#include file="./inc/headerbox.html"-->
+
+
+        <section class="section">
+            <div class="container">
+                <header class="section__title">
+                    <h2>联系我们</h2>
+                </header>
+
+                <div class="row">
+                    <div class="card faq__item">
+                        <div class="card__body">
+							<p>地址：深圳市南山区西丽大学城笃学路9号 国家超级计算机深圳中心科研楼14层 </p>
+							
+							<p>电话：（+86 755）8356 5506</p>
+							
+							<p>传真：（+86 755）8630 9902</p>
+							
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Write Button for mobile -->
+        <button class="btn btn--action btn--circle visible-sm visible-xs" data-rmd-action="block-open" data-rmd-target="#write-to-us">
+            <i class="zmdi zmdi-edit"></i>
+        </button>
+
+        <!--#include file="./inc/footer.html"-->
+        
+    </body>
+	
+	<!--#include file="./inc/inc_script.html"-->
+	
+</html>

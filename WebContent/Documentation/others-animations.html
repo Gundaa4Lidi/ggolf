@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Roost Documentation</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/prism.css" rel="stylesheet">
+        <link href="css/lightgallery.min.css" rel="stylesheet" />
+        <link href="css/material-design-color-palette.min.css" rel="stylesheet" />
+        <link href="css/animate.css" rel="stylesheet" />
+        <link href="style/style.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <header id="header">
+            <div class="header__logo">Roost Documentation</div>
+
+            <div class="header__links">
+                <a href="">Demo</a>
+                <a href="">Purchase</a>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="sidebar" data-spy="affix" data-offset-top="72">
+                <ul class="sidebar__links">
+                    <li>
+                        <span class="sidebar__title">Getting Started</span>
+                        <ul>
+                            <li><a href="index.html#getting-started">What's Included</a></li>
+                            <li><a href="index.html#css-name">CSS Naming Conventions</a></li>
+                            <li><a href="index.html#compiling-css-js">Compiling CSS and JavaScript</a></li>
+                            <li><a href="index.html#using-less">Using LESS</a></li>
+                            <li><a href="index.html#third-party-vendors">Third Party Vendors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">Basic Template</span>
+                        <ul>
+                            <li><a href="basic-template.html#front-end">Front-end</a></li>
+                            <li><a href="basic-template.html#dashboard">Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">CSS</span>
+
+                        <ul>
+                            <li><a href="css.html#page-headers">Page Headers</a></li>
+                            <li><a href="css.html#un-list">Unordered Lists</a></li>
+                            <li><a href="css.html#containers">Containers</a></li>
+                            <li><a href="css.html#pagination">Pagination</a></li>
+                            <li><a href="css.html#media-object">Media Object</a></li>
+                            <li><a href="css.html#action-header">Action Header</a></li>
+                            <li><a href="css.html#action-icons">Action Icons</a></li>
+                            <li><a href="css.html#cards">Cards</a></li>
+                            <li><a href="css.html#list-groups">List Groups</a></li>
+                            <li><a href="generic-classes.html">Generic Classes</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Form</span>
+
+                        <ul>
+                            <li><a href="form.html#form-groups">Form Groups</a></li>
+                            <li><a href="form.html#custom-selects">Custom Selects</a></li>
+                            <li><a href="form.html#input-sliders">Input Sliders</a></li>
+                            <li><a href="form.html#checkbox-radio">Checkboxes & Radios</a></li>
+                            <li><a href="form.html#wysiwyg-editor">WYSIWYG Editor</a></li>
+                            <li><a href="form.html#autoheight-textarea">Auto-height Textarea</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Site Components</span>
+
+                        <ul>
+                            <li><a href="site-components.html#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li><a href="site-components.html#dynamic-sidebars">Dynamic Sidebars</a></li>
+                            <li><a href="site-components.html#responsive-tabs">Responsive Tabs</a></li>
+                            <li><a href="site-components.html#scroll-to">Scroll To</a></li>
+                            <li><a href="site-components.html#icon-toggles">Icon Toggles</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Bootstrap Components</span>
+                        <ul>
+                            <li><a href="bootstrap-components.html#dropdown">Dropdown</a></li>
+                            <li><a href="bootstrap-components.html#tabs">Tabs</a></li>
+                            <li><a href="bootstrap-components.html#tooltips">Tooltips</a></li>
+                            <li><a href="bootstrap-components.html#modal">Modal</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Others</span>
+
+                        <ul>
+                            <li><a href="others-icons.html#material-icons">Material Design Icons</a></li>
+                            <li><a href="others-colors.html#material-icons">Material Design Colors</a></li>
+                            <li><a href="others-animations.html#css-animations">CSS Animations</a></li>
+                            <li><a href="others.html#custom-alerts">Custom Alerts</a></li>
+                            <li><a href="others.html#lightbox">Lightbox</a></li>
+                            <li><a href="others.html#calendar">Calendar</a></li>
+                            <li><a href="others.html#ratings">Ratings</a></li>
+                            <li><a href="others.html#social-network">Social Network Sharing</a></li>
+                            <li><a href="others.html#text-clamping">Text Clamping</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content">
+                <div class="content__wrapper">
+                    <div class="content__title">
+                        <h2>CSS Animations</h2>
+                    </div>
+
+                    <div class="card">
+                        <p>animate.css is a bunch of cool, fun, and cross-browser animations for you to use in your projects. Great for emphasis, home pages, sliders, and general just-add-water-awesomeness.</p>
+                        <p>For more information and detailed documentation, please visit <a target="_blank" href="https://daneden.github.io/animate.css/">https://daneden.github.io/animate.css/</a></p>
+
+                        <h4 class="card__sub">Usage examples</h4>
+
+                        <ul class="tab-nav tab-nav--justified">
+                            <li class="active"><a data-toggle="tab" href="#animations-css">CSS</a></li>
+                            <li><a data-toggle="tab" href="#animations-less">LESS</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="animations-css">
+                                <pre><code class="language-html">&#x3C;div class=&#x22;animated [animation-name]&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+
+                                <p>e.g</p>
+                                <pre><code class="language-html">&#x3C;div class=&#x22;animated fadeIn&#x22;&#x3E;
+    ...
+&#x3C;/div&#x3E;</code></pre>
+                            </div>
+                            <div class="tab-pane" id="animations-less">
+                                <br>
+
+                                <p>Roost also contains a custom LESS mixin which can be used in any class/ID as a property.</p>
+
+                                <pre><code class="language-css">.animated([animation-name], [animation-duration]);</code></pre>
+
+                                <p>e.g</p>
+
+                                <pre><code class="language-css">.animate {
+    width: 100px;
+    height: 100px;
+    .animated(zoomIn, 300ms);
+}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__title">
+                            <h2>Animations</h2>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-7">
+                                <p>Select an animation type from the dropdown and click on the available animation-name listed below to check the output.</p>
+
+                                <div class="dropdown">
+                                    <a href="" class="btn btn--custom btn--animation" data-toggle="dropdown"><span>Animation type</span> &nbsp;<i class="caret"></i></a>
+
+                                    <ul class="dropdown-menu dropdown-menu--animations">
+                                        <li class="active"><a href="#attention-seekers">Attention Seekers</a></li>
+                                        <li><a href="#bouncing-entrances">Bouncing Entrances</a></li>
+                                        <li><a href="#bouncing-exits">Bouncing Exits</a></li>
+                                        <li><a href="#fading-entrances">Fadin Entrances</a></li>
+                                        <li><a href="#fading-exits">Fadin Exits</a></li>
+                                        <li><a href="#flippers">Flippers</a></li>
+                                        <li><a href="#lightspeed">Lightspeed</a></li>
+                                        <li><a href="#rotating-entrances">Rotating Entrances</a></li>
+                                        <li><a href="#rotating-exits">Rotating Exits</a></li>
+                                        <li><a href="#sliding-entrances">Sliding Entrances</a></li>
+                                        <li><a href="#sliding-exits">Sliding Exits</a></li>
+                                        <li><a href="#zoom-entrances">Zoom Entrances</a></li>
+                                        <li><a href="#zoom-exits">Zoom Exits</a></li>
+                                        <li><a href="#specials">Specials</a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div class="tab-pane tab-pane--animation-names active" id="attention-seekers">
+                                        <span>bounce</span>
+                                        <span>flash</span>
+                                        <span>pulse</span>
+                                        <span>rubberBand</span>
+                                        <span>shake</span>
+                                        <span>swing</span>
+                                        <span>tada</span>
+                                        <span>wobble</span>
+                                        <span>jello</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="bouncing-entrances">
+                                        <span>bounceIn</span>
+                                        <span>bounceInDown</span>
+                                        <span>bounceInLeft</span>
+                                        <span>bounceInRight</span>
+                                        <span>bounceInUp</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="bouncing-exits">
+                                        <span>bounceOut</span>
+                                        <span>bounceOutDown</span>
+                                        <span>bounceOutLeft</span>
+                                        <span>bounceOutRight</span>
+                                        <span>bounceOutUp</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="fading-entrances">
+                                        <span>fadeIn</span>
+                                        <span>fadeInDown</span>
+                                        <span>fadeInDownBig</span>
+                                        <span>fadeInLeft</span>
+                                        <span>fadeInLeftBig</span>
+                                        <span>fadeInRight</span>
+                                        <span>fadeInRightBig</span>
+                                        <span>fadeInUp</span>
+                                        <span>fadeInUpBig</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="fading-exits">
+                                        <span>fadeOut</span>
+                                        <span>fadeOutDown</span>
+                                        <span>fadeOutDownBig</span>
+                                        <span>fadeOutLeft</span>
+                                        <span>fadeOutLeftBig</span>
+                                        <span>fadeOutRight</span>
+                                        <span>fadeOutRightBig</span>
+                                        <span>fadeOutUp</span>
+                                        <span>fadeOutUpBig</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="flippers">
+                                        <span>flip</span>
+                                        <span>flipInX</span>
+                                        <span>flipInY</span>
+                                        <span>flipOutX</span>
+                                        <span>flipOutY</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="lightspeed">
+                                        <span>lightSpeedIn</span>
+                                        <span>lightSpeedOut</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="rotating-entrances">
+                                        <span>rotateIn</span>
+                                        <span>rotateInDownLeft</span>
+                                        <span>rotateInDownRight</span>
+                                        <span>rotateInUpLeft</span>
+                                        <span>rotateInUpRight</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="rotating-exits">
+                                        <span>rotateOut</span>
+                                        <span>rotateOutDownLeft</span>
+                                        <span>rotateOutDownRight</span>
+                                        <span>rotateOutUpLeft</span>
+                                        <span>rotateOutUpRight</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="sliding-entrances">
+                                        <span>slideInUp</span>
+                                        <span>slideInDown</span>
+                                        <span>slideInLeft</span>
+                                        <span>slideInRight</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="sliding-exits">
+                                        <span>slideOutUp</span>
+                                        <span>slideOutDown</span>
+                                        <span>slideOutLeft</span>
+                                        <span>slideOutRight</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="zoom-entrances">
+                                        <span>zoomIn</span>
+                                        <span>zoomInDown</span>
+                                        <span>zoomInLeft</span>
+                                        <span>zoomInRight</span>
+                                        <span>zoomInUp</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="zoom-exits">
+                                        <span>zoomOut</span>
+                                        <span>zoomOutDown</span>
+                                        <span>zoomOutLeft</span>
+                                        <span>zoomOutRight</span>
+                                        <span>zoomOutUp</span>
+                                    </div>
+
+                                    <div class="tab-pane tab-pane--animation-names" id="specials">
+                                        <span>hinge</span>
+                                        <span>rollIn</span>
+                                        <span>rollOut</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-5">
+                                <div class="img-animation">
+                                    <img src="img/animation-img.jpg" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/prism.js"></script>
+        <script src="js/lightgallery.min.js"></script>
+        <script src="js/functions.js"></script>
+    </body>
+</html>

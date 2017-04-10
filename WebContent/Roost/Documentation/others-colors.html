@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Roost Documentation</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/prism.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/lightgallery.min.css" />
+        <link type="text/css" rel="stylesheet" href="css/material-design-color-palette.min.css" />
+        <link href="style/style.css" rel="stylesheet">
+
+    </head>
+    <body>
+        <header id="header">
+            <div class="header__logo">Roost Documentation</div>
+
+            <div class="header__links">
+                <a href="">Demo</a>
+                <a href="">Purchase</a>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="sidebar" data-spy="affix" data-offset-top="72">
+                <ul class="sidebar__links">
+                    <li>
+                        <span class="sidebar__title">Getting Started</span>
+                        <ul>
+                            <li><a href="index.html#getting-started">What's Included</a></li>
+                            <li><a href="index.html#css-name">CSS Naming Conventions</a></li>
+                            <li><a href="index.html#compiling-css-js">Compiling CSS and JavaScript</a></li>
+                            <li><a href="index.html#using-less">Using LESS</a></li>
+                            <li><a href="index.html#third-party-vendors">Third Party Vendors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">Basic Template</span>
+                        <ul>
+                            <li><a href="basic-template.html#front-end">Front-end</a></li>
+                            <li><a href="basic-template.html#dashboard">Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">CSS</span>
+
+                        <ul>
+                            <li><a href="css.html#page-headers">Page Headers</a></li>
+                            <li><a href="css.html#un-list">Unordered Lists</a></li>
+                            <li><a href="css.html#containers">Containers</a></li>
+                            <li><a href="css.html#pagination">Pagination</a></li>
+                            <li><a href="css.html#media-object">Media Object</a></li>
+                            <li><a href="css.html#action-header">Action Header</a></li>
+                            <li><a href="css.html#action-icons">Action Icons</a></li>
+                            <li><a href="css.html#cards">Cards</a></li>
+                            <li><a href="css.html#list-groups">List Groups</a></li>
+                            <li><a href="generic-classes.html">Generic Classes</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Form</span>
+
+                        <ul>
+                            <li><a href="form.html#form-groups">Form Groups</a></li>
+                            <li><a href="form.html#custom-selects">Custom Selects</a></li>
+                            <li><a href="form.html#input-sliders">Input Sliders</a></li>
+                            <li><a href="form.html#checkbox-radio">Checkboxes & Radios</a></li>
+                            <li><a href="form.html#wysiwyg-editor">WYSIWYG Editor</a></li>
+                            <li><a href="form.html#autoheight-textarea">Auto-height Textarea</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Site Components</span>
+
+                        <ul>
+                            <li><a href="site-components.html#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li><a href="site-components.html#dynamic-sidebars">Dynamic Sidebars</a></li>
+                            <li><a href="site-components.html#responsive-tabs">Responsive Tabs</a></li>
+                            <li><a href="site-components.html#scroll-to">Scroll To</a></li>
+                            <li><a href="site-components.html#icon-toggles">Icon Toggles</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Bootstrap Components</span>
+                        <ul>
+                            <li><a href="bootstrap-components.html#dropdown">Dropdown</a></li>
+                            <li><a href="bootstrap-components.html#tabs">Tabs</a></li>
+                            <li><a href="bootstrap-components.html#tooltips">Tooltips</a></li>
+                            <li><a href="bootstrap-components.html#modal">Modal</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Others</span>
+
+                        <ul>
+                            <li><a href="others-icons.html#material-icons">Material Design Icons</a></li>
+                            <li><a href="others-colors.html#material-icons">Material Design Colors</a></li>
+                            <li><a href="others-animations.html#css-animations">CSS Animations</a></li>
+                            <li><a href="others.html#custom-alerts">Custom Alerts</a></li>
+                            <li><a href="others.html#lightbox">Lightbox</a></li>
+                            <li><a href="others.html#calendar">Calendar</a></li>
+                            <li><a href="others.html#ratings">Ratings</a></li>
+                            <li><a href="others.html#social-network">Social Network Sharing</a></li>
+                            <li><a href="others.html#text-clamping">Text Clamping</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content">
+                <div class="content__wrapper">
+                    <div class="content__title">
+                        <h2>Material Design Color Palette</h2>
+                    </div>
+
+                    <div class="card">
+                        <p>Material Design Color Palette is a LESS/CSS toolkit for easily usage material colors by Google in websites.</p>
+
+                        <p>This color palette comprises primary and accent colors that can be used for illustration or to develop your brand colors. They’ve been designed to work harmoniously with each other.</p>
+
+                        <p>For the official documentation and more examples, please visit <a target="_blank" href="http://zavoloklom.github.io/material-design-color-palette/index.html">http://zavoloklom.github.io/material-design-color-palette/index.html</a></p>
+
+                        <h4 class="card__sub">Primary colors</h4>
+                        <p>Choose material color from below listing and use class <code>.mdc-text-{color name}</code> for colored text or <code>.mdc-bg-{color name}</code> for colored background.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- Colored text --&#x3E;
+&#x3C;span class=&#x22;mdc-text-amber&#x22;&#x3E;Amber primary color&#x3C;/span&#x3E;
+
+&#x3C;!-- Colored background --&#x3E;
+&#x3C;div class=&#x22;mdc-bg-amber&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Other colors</h4>
+
+                        <p>Choose material color and value from colors page and use class <code>.mdc-text-{color name}-{color value}</code> for colored text or <code>.mdc-bg-{color name}-{color value}</code> for colored background.</p>
+
+                        <pre><code class="language-html">&#x3C;!-- Colored text --&#x3E;
+&#x3C;span class=&#x22;mdc-text-blue-800&#x22;&#x3E;Blue-800 color&#x3C;/span&#x3E;
+
+&#x3C;!-- Colored background --&#x3E;
+&#x3C;div class=&#x22;mdc-bg-blue-800&#x22;&#x3E;&#x3C;/div&#x3E;</code></pre>
+
+                        <h4 class="card__sub">Colored links</h4>
+
+                        <p>When you use MD Color Palette classes on links you get one step darker color on <code>hover</code> state.</p>
+
+                        <p><strong>Example:</strong> for class <code>mdc-text-green-400</code> or <code>mdc-bg-green-400</code> main color is <code>green-400</code> and in hover state color is <code>green-500</code></p>
+
+                        <pre><code class="language-html">&#x3C;!-- Colored link --&#x3E;
+&#x3C;a class=&#x22;mdc-text-green-400&#x22; href=&#x22;&#x22;&#x3E;Green-400 color&#x3C;/a&#x3E;
+
+&#x3C;!-- Link with colored background --&#x3E;
+&#x3C;a class=&#x22;mdc-bg-green-400&#x22; href=&#x22;&#x22;&#x3E;&#x3C;/a&#x3E;</code></pre>
+                    </div>
+
+                    <div class="card">
+                        <div class="card__title">
+                            <h2>Color Palettes</h2>
+                        </div>
+
+                        <div class="row">
+
+                            <!-- Red -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-red">
+                                        <span>Red</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#f44336</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-red-50"><span>50</span><span class="pull-right">#ffebee</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-red-100"><span>100</span><span class="pull-right">#ffcdd2</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-red-200"><span>200</span><span class="pull-right">#ef9a9a</span></li>
+                                    <li class="color-group__list mdc-bg-red-300"><span>300</span><span class="pull-right">#e57373</span></li>
+                                    <li class="color-group__list mdc-bg-red-400"><span>400</span><span class="pull-right">#ef5350</span></li>
+                                    <li class="color-group__list mdc-bg-red-500"><span>500</span><span class="pull-right">#f44336</span></li>
+                                    <li class="color-group__list mdc-bg-red-600"><span>600</span><span class="pull-right">#e53935</span></li>
+                                    <li class="color-group__list mdc-bg-red-700"><span>700</span><span class="pull-right">#d32f2f</span></li>
+                                    <li class="color-group__list mdc-bg-red-800"><span>800</span><span class="pull-right">#c62828</span></li>
+                                    <li class="color-group__list mdc-bg-red-900"><span>900</span><span class="pull-right">#b71c1c</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-red-A100"><span>A100</span><span class="pull-right">#ff8a80</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-red-A200"><span>A200</span><span class="pull-right">#ff5252</span></li>
+                                    <li class="color-group__list mdc-bg-red-A400"><span>A400</span><span class="pull-right">#ff1744</span></li>
+                                    <li class="color-group__list mdc-bg-red-A700"><span>A700</span><span class="pull-right">#d50000</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Pink -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-pink">
+                                        <span>Pink</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#e91e63</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-pink-50"><span>50</span><span class="pull-right">#fce4ec</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-pink-100"><span>100</span><span class="pull-right">#f8bbd0</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-pink-200"><span>200</span><span class="pull-right">#f48fb1</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-pink-300"><span>300</span><span class="pull-right">#f06292</span></li>
+                                    <li class="color-group__list mdc-bg-pink-400"><span>400</span><span class="pull-right">#ec407a</span></li>
+                                    <li class="color-group__list mdc-bg-pink-500"><span>500</span><span class="pull-right">#e91e63</span></li>
+                                    <li class="color-group__list mdc-bg-pink-600"><span>600</span><span class="pull-right">#d81b60</span></li>
+                                    <li class="color-group__list mdc-bg-pink-700"><span>700</span><span class="pull-right">#c2185b</span></li>
+                                    <li class="color-group__list mdc-bg-pink-800"><span>800</span><span class="pull-right">#ad1457</span></li>
+                                    <li class="color-group__list mdc-bg-pink-900"><span>900</span><span class="pull-right">#880e4f</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-pink-A100"><span>A100</span><span class="pull-right">#ff80ab</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-pink-A200"><span>A200</span><span class="pull-right">#ff4081</span></li>
+                                    <li class="color-group__list mdc-bg-pink-A400"><span>A400</span><span class="pull-right">#f50057</span></li>
+                                    <li class="color-group__list mdc-bg-pink-A700"><span>A700</span><span class="pull-right">#c51162</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Purple -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-purple">
+                                        <span>Purple</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#9c27b0</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-purple-50"><span>50</span><span class="pull-right">#f3e5f5</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-purple-100"><span>100</span><span class="pull-right">#e1bee7</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-purple-200"><span>200</span><span class="pull-right">#ce93d8</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-purple-300"><span>300</span><span class="pull-right">#ba68c8</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-purple-400"><span>400</span><span class="pull-right">#ab47bc</span></li>
+                                    <li class="color-group__list mdc-bg-purple-500"><span>500</span><span class="pull-right">#9c27b0</span></li>
+                                    <li class="color-group__list mdc-bg-purple-600"><span>600</span><span class="pull-right">#8e24aa</span></li>
+                                    <li class="color-group__list mdc-bg-purple-700"><span>700</span><span class="pull-right">#7b1fa2</span></li>
+                                    <li class="color-group__list mdc-bg-purple-800"><span>800</span><span class="pull-right">#6a1b9a</span></li>
+                                    <li class="color-group__list mdc-bg-purple-900"><span>900</span><span class="pull-right">#4a148c</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-purple-A100"><span>A100</span><span class="pull-right">#ea80fc</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-purple-A200"><span>A200</span><span class="pull-right">#e040fb</span></li>
+                                    <li class="color-group__list mdc-bg-purple-A400"><span>A400</span><span class="pull-right">#d500f9</span></li>
+                                    <li class="color-group__list mdc-bg-purple-A700"><span>A700</span><span class="pull-right">#aa00ff</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Deep Purple -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-deep-purple">
+                                        <span>Deep Purple</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#673ab7</span>
+                                    </li>
+                                    <li class="color-group__list mdc-bg-deep-purple-50 bg dark"><span>50</span><span class="pull-right">#ede7f6</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-100 bg dark"><span>100</span><span class="pull-right">#d1c4e9</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-200 bg dark"><span>200</span><span class="pull-right">#b39ddb</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-300"><span>300</span><span class="pull-right">#9575cd</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-400"><span>400</span><span class="pull-right">#7e57c2</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-500"><span>500</span><span class="pull-right">#673ab7</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-600"><span>600</span><span class="pull-right">#5e35b1</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-700"><span>700</span><span class="pull-right">#512da8</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-800"><span>800</span><span class="pull-right">#4527a0</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-900"><span>900</span><span class="pull-right">#311b92</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-A100 bg dark divide"><span>A100</span><span class="pull-right">#b388ff</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-A200 bg light-strong"><span>A200</span><span class="pull-right">#7c4dff</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-A400"><span>A400</span><span class="pull-right">#651fff</span></li>
+                                    <li class="color-group__list mdc-bg-deep-purple-A700"><span>A700</span><span class="pull-right">#6200ea</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Indigo -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-indigo">
+                                        <span>Indigo</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#3f51b5</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-indigo-50"><span>50</span><span class="pull-right">#e8eaf6</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-indigo-100"><span>100</span><span class="pull-right">#c5cae9</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-indigo-200"><span>200</span><span class="pull-right">#9fa8da</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-300"><span>300</span><span class="pull-right">#7986cb</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-400"><span>400</span><span class="pull-right">#5c6bc0</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-500"><span>500</span><span class="pull-right">#3f51b5</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-600"><span>600</span><span class="pull-right">#3949ab</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-700"><span>700</span><span class="pull-right">#303f9f</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-800"><span>800</span><span class="pull-right">#283593</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-900"><span>900</span><span class="pull-right">#1a237e</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-indigo-A100"><span>A100</span><span class="pull-right">#8c9eff</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-A200"><span>A200</span><span class="pull-right">#536dfe</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-A400"><span>A400</span><span class="pull-right">#3d5afe</span></li>
+                                    <li class="color-group__list mdc-bg-indigo-A700"><span>A700</span><span class="pull-right">#304ffe</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Blue -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-blue">
+                                        <span>Blue</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#2196f3</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-50"><span>50</span><span class="pull-right">#e3f2fd</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-100"><span>100</span><span class="pull-right">#bbdefb</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-200"><span>200</span><span class="pull-right">#90caf9</span></li>
+                                    <li class="color-group__list mdc-bg-blue-300"><span>300</span><span class="pull-right">#64b5f6</span></li>
+                                    <li class="color-group__list mdc-bg-blue-400"><span>400</span><span class="pull-right">#42a5f5</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-blue-500"><span>500</span><span class="pull-right">#2196f3</span></li>
+                                    <li class="color-group__list mdc-bg-blue-600"><span>600</span><span class="pull-right">#1e88e5</span></li>
+                                    <li class="color-group__list mdc-bg-blue-700"><span>700</span><span class="pull-right">#1976d2</span></li>
+                                    <li class="color-group__list mdc-bg-blue-800"><span>800</span><span class="pull-right">#1565c0</span></li>
+                                    <li class="color-group__list mdc-bg-blue-900"><span>900</span><span class="pull-right">#0d47a1</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-blue-A100"><span>A100</span><span class="pull-right">#82b1ff</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-blue-A200"><span>A200</span><span class="pull-right">#448aff</span></li>
+                                    <li class="color-group__list mdc-bg-blue-A400"><span>A400</span><span class="pull-right">#2979ff</span></li>
+                                    <li class="color-group__list mdc-bg-blue-A700"><span>A700</span><span class="pull-right">#2962ff</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Light blue -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-light-blue">
+                                        <span>Light Blue</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#03a9f4</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-light-blue-50"><span>50</span><span class="pull-right">#e1f5fe</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-light-blue-100"><span>100</span><span class="pull-right">#b3e5fc</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-light-blue-200"><span>200</span><span class="pull-right">#81d4fa</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-300"><span>300</span><span class="pull-right">#4fc3f7</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-400"><span>400</span><span class="pull-right">#29b6f6</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-500"><span>500</span><span class="pull-right">#03a9f4</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-light-blue-600"><span>600</span><span class="pull-right">#039be5</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-700"><span>700</span><span class="pull-right">#0288d1</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-800"><span>800</span><span class="pull-right">#0277bd</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-900"><span>900</span><span class="pull-right">#01579b</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-light-blue-A100"><span>A100</span><span class="pull-right">#80d8ff</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-A200"><span>A200</span><span class="pull-right">#40c4ff</span></li>
+                                    <li class="color-group__list mdc-bg-light-blue-A400"><span>A400</span><span class="pull-right">#00b0ff</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-light-blue-A700"><span>A700</span><span class="pull-right">#0091ea</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Cyan -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-cyan">
+                                        <span>Cyan</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#00bcd4</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-50"><span>50</span><span class="pull-right">#e0f7fa</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-100"><span>100</span><span class="pull-right">#b2ebf2</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-200"><span>200</span><span class="pull-right">#80deea</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-300"><span>300</span><span class="pull-right">#4dd0e1</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-400"><span>400</span><span class="pull-right">#26c6da</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-500"><span>500</span><span class="pull-right">#00bcd4</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-600"><span>600</span><span class="pull-right">#00acc1</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-700"><span>700</span><span class="pull-right">#0097a7</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-800"><span>800</span><span class="pull-right">#00838f</span></li>
+                                    <li class="color-group__list mdc-bg-cyan-900"><span>900</span><span class="pull-right">#006064</span></li>
+                                    <li class="color-group__list color-group__list--dark divide cgl-main mdc-bg-cyan-A100"><span>A100</span><span class="pull-right">#84ffff</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-A200"><span>A200</span><span class="pull-right">#18ffff</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-A400"><span>A400</span><span class="pull-right">#00e5ff</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-cyan-A700"><span>A700</span><span class="pull-right">#00b8d4</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Teal -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-teal">
+                                        <span>Teal</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#009688</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-50"><span>50</span><span class="pull-right">#e0f2f1</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-100"><span>100</span><span class="pull-right">#b2dfdb</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-200"><span>200</span><span class="pull-right">#80cbc4</span></li>
+                                    <li class="color-group__list mdc-bg-teal-300"><span>300</span><span class="pull-right">#4db6ac</span></li>
+                                    <li class="color-group__list mdc-bg-teal-400"><span>400</span><span class="pull-right">#26a69a</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-teal-500"><span>500</span><span class="pull-right">#009688</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-teal-600"><span>600</span><span class="pull-right">#00897b</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-teal-700"><span>700</span><span class="pull-right">#00796b</span></li>
+                                    <li class="color-group__list mdc-bg-teal-800"><span>800</span><span class="pull-right">#00695c</span></li>
+                                    <li class="color-group__list mdc-bg-teal-900"><span>900</span><span class="pull-right">#004d40</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-teal-A100"><span>A100</span><span class="pull-right">#a7ffeb</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-A200"><span>A200</span><span class="pull-right">#64ffda</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-A400"><span>A400</span><span class="pull-right">#1de9b6</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-teal-A700"><span>A700</span><span class="pull-right">#00bfa5</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Green -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-green">
+                                        <span>Green</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#4caf50</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-50"><span>50</span><span class="pull-right">#e8f5e9</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-100"><span>100</span><span class="pull-right">#c8e6c9</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-200"><span>200</span><span class="pull-right">#a5d6a7</span></li>
+                                    <li class="color-group__list mdc-bg-green-300"><span>300</span><span class="pull-right">#81c784</span></li>
+                                    <li class="color-group__list mdc-bg-green-400"><span>400</span><span class="pull-right">#66bb6a</span></li>
+                                    <li class="color-group__list mdc-bg-green-500"><span>500</span><span class="pull-right">#4caf50</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-green-600"><span>600</span><span class="pull-right">#43a047</span></li>
+                                    <li class="color-group__list mdc-bg-green-700"><span>700</span><span class="pull-right">#388e3c</span></li>
+                                    <li class="color-group__list mdc-bg-green-800"><span>800</span><span class="pull-right">#2e7d32</span></li>
+                                    <li class="color-group__list mdc-bg-green-900"><span>900</span><span class="pull-right">#1b5e20</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-green-A100"><span>A100</span><span class="pull-right">#b9f6ca</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-A200"><span>A200</span><span class="pull-right">#69f0ae</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-A400"><span>A400</span><span class="pull-right">#00e676</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-green-A700"><span>A700</span><span class="pull-right">#00c853</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Light Green-->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-light-green">
+                                        <span>Light Green</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#8bc34a</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-50"><span>50</span><span class="pull-right">#f1f8e9</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-100"><span>100</span><span class="pull-right">#dcedc8</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-200"><span>200</span><span class="pull-right">#c5e1a5</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-300"><span>300</span><span class="pull-right">#aed581</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-400"><span>400</span><span class="pull-right">#9ccc65</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-500"><span>500</span><span class="pull-right">#8bc34a</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-600"><span>600</span><span class="pull-right">#7cb342</span></li>
+                                    <li class="color-group__list light-strong cgl-main mdc-bg-light-green-700"><span>700</span><span class="pull-right">#689f38</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-800"><span>800</span><span class="pull-right">#558b2f</span></li>
+                                    <li class="color-group__list mdc-bg-light-green-900"><span>900</span><span class="pull-right">#33691e</span></li>
+                                    <li class="color-group__list color-group__list--dark divide cgl-main mdc-bg-light-green-A100"><span>A100</span><span class="pull-right">#ccff90</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-A200"><span>A200</span><span class="pull-right">#b2ff59</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-A400"><span>A400</span><span class="pull-right">#76ff03</span></li>
+                                    <li class="color-group__list color-group__list--dark cgl-main mdc-bg-light-green-A700"><span>A700</span><span class="pull-right">#64dd17</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Lime -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-lime">
+                                        <span>Lime</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#cddc39</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-50"><span>50</span><span class="pull-right">#f9fbe7</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-100"><span>100</span><span class="pull-right">#f0f4c3</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-200"><span>200</span><span class="pull-right">#e6ee9c</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-300"><span>300</span><span class="pull-right">#dce775</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-400"><span>400</span><span class="pull-right">#d4e157</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-500"><span>500</span><span class="pull-right">#cddc39</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-600"><span>600</span><span class="pull-right">#c0ca33</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-700"><span>700</span><span class="pull-right">#afb42b</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-800"><span>800</span><span class="pull-right">#9e9d24</span></li>
+                                    <li class="color-group__list mdc-bg-lime-900"><span>900</span><span class="pull-right">#827717</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-lime-A100"><span>A100</span><span class="pull-right">#f4ff81</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-A200"><span>A200</span><span class="pull-right">#eeff41</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-A400"><span>A400</span><span class="pull-right">#c6ff00</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-lime-A700"><span>A700</span><span class="pull-right">#aeea00</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Yellow -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow">
+                                        <span>Yellow</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#ffeb3b</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-50"><span>50</span><span class="pull-right">#fffde7</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-100"><span>100</span><span class="pull-right">#fff9c4</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-200"><span>200</span><span class="pull-right">#fff59d</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-300"><span>300</span><span class="pull-right">#fff176</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-400"><span>400</span><span class="pull-right">#ffee58</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-500"><span>500</span><span class="pull-right">#ffeb3b</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-600"><span>600</span><span class="pull-right">#fdd835</span></li>
+                                    <li class="color-group__list mdc-bg-yellow-700"><span>700</span><span class="pull-right">#fbc02d</span></li>
+                                    <li class="color-group__list mdc-bg-yellow-800"><span>800</span><span class="pull-right">#f9a825</span></li>
+                                    <li class="color-group__list mdc-bg-yellow-900"><span>900</span><span class="pull-right">#f57f17</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-yellow-A100"><span>A100</span><span class="pull-right">#ffff8d</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-A200"><span>A200</span><span class="pull-right">#ffff00</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-A400"><span>A400</span><span class="pull-right">#ffea00</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-yellow-A700"><span>A700</span><span class="pull-right">#ffd600</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Amber -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber">
+                                        <span>Amber</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#ffc107</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-50"><span>50</span><span class="pull-right">#fff8e1</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-100"><span>100</span><span class="pull-right">#ffecb3</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-200"><span>200</span><span class="pull-right">#ffe082</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-300"><span>300</span><span class="pull-right">#ffd54f</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-400"><span>400</span><span class="pull-right">#ffca28</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-500"><span>500</span><span class="pull-right">#ffc107</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-600"><span>600</span><span class="pull-right">#ffb300</span></li>
+                                    <li class="color-group__list mdc-bg-amber-700"><span>700</span><span class="pull-right">#ffa000</span></li>
+                                    <li class="color-group__list mdc-bg-amber-800"><span>800</span><span class="pull-right">#ff8f00</span></li>
+                                    <li class="color-group__list mdc-bg-amber-900"><span>900</span><span class="pull-right">#ff6f00</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-amber-A100"><span>A100</span><span class="pull-right">#ffe57f</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-A200"><span>A200</span><span class="pull-right">#ffd740</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-A400"><span>A400</span><span class="pull-right">#ffc400</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-amber-A700"><span>A700</span><span class="pull-right">#ffab00</span></li>
+                                </ul>
+
+                            </div>
+
+                            <!-- Orange -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-orange">
+                                        <span>Orange</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#ff9800</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-50"><span>50</span><span class="pull-right">#fff3e0</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-100"><span>100</span><span class="pull-right">#ffe0b2</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-200"><span>200</span><span class="pull-right">#ffcc80</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-300"><span>300</span><span class="pull-right">#ffb74d</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-400"><span>400</span><span class="pull-right">#ffa726</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-500"><span>500</span><span class="pull-right">#ff9800</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-600"><span>600</span><span class="pull-right">#fb8c00</span></li>
+                                    <li class="color-group__list mdc-bg-orange-700"><span>700</span><span class="pull-right">#f57c00</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-orange-800"><span>800</span><span class="pull-right">#ef6c00</span></li>
+                                    <li class="color-group__list mdc-bg-orange-900"><span>900</span><span class="pull-right">#e65100</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-orange-A100"><span>A100</span><span class="pull-right">#ffd180</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-A200"><span>A200</span><span class="pull-right">#ffab40</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-A400"><span>A400</span><span class="pull-right">#ff9100</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-orange-A700"><span>A700</span><span class="pull-right">#ff6d00</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Deep Orange -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-deep-orange">
+                                        <span>Deep Orange</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#ff5722</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-deep-orange-50"><span>50</span><span class="pull-right">#fbe9e7</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-deep-orange-100"><span>100</span><span class="pull-right">#ffccbc</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-deep-orange-200"><span>200</span><span class="pull-right">#ffab91</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-300"><span>300</span><span class="pull-right">#ff8a65</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-400"><span>400</span><span class="pull-right">#ff7043</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-500"><span>500</span><span class="pull-right">#ff5722</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-600"><span>600</span><span class="pull-right">#f4511e</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-700"><span>700</span><span class="pull-right">#e64a19</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-800"><span>800</span><span class="pull-right">#d84315</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-900"><span>900</span><span class="pull-right">#bf360c</span></li>
+                                    <li class="color-group__list color-group__list--dark divide mdc-bg-deep-orange-A100"><span>A100</span><span class="pull-right">#ff9e80</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-A200"><span>A200</span><span class="pull-right">#ff6e40</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-A400"><span>A400</span><span class="pull-right">#ff3d00</span></li>
+                                    <li class="color-group__list mdc-bg-deep-orange-A700"><span>A700</span><span class="pull-right">#dd2c00</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Brown -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-brown">
+                                        <span>Brown</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#795548</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-brown-50"><span>50</span><span class="pull-right">#efebe9</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-brown-100"><span>100</span><span class="pull-right">#d7ccc8</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-brown-200"><span>200</span><span class="pull-right">#bcaaa4</span></li>
+                                    <li class="color-group__list light-strong mdc-bg-brown-300"><span>300</span><span class="pull-right">#a1887f</span></li>
+                                    <li class="color-group__list mdc-bg-brown-400"><span>400</span><span class="pull-right">#8d6e63</span></li>
+                                    <li class="color-group__list mdc-bg-brown-500"><span>500</span><span class="pull-right">#795548</span></li>
+                                    <li class="color-group__list mdc-bg-brown-600"><span>600</span><span class="pull-right">#6d4c41</span></li>
+                                    <li class="color-group__list mdc-bg-brown-700"><span>700</span><span class="pull-right">#5d4037</span></li>
+                                    <li class="color-group__list mdc-bg-brown-800"><span>800</span><span class="pull-right">#4e342e</span></li>
+                                    <li class="color-group__list mdc-bg-brown-900"><span>900</span><span class="pull-right">#3e2723</span></li>
+                                </ul>
+                            </div>
+
+                            <!-- Grey -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-grey">
+                                        <span>Grey</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#9e9e9e</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-50"><span>50</span><span class="pull-right">#fafafa</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-100"><span>100</span><span class="pull-right">#f5f5f5</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-200"><span>200</span><span class="pull-right">#eeeeee</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-300"><span>300</span><span class="pull-right">#e0e0e0</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-400"><span>400</span><span class="pull-right">#bdbdbd</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-grey-500"><span>500</span><span class="pull-right">#9e9e9e</span></li>
+                                    <li class="color-group__list mdc-bg-grey-600"><span>600</span><span class="pull-right">#757575</span></li>
+                                    <li class="color-group__list mdc-bg-grey-700"><span>700</span><span class="pull-right">#616161</span></li>
+                                    <li class="color-group__list mdc-bg-grey-800"><span>800</span><span class="pull-right">#424242</span></li>
+                                    <li class="color-group__list mdc-bg-grey-900"><span>900</span><span class="pull-right">#212121</span></li>
+                                </ul>
+                            </div>
+
+                            <div class="clearfix"></div>
+
+                            <!-- Blue Grey -->
+                            <div class="col-md-4 col-sm-6">
+                                <ul class="color-group">
+                                    <li class="color-group__list mdc-bg-blue-grey">
+                                        <span>Blue Grey</span>
+                                        <span>500</span>
+                                        <span class="pull-right">#607d8b</span>
+                                    </li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-grey-50"><span>50</span><span class="pull-right">#eceff1</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-grey-100"><span>100</span><span class="pull-right">#cfd8dc</span></li>
+                                    <li class="color-group__list color-group__list--dark mdc-bg-blue-grey-200"><span>200</span><span class="pull-right">#b0bec5</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-300"><span>300</span><span class="pull-right">#90a4ae</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-400"><span>400</span><span class="pull-right">#78909c</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-500"><span>500</span><span class="pull-right">#607d8b</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-600"><span>600</span><span class="pull-right">#546e7a</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-700"><span>700</span><span class="pull-right">#455a64</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-800"><span>800</span><span class="pull-right">#37474f</span></li>
+                                    <li class="color-group__list mdc-bg-blue-grey-900"><span>900</span><span class="pull-right">#263238</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/prism.js"></script>
+        <script src="js/lightgallery.min.js"></script>
+        <script src="js/functions.js"></script>
+    </body>
+</html>
