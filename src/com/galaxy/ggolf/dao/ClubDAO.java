@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.ClubRowMapper;
 import com.galaxy.ggolf.domain.Club;
+import com.galaxy.ggolf.tools.FileUtil;
 import com.galaxy.ggolf.tools.ListUtil;
 
 public class ClubDAO extends GenericDAO<Club> {
@@ -59,12 +60,15 @@ public class ClubDAO extends GenericDAO<Club> {
 	public boolean create(Club club){
 		Collection<String> photos = club.getClubPhoto();
 		String photo = "";
+		if(club.getLogo()!=null){
+//			club.setLogo(FileUtil.GetImageUrl(base64Img, fileName, filePath));
+		}
 		if(photos != null){
 			for(String str : photos){
 				photo = photo + ";" + str;
 			}
 			if(photo.indexOf(";")!=-1){
-				photo.substring(1,photo.length());
+				photo = photo.substring(1,photo.length());
 			}
 		}
 		String sql = "insert into club (ClubID,"
@@ -72,6 +76,7 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "ClubPhoneNumber,"
 				+ "ClubAddress,"
 				+ "ClubPhoto,"
+				+ "Logo,"
 				+ "ClubType,"
 				+ "Province,"
 				+ "City,"
@@ -82,9 +87,9 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "TotalHole,"
 				+ "Longitude,"
 				+ "Latitude,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,club.getClubID(),club.getClubName(),club.getClubPhoneNumber(),
-							club.getClubAddress(),photo,club.getClubType(),club.getProvince(),club.getCity(),
+							club.getClubAddress(),photo,club.getLogo(),club.getClubType(),club.getProvince(),club.getCity(),
 							club.getArea(),club.getPrice(),club.getDiscountPrice(),club.getTotalStemNum(),
 							club.getTotalHole(),club.getLongitude(),club.getLatitude(),Time());
 	}
@@ -101,6 +106,7 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "ClubAddress=?,"
 				+ "ClubType=?,"
 				+ "ClubPhoto=?,"
+				+ "Logo=?,"
 				+ "Province=?,"
 				+ "City=?,"
 				+ "Area=?,"
@@ -113,7 +119,7 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "Updated_TS=? "
 				+ "where ClubID=?";
 		return super.executeUpdate(sql, club.getClubName(),club.getClubPhoneNumber(),
-				club.getClubAddress(),club.getClubType(),photo,club.getProvince(),
+				club.getClubAddress(),club.getClubType(),photo,club.getLogo(),club.getProvince(),
 				club.getCity(),club.getArea(),club.getPrice(),club.getDiscountPrice(),
 				club.getTotalStemNum(),club.getTotalHole(),club.getLongitude(),
 				club.getLatitude(),Time(),club.getClubID());

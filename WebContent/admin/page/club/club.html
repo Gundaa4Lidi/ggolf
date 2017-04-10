@@ -51,6 +51,40 @@
             <h1>无练习场资料</h1>
         </div>
     </section>
+    <!-- update-to-head modal -->
+    <div class="modal fade" id="cut_image" data-backdrop="static"
+         data-keyboard="false" style="font-family: '黑体'; font: #000;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="top-nav__back" ng-click="openModal(false)"></a>
+                    <h4 class="modal-title">剪切图片</h4>
+                </div>
+                <div class="modal-body">
+                    <div>Select an image file: <button ngf-select ngf-change="logoSelect($files)">添加图片</button></div>
+                    <div class="row">
+                        <div class="col col-md-7">
+                            <div class="cropArea">
+                                <img-crop image="logoImage" result-image="logoCroppedImage"
+                                          area-type="square"  area-details="cropDetails"></img-crop>
+                            </div>
+                        </div>
+                        <div class="col col-md-5">
+                            <div class="cropArea_Croped ">
+                                <img ng-src="{{logoCroppedImage}}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 0 30px 10px;">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" ng-click="logoSave(logoCroppedImage)">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal -->
+
     <!-- New note modal -->
     <div class="modal fade note-view" id="new-club" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg" style="width: 600px;">
@@ -62,8 +96,8 @@
                     </div>
                     <div class="card__body" >
                         <div class="col-md-12 text-center">
-                            <a href="" tooltips tooltip-side="top" tooltip-template="球场Logo">
-                                <img src="../img/plus.png" err-src="../img/user_empty.png" class="img-circle" width="80px" height="80px" alt="">
+                            <a href="" ng-click="openModal(true)" tooltips tooltip-side="top" tooltip-template="球场Logo">
+                                <img ng-src="{{currentClub.Logo}}" err-src="../img/user_empty.png" class="img-circle border_3_s_c" width="80px" height="80px" alt="">
                             </a>
                         </div>
                         <!--<div class="col-md-2">-->

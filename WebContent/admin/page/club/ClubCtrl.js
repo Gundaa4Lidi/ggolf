@@ -1,4 +1,4 @@
-var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
+var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout){
 	var sc = $scope;
 	var ClubPageCtrl = sc.$parent;
     sc.rows = 20;
@@ -30,6 +30,16 @@ var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
 		sc.getClubList();
 	}
 
+	sc.openModal = function(flag){
+	    if(flag){
+            $("#new-club").modal("hide");
+            $("#cut_image").modal("show");
+        }else{
+	        $("#cut_image").modal("hide");
+	        $("#new-club").modal("show");
+        }
+    }
+
 	sc.submitForm = function(isValid){
 		if(isValid){
 			if(sc.p){
@@ -41,18 +51,27 @@ var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
 			if(sc.a){
                 sc.currentClub.Area = sc.a;
 			}
-			sc.currentClub.ClubType = '球场';
-			var url = appConfig.url + 'Club/saveClub';
-			var method = 'POST';
-			var data = sc.currentClub;
-			var promise = sc.httpDataUrl(url,method,data);
-			promise.then(function (data) {
-				sc.processResult(data);
-				$('#new-club').modal("hide");
-                sc.getClubList();
-            }),function(data){
-				sc.Load_Failed(data);
-			}
+			if(sc.d){
+			    sc.currentClub.ClubAddress = sc.d;
+            }
+            if(!sc.p || !sc.c || !sc.d){
+			    swal("请确认地址是否填写正确!","","warning");
+            }else{
+                sc.currentClub.ClubType = '球场';
+                var url = appConfig.url + 'Club/saveClub';
+                var method = 'POST';
+                var data = sc.currentClub;
+                var promise = sc.httpDataUrl(url,method,data);
+                promise.then(function (data) {
+                    sc.processResult(data);
+                    $('#new-club').modal("hide");
+                    sc.getClubList();
+                }),function(data){
+                    sc.Load_Failed(data);
+                }
+            }
+
+
 		}
 	}
 
@@ -100,11 +119,42 @@ var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
         }
     };
 
+    sc.logoImage = '';
+    sc.logoCroppedImage = '';
+
+    sc.logoSave = function(e){
+        sc.currentClub.Logo = e;
+        sc.openModal(false);
+    }
+
+    sc.logoSelect = function (files) {
+        if(files && files.length){
+            for(var i = 0; i < files.length; i++){
+                var file = files[i];
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    console.log("1")
+                    sc.$apply(function (sc) {
+                        sc.logoImage = evt.target.result;
+                        console.log("类型："+typeof sc.logoImage,"值:"+sc.logoImage)
+                    })
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    };
+
     sc.addClub = function () {
         sc.currentClub = new Object();
         sc.currentClub.ClubPhoto = [];
         sc.address();
-        $('#new-club').modal('show');
+        sc.openModal(false);
+    }
+
+    sc.openItem = function(e){
+        sc.currentClub = e;
+        sc.address(e);
+        $('#new-club').modal("show");
     }
 
     sc.removeClub = function(e){
@@ -144,11 +194,7 @@ var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
     sc.deleteImg = function(index){
         sc.currentClub.ClubPhoto.splice(index,1);
     }
-    sc.openItem = function(e){
-        sc.currentClub = e;
-        sc.address(e);
-        $('#new-club').modal("show");
-    }
+
 
     sc.address = function(e){
         if(!e){
@@ -170,7 +216,6 @@ var ClubController = function($scope,$http,appConfig,$window,Upload,$timeout){
                 sc.d = e.ClubAddress;
             }
         }
-
         return sc.d;
     }
 

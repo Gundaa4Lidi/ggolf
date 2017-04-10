@@ -9,6 +9,7 @@ public class Club {
     private String ClubAddress;  //球场地址
     private String ClubType; //球场类别
     private Collection<String> ClubPhoto; //球场图片
+    private String Logo; //球场Logo
     private String Province;  //省份
     private String City;  //城市
     private String Area;  //地区
@@ -22,7 +23,7 @@ public class Club {
     
     
 	public Club(String clubID, String clubName, String clubPhoneNumber, String clubAddress,String clubType,
-			Collection<String> clubPhoto, String province, String city, String area, String price, String discountPrice,
+			Collection<String> clubPhoto,String logo, String province, String city, String area, String price, String discountPrice,
 			String totalStemNum, String totalHole, String longitude, String latitude, String created_TS) {
 		super();
 		ClubID = clubID;
@@ -31,6 +32,7 @@ public class Club {
 		ClubAddress = clubAddress;
 		ClubType = clubType;
 		ClubPhoto = clubPhoto;
+		Logo = logo;
 		Province = province;
 		City = city;
 		Area = area;
@@ -78,6 +80,12 @@ public class Club {
 	}
 	public void setClubPhoto(Collection<String> clubPhoto) {
 		ClubPhoto = clubPhoto;
+	}
+	public String getLogo() {
+		return Logo;
+	}
+	public void setLogo(String logo) {
+		Logo = logo;
 	}
 	public String getProvince() {
 		return Province;

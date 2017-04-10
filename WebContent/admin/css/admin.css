@@ -624,3 +624,7 @@ li.mdc-bg-deep-orange:focus {
         height: 200px;
     }
 }
+
+.border_3_s_c {
+    border: 3px solid #a9a9a9;
+}

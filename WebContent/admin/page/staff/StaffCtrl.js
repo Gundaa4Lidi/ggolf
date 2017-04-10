@@ -112,7 +112,7 @@ var StaffController = function($http, $scope, $rootScope, $window, $timeout,Uplo
         var file = evt.currentTarget.files[0];
         var reader = new FileReader();
         reader.onload = function (evt) {
-        	sc.$apply(function ($scope) {
+        	sc.$apply(function (sc) {
         		sc.staffImage = evt.target.result;
         		console.log("类型："+typeof sc.staffImage,"值:"+sc.staffImage)
             });
