@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.galaxy.ggolf.domain.Club;
+import com.galaxy.ggolf.tools.ListUtil;
 
 public class ClubRowMapper implements RowMapper<Club> {
 	public static final String COLUMN_ClubID = "ClubID";
@@ -22,6 +23,8 @@ public class ClubRowMapper implements RowMapper<Club> {
 	public static final String COLUMN_DiscountPrice = "DiscountPrice";
 	public static final String COLUMN_TotalStemNum = "TotalStemNum";
 	public static final String COLUMN_TotalHole = "TotalHole";
+	public static final String COLUMN_IsHot = "IsHot";
+	public static final String COLUMN_IsTop = "IsTop";
 	public static final String COLUMN_Longitude = "Longitude";
 	public static final String COLUMN_Latitude = "Latitude";
 	public static final String COLUMN_Created_TS = "Created_TS";
@@ -36,19 +39,9 @@ public class ClubRowMapper implements RowMapper<Club> {
 	    String ClubType = res.getString(COLUMN_ClubType);
 	    String ClubPhoto = res.getString(COLUMN_ClubPhoto);
 	    Collection<String> clubPhotos = new ArrayList<String>(); 
-	    if(ClubPhoto != null)
-			if(ClubPhoto.indexOf(";")!=-1){
-				String[] string = ClubPhoto.split(";");
-				for(String photoString : string){
-					if(!photoString.equals("")){
-						clubPhotos.add(photoString);
-					}
-				}
-			}else{
-				if(ClubPhoto.equals("")){
-					clubPhotos.add(ClubPhoto);
-				}
-			}
+	    if(ClubPhoto != null){
+	    	clubPhotos = new ListUtil().StringToList(ClubPhoto);
+	    }
 	    String Logo = res.getString(COLUMN_Logo);
 	    String Province = res.getString(COLUMN_Province);
 	    String City = res.getString(COLUMN_City);
@@ -57,10 +50,12 @@ public class ClubRowMapper implements RowMapper<Club> {
 	    String DiscountPrice = res.getString(COLUMN_DiscountPrice);
 	    String TotalStemNum = res.getString(COLUMN_TotalStemNum);
 	    String TotalHole = res.getString(COLUMN_TotalHole);
+	    String IsHot = res.getString(COLUMN_IsHot);
+	    String IsTop = res.getString(COLUMN_IsTop);
 	    String Longitude = res.getString(COLUMN_Longitude);
 	    String Latitude = res.getString(COLUMN_Latitude);
 	    String Created_TS = res.getString(COLUMN_Created_TS);
-        return new Club(ClubID,ClubName,ClubPhoneNumber,ClubAddress,ClubType,clubPhotos,Logo,Province,City,Area,Price,DiscountPrice,TotalStemNum,TotalHole,Longitude,Latitude,Created_TS);
+        return new Club(ClubID,ClubName,ClubPhoneNumber,ClubAddress,ClubType,clubPhotos,Logo,Province,City,Area,Price,DiscountPrice,TotalStemNum,TotalHole,IsHot,IsTop,Longitude,Latitude,Created_TS);
 	}
 
 }

@@ -70,9 +70,9 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
                     sc.Load_Failed(data);
                 }
             }
-
-
-		}
+		}else{
+		    swal("表单验证失败","","warning");
+        }
 	}
 
 	sc.getClubList = function(){
@@ -136,7 +136,7 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
                     console.log("1")
                     sc.$apply(function (sc) {
                         sc.logoImage = evt.target.result;
-                        console.log("类型："+typeof sc.logoImage,"值:"+sc.logoImage)
+                        // console.log("类型："+typeof sc.logoImage,"值:"+sc.logoImage)
                     })
                 }
                 reader.readAsDataURL(file);

@@ -17,15 +17,18 @@ public class Club {
     private String DiscountPrice; //优惠价
     private String TotalStemNum; //总杆数
     private String TotalHole; //总洞数
+    private String IsHot; //是否热门
+    private String IsTop; //是否置顶轮播图
     private String Longitude;  //经度
     private String Latitude;  //纬度
     private String Created_TS; //创建时间
     
     
-	public Club(String clubID, String clubName, String clubPhoneNumber, String clubAddress,String clubType,
-			Collection<String> clubPhoto,String logo, String province, String city, String area, String price, String discountPrice,
-			String totalStemNum, String totalHole, String longitude, String latitude, String created_TS) {
-		super();
+	
+	public Club(String clubID, String clubName, String clubPhoneNumber, String clubAddress, String clubType,
+			Collection<String> clubPhoto, String logo, String province, String city, String area, String price,
+			String discountPrice, String totalStemNum, String totalHole, String isHot, String isTop, String longitude,
+			String latitude, String created_TS) {
 		ClubID = clubID;
 		ClubName = clubName;
 		ClubPhoneNumber = clubPhoneNumber;
@@ -40,6 +43,8 @@ public class Club {
 		DiscountPrice = discountPrice;
 		TotalStemNum = totalStemNum;
 		TotalHole = totalHole;
+		IsHot = isHot;
+		IsTop = isTop;
 		Longitude = longitude;
 		Latitude = latitude;
 		Created_TS = created_TS;
@@ -131,6 +136,18 @@ public class Club {
 	}
 	public String getLongitude() {
 		return Longitude;
+	}
+	public String getIsHot() {
+		return IsHot;
+	}
+	public void setIsHot(String isHot) {
+		IsHot = isHot;
+	}
+	public String getIsTop() {
+		return IsTop;
+	}
+	public void setIsTop(String isTop) {
+		IsTop = isTop;
 	}
 	public void setLongitude(String longitude) {
 		Longitude = longitude;

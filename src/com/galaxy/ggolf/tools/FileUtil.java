@@ -135,6 +135,7 @@ public class FileUtil {
 			image = ImageIO.read(bis);
 			bis.close();
 			File outputfile = new File(filePath+fileName);
+			deleteFile(outputfile);
 			ImageIO.write(image, "png", outputfile);
 			result = true;
 //			String url = CommonConfig.CONNECT+CommonConfig.FILE_DOWNLOAD+fileName;

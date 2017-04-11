@@ -44,7 +44,7 @@ var selectAddress = function($http, $q, $compile,cities) {
                         event.stopPropagation();
                         return false;
                     });
-                    // angular.element(window).on('click', (function(_this) {
+                    // $('body').on('click', (function(_this) {
                     //     return function() {
                     //         return _this.hide();
                     //     };

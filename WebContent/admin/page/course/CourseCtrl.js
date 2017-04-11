@@ -1,4 +1,4 @@
-var CourseController = function($scope,$http,appConfig,Upload,$timeout){
+var CourseController = function($scope,$http,appConfig,$window,$q,Upload,$timeout){
     var sc = $scope;
     var CoursePageCtrl = sc.$parent;
     sc.rows = 20;
@@ -14,16 +14,10 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
     sc.pause = true;
     sc.active = 0;
 
-    /**
-     * 点击加载球场
-     */
     sc.loading = function(){
         sc.rows += 20;
-        sc.getCourseList();
+        sc.getClubList();
     }
-    /**
-     * 监听当前球场数量
-     */
     sc.$watch('Rows',function(e){
         if(e < sc.TotalClub){
             sc.loadMore = true;
@@ -32,19 +26,20 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
         }
     })
 
-    sc.$watch('d',function(e){
-        console.log(e)
-    })
-    /**
-     * 加载球场
-     */
     sc.load=function(){
-        sc.getCourseList();
+        sc.getClubList();
     }
-    /**
-     * 提交球场表单
-     * @param isValid
-     */
+
+    sc.openModal = function(flag){
+        if(flag){
+            $("#new-club").modal("hide");
+            $("#cut_image").modal("show");
+        }else{
+            $("#cut_image").modal("hide");
+            $("#new-club").modal("show");
+        }
+    }
+
     sc.submitForm = function(isValid){
         if(isValid){
             if(sc.p){
@@ -59,25 +54,28 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
             if(sc.d){
                 sc.currentClub.ClubAddress = sc.d;
             }
-            sc.currentClub.ClubType = '练习场';
-            var url = appConfig.url + 'Club/saveClub';
-            var method = 'POST';
-            var data = sc.currentClub;
-            console.log(data);
-            var promise = sc.httpDataUrl(url,method,data);
-            promise.then(function (data) {
-                sc.processResult(data);
-                $('#new-club').modal("hide");
-                sc.getCourseList();
-            }),function(data){
-                sc.Load_Failed(data);
+            if(!sc.p || !sc.c || !sc.d){
+                swal("请确认地址是否填写正确!","","warning");
+            }else{
+                sc.currentClub.ClubType = '练习场';
+                var url = appConfig.url + 'Club/saveClub';
+                var method = 'POST';
+                var data = sc.currentClub;
+                var promise = sc.httpDataUrl(url,method,data);
+                promise.then(function (data) {
+                    sc.processResult(data);
+                    $('#new-club').modal("hide");
+                    sc.getClubList();
+                }),function(data){
+                    sc.Load_Failed(data);
+                }
             }
+        }else{
+            swal("表单验证失败","","warning");
         }
     }
-    /**
-     * 获取球场列表
-     */
-    sc.getCourseList = function(){
+
+    sc.getClubList = function(){
         var url = appConfig.url + 'Club/getClubByKeyword';
         var method = 'GET';
         var params = {
@@ -95,7 +93,8 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
         }
     }
 
-    sc.checkCourse = function(obj){
+
+    sc.checkClub = function(obj){
         CoursePageCtrl.changeCourseData(obj);
         CoursePageCtrl.changeCoursePage(2);
     }
@@ -120,11 +119,42 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
         }
     };
 
+    sc.logoImage = '';
+    sc.logoCroppedImage = '';
+
+    sc.logoSave = function(e){
+        sc.currentClub.Logo = e;
+        sc.openModal(false);
+    }
+
+    sc.logoSelect = function (files) {
+        if(files && files.length){
+            for(var i = 0; i < files.length; i++){
+                var file = files[i];
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    console.log("1")
+                    sc.$apply(function (sc) {
+                        sc.logoImage = evt.target.result;
+                        // console.log("类型："+typeof sc.logoImage,"值:"+sc.logoImage)
+                    })
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+    };
+
     sc.addClub = function () {
         sc.currentClub = new Object();
         sc.currentClub.ClubPhoto = [];
         sc.address();
-        $('#new-club').modal('show');
+        sc.openModal(false);
+    }
+
+    sc.openItem = function(e){
+        sc.currentClub = e;
+        sc.address(e);
+        $('#new-club').modal("show");
     }
 
     sc.removeClub = function(e){
@@ -164,11 +194,7 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
     sc.deleteImg = function(index){
         sc.currentClub.ClubPhoto.splice(index,1);
     }
-    sc.openItem = function(e){
-        sc.currentClub = e;
-        sc.address(e);
-        $('#new-club').modal("show");
-    }
+
 
     sc.address = function(e){
         if(!e){
@@ -190,12 +216,7 @@ var CourseController = function($scope,$http,appConfig,Upload,$timeout){
                 sc.d = e.ClubAddress;
             }
         }
-
         return sc.d;
     }
-
-
-
-
 
 }

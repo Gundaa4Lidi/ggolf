@@ -1,9 +1,11 @@
 package com.galaxy.ggolf.dao;
 
+import java.io.File;
 import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.ClubRowMapper;
 import com.galaxy.ggolf.domain.Club;
+import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.tools.FileUtil;
 import com.galaxy.ggolf.tools.ListUtil;
 
@@ -45,11 +47,23 @@ public class ClubDAO extends GenericDAO<Club> {
 		return super.getId(s);
 	}
 	
+	/**
+	 * 搜索球场的数量
+	 * @param sqlString
+	 * @return
+	 */
 	public int getSearchCount(String sqlString){
 		String sql = "select count(*) from club where DeletedFlag is null "+sqlString+"";
 		return super.count(sql);
 	}
 	
+	/**
+	 * 根据关键字搜索球场
+	 * @param sqlString
+	 * @param rows
+	 * @param pageNum
+	 * @return
+	 */
 	public Collection<Club> getSearchClub(String sqlString, String rows, String pageNum){
 		String sql = "select * from club where DeletedFlag is null "+sqlString+""
 				+ "order by Created_TS desc limit "
@@ -57,13 +71,24 @@ public class ClubDAO extends GenericDAO<Club> {
 		return super.executeQuery(sql);
 	}
 	
+	/**
+	 * 创建球场
+	 * @param club
+	 * @return
+	 */
 	public boolean create(Club club){
 		Collection<String> photos = club.getClubPhoto();
 		String photo = "";
 		if(club.getLogo()!=null){
-//			club.setLogo(FileUtil.GetImageUrl(base64Img, fileName, filePath));
+			String filePath = CommonConfig.CLUB_PATH + "logo\\" ;
+			String fileName = club.getClubID()+".png";
+			boolean result = FileUtil.GetImageUrl(club.getLogo(), fileName, filePath);
+			if(result){
+				String url = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "club_logo_" + fileName;
+				club.setLogo(url);
+			}
 		}
-		if(photos != null){
+		if(photos != null && photos.size() > 0){
 			for(String str : photos){
 				photo = photo + ";" + str;
 			}
@@ -85,18 +110,33 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "DiscountPrice,"
 				+ "TotalStemNum,"
 				+ "TotalHole,"
+				+ "IsHot,"
+				+ "IsTop,"
 				+ "Longitude,"
 				+ "Latitude,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,club.getClubID(),club.getClubName(),club.getClubPhoneNumber(),
 							club.getClubAddress(),photo,club.getLogo(),club.getClubType(),club.getProvince(),club.getCity(),
 							club.getArea(),club.getPrice(),club.getDiscountPrice(),club.getTotalStemNum(),
-							club.getTotalHole(),club.getLongitude(),club.getLatitude(),Time());
+							club.getTotalHole(),club.getIsHot(),club.getIsTop(),club.getLongitude(),club.getLatitude(),Time());
 	}
-	
+	/**
+	 * 修改球场
+	 * @param club
+	 * @return
+	 */
 	public boolean updateClub(Club club){
 		Collection<String> photos = club.getClubPhoto();
 		String photo = "";
+		if(club.getLogo()!=null){
+			String filePath = CommonConfig.CLUB_PATH + "logo\\" ;
+			String fileName = club.getClubID()+".png";
+			boolean result = FileUtil.GetImageUrl(club.getLogo(), fileName, filePath);
+			if(result){
+				String url = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "club_logo_" + fileName;
+				club.setLogo(url);
+			}
+		}
 		if(photos != null && photos.size()>0){
 			photo = new ListUtil().ListToString(photos);
 			logger.debug("photos----{}",photo);
@@ -114,6 +154,8 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "DiscountPrice=?,"
 				+ "TotalStemNum=?,"
 				+ "TotalHole=?,"
+				+ "IsHot=?,"
+				+ "IsTop=?,"
 				+ "Longitude=?,"
 				+ "Latitude=?,"
 				+ "Updated_TS=? "
@@ -121,7 +163,7 @@ public class ClubDAO extends GenericDAO<Club> {
 		return super.executeUpdate(sql, club.getClubName(),club.getClubPhoneNumber(),
 				club.getClubAddress(),club.getClubType(),photo,club.getLogo(),club.getProvince(),
 				club.getCity(),club.getArea(),club.getPrice(),club.getDiscountPrice(),
-				club.getTotalStemNum(),club.getTotalHole(),club.getLongitude(),
+				club.getTotalStemNum(),club.getTotalHole(),club.getIsHot(),club.getIsTop(),club.getLongitude(),
 				club.getLatitude(),Time(),club.getClubID());
 	}
 	
@@ -135,8 +177,29 @@ public class ClubDAO extends GenericDAO<Club> {
 		}
 	}
 	
+	/**
+	 * 获取热门球场
+	 * @return
+	 */
+	public Collection<Club> getHotClub(){
+		String sql = "select * from club where DeletedFlag is null and IsHot='1' order by Created_TS";
+		return super.executeQuery(sql);
+	}
 	
+	/**
+	 * 获取参与轮播图的球场
+	 * @return
+	 */
+	public Collection<Club> getTopClub(){
+		String sql = "select * from club where DeletedFlag is null and IsTop='1' order by Created_TS";
+		return super.executeQuery(sql);
+	}
 	
+	/**
+	 * 删除球场
+	 * @param clubID
+	 * @return
+	 */
 	public boolean deleteClub(String clubID){
 		String sql = "update club set DeletedFlag='Y',updated_TS='"+Time()+"' where ClubID='"+ clubID +"'";
 		return super.executeUpdate(sql);

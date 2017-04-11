@@ -21,7 +21,7 @@
                     <div class="listings-grid__item">
                         <a href="" ng-click="openItem(item)">
                             <div class="listings-grid__main">
-                                <img ng-src="{{item.ClubPhoto}}" err-src='../img/club/1.jpg' alt="" height="160px">
+                                <img ng-src="{{item.ClubPhoto[0]}}" err-src='../img/club/1.jpg' alt="" height="160px">
                                 <div class="listings-grid__price">${{item.Price}}</div>
                             </div>
 
@@ -30,8 +30,8 @@
                             </div>
 
                             <ul class="listings-grid__attrs">
-                                <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}} 洞</li>
-                                <li><i class="glyphicon glyphicon-flag icon-size"></i> {{item.TotalStemNum}}杆</li>
+                                <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}}洞</li>
+                                <li><i class="glyphicon glyphicon-flag icon-size"></i>{{item.TotalStemNum}}杆</li>
                                 <li><i class="zmdi zmdi-directions-walk big-icon-size"></i> 2393 码</li>
                             </ul>
                         </a>
@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="main__container" align="center" ng-show="TotalClub<=0">
-            <h1>无练习场资料</h1>
+            <h1>无球场资料</h1>
         </div>
     </section>
     <!-- update-to-head modal -->
@@ -133,43 +133,78 @@
                             </div>
 
                             <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine }">
-                                    <label>总杆数<span style="color: red">*</span></label>
-                                    <input type="text" name="TotalStemNum" ng-model="currentClub.TotalStemNum" class="form-control" required>
-                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">必填项</p>
+                                <div class="form-group" ng-class="{ 'has-error' :
+                                    clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine ||
+                                    clubForm.TotalStemNum.$error.pattern || clubForm.TotalStemNum.$error.maxlength}">                                    <label>总杆数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalStemNum" ng-maxlength="3" ng-model="currentClub.TotalStemNum"
+                                           class="form-control" required ng-pattern="/^[1-9]\d*$/">
+                                    <p ng-show="(clubForm.TotalStemNum.$error.maxlength && !clubForm.TotalStemNum.$error.pattern) ||
+                                    (clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine && !clubForm.TotalStemNum.$error.pattern)"
+                                       class="help-block">{{clubForm.TotalHole.$error.maxlength?'超出长度':'必填项'}}</p>
+                                    <p ng-show="clubForm.TotalStemNum.$error.pattern " class="help-block">输入正确的数值</p>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' :
+                                    clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine ||
+                                    clubForm.TotalHole.$error.pattern || clubForm.TotalHole.$error.maxlength}">
                                     <label>总洞数<span style="color: red">*</span></label>
-                                    <input type="text" name="TotalHole" ng-model="currentClub.TotalHole" class="form-control" required>
-                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">必填项</p>
+                                    <input type="text" ng-maxlength="3" name="TotalHole" ng-model="currentClub.TotalHole"
+                                           class="form-control" required ng-pattern="/^[1-9]\d*$/">
+                                    <p ng-show="(clubForm.TotalHole.$error.maxlength && !clubForm.TotalHole.$error.pattern) ||
+                                    (clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine && !clubForm.TotalHole.$error.pattern)"
+                                       class="help-block">{{clubForm.TotalHole.$error.maxlength?'超出长度':'必填项'}}</p>
+                                    <p ng-show="clubForm.TotalHole.$error.pattern " class="help-block">输入正确的数值</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine }">
                                     <label>联系电话<span style="color: red">*</span></label>
-                                    <input type="text" name="ClubPhoneNumber" ng-model="currentClub.ClubPhoneNumber" class="form-control" required>
+                                    <input type="text" name="ClubPhoneNumber" ng-model="currentClub.ClubPhoneNumber"
+                                           class="form-control" required ng-pattern="">
                                     <p ng-show="clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine || clubForm.Price.$error.pattern }">
                                     <label>价格<span style="color: red">*</span></label>
-                                    <input type="text" name="Price" ng-model="currentClub.Price" class="form-control" required>
-                                    <p ng-show="clubForm.Price.$invalid && !clubForm.Price.$pristine" class="help-block">必填项</p>
+                                    <input type="text" name="Price" ng-model="currentClub.Price"
+                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9]{1,2})?)|(0\.\d*[1-9]{1,2})$/">
+                                    <p ng-show="clubForm.Price.$error.pattern || (clubForm.Price.$invalid && !clubForm.Price.$pristine)"
+                                       class="help-block">{{clubForm.Price.$error.pattern?'输入正确的数值':'必填项'}}</p>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && !clubForm.DiscountPrice.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && clubForm.DiscountPrice.$error.pattern}">
                                     <label>优惠价</label>
-                                    <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice" class="form-control">
+                                    <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice"
+                                           class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9]{1,2})?)|(0\.\d*[1-9]{1,2})$/">
+                                    <p ng-show="clubForm.DiscountPrice.$error.pattern" class="help-block">输入正确的数值</p>
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>热门球场</label>
+                                    <input type="checkbox" class="form-control" [ng-true-value="1"] [ng-false-value="0"] ng-model="currentClub.IsHot">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>置顶轮播图</label>
+                                    <input type="checkbox" class="form-control" [ng-true-value="1"] [ng-false-value="0"] ng-model="currentClub.IsTop">
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="row">-->
+                            <!--<div class="col-md-12 text-center">-->
+                                <!--<p style="color: #c2c2c2">(<span style="color: red">*</span>为必填项)</p>-->
+                            <!--</div>-->
+                        <!--</div>-->
                     </div>
                     <div class="modal-footer modal-footer--bordered">
                         <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>

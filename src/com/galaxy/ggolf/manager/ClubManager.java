@@ -43,7 +43,7 @@ public class ClubManager {
 		return clubDAO.getSearchClub(keyword, rows, pageNum);
 	}
 	
-	public int getSearchCount(String keyword){
+	public int getSearchCount(String keyword)throws Exception{
 		return clubDAO.getSearchCount(keyword);
 	}
 	
@@ -58,17 +58,14 @@ public class ClubManager {
 		if(!clubDAO.create(club)){
 			throw new GalaxyLabException("Error in create club");
 		}
-		Club club1 = clubDAO.getClubByClubID(club.getClubID());
-		if(club!=null){
-			clubCache.put(club1.getClubID(), club1);
-		}
+		putClub(club.getClubID());
 	}
 	
 	private void updateClub(Club club)throws GalaxyLabException{
 		if(!clubDAO.updateClub(club)){
 			throw new GalaxyLabException("Error in update club");
 		}
-		clubCache.put(club.getClubID(), club);
+		putClub(club.getClubID());
 	}
 	
 	public Club getClub(String clubID){
@@ -85,10 +82,24 @@ public class ClubManager {
 		}
 	}
 	
+	public void putClub(String clubID){
+		Club club = clubDAO.getClubByClubID(clubID);
+		if(club != null){
+			this.clubCache.put(club.getClubID(),club);
+		}
+	}
+	
 	public void deleteClub(String clubID){
 		if(clubDAO.deleteClub(clubID)){
 			clubCache.remove(clubID);
 		}
 	}
-
+	
+	public Collection<Club> getHotClub()throws Exception{
+		return clubDAO.getHotClub();
+	}
+	
+	public Collection<Club> getTopClub()throws Exception{
+		return clubDAO.getTopClub();
+	}
 }
