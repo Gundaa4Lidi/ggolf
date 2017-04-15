@@ -49,7 +49,7 @@ public class UserDAO extends GenericDAO<User> {
 		if(pageNum!=null){
 			pages = Integer.parseInt(pageNum);
 		}
-		if(size!=null || !size.equals("")){
+		if(size!=null && !size.equals("")){
 			limit ="limit " +((pages - 1) * Integer.parseInt(size)) + "," + Integer.parseInt(size);
 		}
 		String sql = "select * from user where DeletedFlag is null "+sqlString+" order by created_ts desc "+limit+" ";
@@ -232,6 +232,17 @@ public class UserDAO extends GenericDAO<User> {
 		return userList;
 	}
 	
+	/**
+	 * 随机获取未关注过的用户
+	 * @param UserID
+	 * @return
+	 */
+	public Collection<User> getRandomUser(String UserID){
+		String sql = "SELECT * FROM `user` where UserID!='"+UserID+"'"
+				+ " and UserID NOT IN (select FenID from follow where DeletedFlag is null AND UserID='"+UserID+"')"
+				+ " ORDER BY RAND() LIMIT 20";
+		return GetUserList(super.executeQuery(sql));
+	}
 //	//根据关系获取好友列表
 //	public Collection<User> getFollow(String UserID,String Relation,String Relation1){ 
 //		String sql = "select * from user,follow where DeletedFlag is null and UserID in"

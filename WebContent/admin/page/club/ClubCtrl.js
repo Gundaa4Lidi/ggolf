@@ -147,12 +147,15 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
     sc.addClub = function () {
         sc.currentClub = new Object();
         sc.currentClub.ClubPhoto = [];
+        sc.currentClub.IsHot = '0';
+        sc.currentClub.IsTop = '0';
         sc.address();
         sc.openModal(false);
     }
 
     sc.openItem = function(e){
         sc.currentClub = e;
+        console.log("IsHot:"+e.IsHot,"IsTop:"+e.IsTop);
         sc.address(e);
         $('#new-club').modal("show");
     }
@@ -196,27 +199,27 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
     }
 
 
-    sc.address = function(e){
-        if(!e){
-            sc.p = null;
-            sc.c = null;
-            sc.a = null;
-            sc.d = null;
-        }else{
-            if(e.Province){
-                sc.p = e.Province;
-            }
-            if(e.City){
-                sc.c = e.City;
-            }
-            if(e.Area){
-                sc.a = e.Area;
-            }
-            if(e.ClubAddress){
-                sc.d = e.ClubAddress;
-            }
-        }
-        return sc.d;
-    }
+    // sc.address = function(e){
+    //     if(!e){
+    //         sc.p = null;
+    //         sc.c = null;
+    //         sc.a = null;
+    //         sc.d = null;
+    //     }else{
+    //         if(e.Province){
+    //             sc.p = e.Province;
+    //         }
+    //         if(e.City){
+    //             sc.c = e.City;
+    //         }
+    //         if(e.Area){
+    //             sc.a = e.Area;
+    //         }
+    //         if(e.ClubAddress){
+    //             sc.d = e.ClubAddress;
+    //         }
+    //     }
+    //     return sc.d;
+    // }
 
 }

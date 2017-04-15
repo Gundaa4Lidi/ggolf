@@ -2,12 +2,13 @@
     <section id="main__content">
         <div class="action-header-alt">
             <div class="col col-md-3">
-                <a href="" class="top-nav__back reBack" style="top:10px;" ng-click="back()" title="返回"></a>
+                <!--<a href="" class="top-nav__back reBack" style="top:10px;" ng-click="back()" title="返回"></a>-->
+                <a href="" class="top_back_btn" ng-click="back()" title="返回"><i class="zmdi zmdi-long-arrow-left"></i></a>
             </div>
 
             <div class="col col-md-2 pull-right">
-                <button type="submit" class="btn btn-primary" style="float: right;" ng-show="edit">保存</button>
-                <button type="submit" class="btn btn" style="float: right;" ng-click="edit=!edit">{{edit?'取消':'编辑'}}</button>
+                <button type="submit" class="btn btn-primary" style="float: right;" ng-show="edit" ng-disabled="clubForm.$invalid" ng-click="submitDetailForm(clubForm.$valid)">保存</button>
+                <button type="button" class="btn btn" style="float: right;" ng-click="edit=!edit">{{edit?'取消':'编辑'}}</button>
             </div>
         </div>
 
@@ -17,7 +18,8 @@
                 <h1 style="font-family: '黑体'">球场明细</h1>
             </header>
             <div class="card">
-                <form class="card new-contact" style="margin-bottom: 0px;">
+                <form class="card new-contac ng-pristine ng-valid" style="margin-bottom: 0px;"
+                     name="clubForm" novalidate>
                     <!-- <div class="new-contact__img">
                         <img ng-src="{{currentStaff.Head}}" alt="" onerror="this.src='../img/user_empty.png'">
                         <i class="new-contact__upload zmdi zmdi-camera" ngf-select ngf-change="upload($files)"></i>
@@ -28,30 +30,15 @@
                         <div class="tab-content">
 
                             <!-- 球场图片 -->
-                            <div class="tab-pane fade in active light-gallery" lightgallery  id="detail-media-images">
-                                <!-- <a href="{{photo.fullres}}" ng-repeat="photo in photos">
-                                    <img ng-src="{{photo.fullres}}" onerror="this.src='../img/demo/listing/16.jpg'" alt="">
-                                </a> -->
-                                <a href="http://upload-images.jianshu.io/upload_images/117091-9ec954a80edd3e7d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-                                    <img src="http://upload-images.jianshu.io/upload_images/117091-9ec954a80edd3e7d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="">
-                                </a>
-                                <a href="../img/demo/listing/1.jpg">
-                                    <img src="../img/demo/listing/thumbs/1.jpg" alt="">
-                                </a>
-                                <a href="../img/demo/listing/2.jpg">
-                                    <img src="../img/demo/listing/thumbs/2.jpg" alt="">
-                                </a>
-                                <a href="../img/demo/listing/3.jpg">
-                                    <img src="../img/demo/listing/thumbs/3.jpg" alt="">
-                                </a>
-                                <a href="../img/demo/listing/4.jpg">
-                                    <img src="../img/demo/listing/thumbs/4.jpg" alt="">
+                            <div class="tab-pane fade in active light-gallery" id="detail-media-images">
+                                <a href="{{photo}}" lightgallery ng-repeat="photo in currentClub.PhotoList">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="550px">
                                 </a>
                             </div>
 
                             <!-- 球场地图 -->
-                            <div class="tab-pane fade light-gallery" id="detail-media-floorplan">
-                                <a href="../img/examples/rsz_boonegolfclub_map.jpg">
+                            <div class="tab-pane fade light-gallery" lightgallery id="detail-media-floorplan">
+                                <a href="../img/examples/rsz_boonegolfclub_map.jpg" >
                                     <img src="../img/examples/rsz_boonegolfclub_map.jpg" alt="球场地图">
                                 </a>
                             </div>
@@ -74,110 +61,177 @@
 
                     <div class="card__body">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">球场名称</label> <input type="text" ng-disabled="!edit"
-                                                                                  ng-model="currentClub.ClubName" class="form-control">
+                                    <label class="club_label">球场名称<span style="color: red">*</span></label>
+                                    <input type="text" name="ClubName" ng-disabled="!edit" ng-model="currentClub.ClubName" class="form-control" required>
+                                    <p ng-show="clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.Mode.$invalid && !clubForm.Mode.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">球场模式</label>
-                                    <input type="text" ng-model="currentClub.Mode" ng-disabled="!edit" class="form-control">
+                                    <label class="club_label">球场模式<span style="color: red">*</span></label>
+                                    <input type="text" name="Mode" ng-model="currentClub.Mode" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.Mode.$invalid && !clubForm.Mode.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2" ng-class="{ 'has-error' : clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">球场数据</label>
-                                    <div class="row">
-                                        <div class="col col-sm-6">
-                                            <input type="text" ng-model="currentClub.TotalHole" ng-disabled="!edit" class="form-control" placeholder="球洞数" title="球洞数" maxlength="3">
-                                        </div>
-                                        <div class="col col-sm-6">
-                                            <input type="text"  ng-model="currentClub.TotalStemNum" ng-disabled="!edit" class="form-control" placeholder="总杆数" title="总杆数" maxlength="3">
-                                        </div>
-                                    </div>
+                                    <label class="club_label">球洞数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalHole" ng-model="currentClub.TotalHole" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-sm-2" ng-class="{ 'has-error' : clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">建立时间</label>
-                                    <input type="date" ng-model="currentClub.CreateTime" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">联系电话</label>
-                                    <input type="text" ng-model="currentClub.PhoneNum" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">设计师</label>
-                                    <input type="text" ng-model="currentClub.Stylist" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">球场面积</label>
-                                    <input type="text" ng-model="currentClub.Area" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">球场长度</label>
-                                    <input type="text" ng-model="currentClub.Length" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">果岭草种</label>
-                                    <input type="text" ng-model="currentClub.PuttingSeed" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="club_label">球道草种</label>
-                                    <input type="text" ng-model="currentClub.FairwaySeed" ng-disabled="!edit" class="form-control">
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label class="club_label">球场地址</label>
-                                    <input type="text" ng-model="currentClub.Address" ng-disabled="!edit" class="form-control">
+                                    <label class="club_label">总杆数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalStemNum" ng-model="currentClub.TotalStemNum" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="row facility_list">
-                            <div class="form-group">
-                                <div class="col-sm-10">
-                                    <label class="club_label">球场设施</label>
-                                    <ul class="detail-amenities__list">
-                                        <li class="mdc-bg-light-blue-500">会所</li>
-                                        <li class="mdc-bg-light-blue-500">厕所</li>
-                                        <li class="mdc-bg-light-blue-500">派出所</li>
-                                        <li style="padding: 0" title="增删设施" ng-show="edit" href="#addFac" data-toggle="modal">
-                                            <div class="facility_add">
-                                                <a class="mdc-bg-indigo-100"><i class="fa fa-plus fa-2x"></i></a>
-                                            </div>
-                                        </li>
-                                    </ul>
-
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <label>建立时间<span style="color: red">*</span></label>
+                                <div class="input-group" ng-class="{ 'has-error' : clubForm.CreateTime.$invalid && !clubForm.CreateTime.$pristine }">
+                                    <!--<input type="date" name="CreateTime" ng-model="currentClub.CreateTime" ng-disabled="!edit" class="form-control" required>-->
+                                    <input type="text" name="CreateTime" readonly class="form-control" uib-datepicker-popup="{{format}}" ng-model="currentClub.CreateTime" ng-disabled="!edit"
+                                           is-open="status.dateOpen" datepicker-options="dateOptions" close-text="关闭" ng-required="true"/>
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-disabled="!edit" ng-click="IsOpen()">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </button>
+                                    </span>
+                                    <!--<p ng-show="clubForm.CreateTime.$invalid && !clubForm.CreateTime.$pristine" class="help-block">必填项</p>-->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.PhoneNum.$invalid && !clubForm.PhoneNum.$pristine }">
+                                    <label class="club_label">联系电话<span style="color: red">*</span></label>
+                                    <input type="text" name="PhoneNum" ng-model="currentClub.PhoneNum" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.PhoneNum.$invalid && !clubForm.PhoneNum.$pristine" class="help-block">必填项</p>
                                 </div>
                             </div>
 
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Stylist.$invalid && !clubForm.Stylist.$pristine }">
+                                    <label class="club_label">设计师<span style="color: red">*</span></label>
+                                    <input type="text" name="Stylist" ng-model="currentClub.Stylist" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.Stylist.$invalid && !clubForm.Stylist.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Square.$invalid && !clubForm.Square.$pristine }">
+                                    <label class="club_label">球场面积<span style="color: red">*</span></label>
+                                    <input type="text" name="Square" ng-model="currentClub.Square" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.Square.$invalid && !clubForm.Square.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Length.$invalid && !clubForm.Length.$pristine }">
+                                    <label class="club_label">球场长度<span style="color: red">*</span></label>
+                                    <input type="text" name="Length" ng-model="currentClub.Length" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.Length.$invalid && !clubForm.Length.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.PuttingSeed.$invalid && !clubForm.PuttingSeed.$pristine }">
+                                    <label class="club_label">果岭草种<span style="color: red">*</span></label>
+                                    <input type="text" name="PuttingSeed" ng-model="currentClub.PuttingSeed" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.PuttingSeed.$invalid && !clubForm.PuttingSeed.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.FairwaySeed.$invalid && !clubForm.FairwaySeed.$pristine }">
+                                <div class="form-group">
+                                    <label class="club_label">球道草种<span style="color: red">*</span></label>
+                                    <input type="text" name="FairwaySeed" ng-model="currentClub.FairwaySeed" ng-disabled="!edit" class="form-control" required>
+                                    <p ng-show="clubForm.FairwaySeed.$invalid && !clubForm.FairwaySeed.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine }">
+                                    <label class="club_label">详细地址<span style="color: red">*</span></label>
+                                    <input select-address p="p" c="c" a="a" d="d" ng-disabled="!edit" name="ClubAddress"
+                                           ng-model="currentClub.Address" placeholder="请选择所在地" type="text" class="form-control" required>
+                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label class="club_label">球场设施</label>
+                                    <textarea rows="3" cols="1"  ng-model="currentClub.Facility" class="form-control" ng-disabled="!edit" style="font-size: 16px;"></textarea>
+                                </div>
+                            </div>
                         </div>
                         <div class="row ">
                             <div class="col-sm-8">
                                 <div class="form-group">
                                     <label class="club_label">球场简介</label>
-                                    <textarea rows="8" cols="1"  ng-model="currentClub.Intro" class="form-control" ng-disabled="!edit" style="font-size: 16px;"></textarea>
+                                    <textarea rows="3" cols="1"  ng-model="currentClub.Intro" class="form-control" ng-disabled="!edit" style="font-size: 16px;"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </form>
+            </div>
+            <div class="card">
+                <div class="card__header">
+                    <h1>
+                        <span class="black">供应商</span>
+                    </h1>
+                </div>
+                <div class="card__body">
+                    <div class="row">
+                        <div class="col col-md-2">
+                            <div class="form-group">
+                                <a href="" class="a_btn" ng-click="addServe()">+ 添加供应商</a>
+                            </div>
+                        </div>
+                        <div class="col col-md-2">
+                            <div class="form-group">
+                                <input type="text" ng-change="getClubServe()" placeholder="搜索供应商" ng-model="serveKeyword" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-md-12">
+                            <uib-accordion close-others="oneAtATime">
+                                <div uib-accordion-group class="panel-default" ng-repeat="uib in clubServes">
+                                    <uib-accordion-heading>
+                                        {{uib.Name}}
+                                        <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+                                    </uib-accordion-heading>
+                                    <a href="" class="p-0 a_btn pull-right" ng-click="editServe(uib)">修改</a>
+                                    <uib-tabset active="activeJustified" justified="true">
+                                        <uib-tab index="$index" ng-repeat="weekday in weekdays  track by $index" heading="{{weekday}}">
+                                            <div class="row">
+                                                <div class="col col-sm-12">
+                                                    <a href="" class="a_btn" ng-repeat="time in dateTimes">{{time}}</a>
+                                                </div>
+                                            </div>
+                                        </uib-tab>
+                                        <!--<uib-tab index="0" heading="Justified">Justified content</uib-tab>-->
+                                        <!--<uib-tab index="1" heading="SJ">Short Labeled Justified content</uib-tab>-->
+                                        <!--<uib-tab index="2" heading="Long Justified">Long Labeled Justified content</uib-tab>-->
+                                    </uib-tabset>
+                                </div>
+                            </uib-accordion>
+                        </div>
+                        <div class="col col-md-12 text-center">
+                            <ul uib-pagination boundary-links="true" total-items="totalItems" max-size="pageConfig.maxSize"
+                                ng-model="pageConfig.currentPage" ng-show="totalItems>5"
+                                class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="card">
 
@@ -197,34 +251,46 @@
         </div>
     </section>
 
-    <div class="modal fade" id="addFac" data-backdrop="static"
+    <div class="modal fade" id="addClubServe" data-backdrop="static"
          data-keyboard="false" style="font-family: '黑体'; color: #000;">
         <div class="modal-dialog" style="width:400px;">
             <div class="modal-content">
                 <div class="modal-header">
-                    <!-- <a href="" class="mdc-text-indigo-A100 pull-right" style="font-size:15px;fon" data-dismiss="modal"
-                    aria-hidden="true">&times;</a> -->
-                    <h4 class="modal-title">增删设施</h4>
+                    <h4 class="modal-title">增改供应商</h4>
                 </div>
-                <div class="modal-body">
-                    <form class="new-contact">
-                        <div class="form-group">
-                            <label>新增设施</label>
-                            <input type="text" class="form-control" ng-model="facility">
+                <form class="new-contact ng-pristine ng-valid" name="serveForm" ng-submit="submitServeForm(serveForm.$valid)" novalidate>
+                    <div class="modal-body">
+                        <div class="form-group" ng-class="{ 'has-error' : serveForm.Name.$invalid && !serveForm.Name.$pristine }">
+                            <label>供应商名称</label>
+                            <input type="text" name="Name" class="form-control" ng-model="clubServe.Name" required>
+                            <p ng-show="serveForm.Name.$invalid && !serveForm.Name.$pristine" class="help-block">必填项</p>
                         </div>
-                        <div class="form-group">
-                            <small>双击删除设施</small>
-                            <ul class="detail-amenities__list">
-                                <li class="mdc-bg-light-blue-500" ng-repeat="fac in Facs"><a href="" ng-dblclick="removeFac(fac)">{{fac}}</a></li>
-                            </ul>
+                        <div class="form-group" ng-class="{ 'has-error' : serveForm.MaxDay.$invalid && !serveForm.MaxDay.$pristine }">
+                            <label>日数上限</label>
+                            <input type="text" name="MaxDay" class="form-control" ng-model="clubServe.MaxDay" required>
+                            <p ng-show="serveForm.MaxDay.$invalid && !serveForm.MaxDay.$pristine" class="help-block">必填项</p>
                         </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer" style="padding: 0 30px 10px;">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-primary" ng-click="changepwd()">保存</button>
-                </div>
+                        <div class="form-group" ng-class="{ 'has-error' : serveForm.ServiceExplain.$invalid && !serveForm.ServiceExplain.$pristine }">
+                            <label>服务包含</label>
+                            <textarea type="text" rows="1" cols="1" name="ServiceExplain" class="form-control" placeholder="例如:18洞果岭/僮/车/柜" ng-model="clubServe.ServiceExplain" required></textarea>
+                            <p ng-show="serveForm.ServiceExplain.$invalid && !serveForm.ServiceExplain.$pristine" class="help-block">必填项</p>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : serveForm.ReserveExplain.$invalid && !serveForm.ReserveExplain.$pristine }">
+                            <label>预订说明</label>
+                            <textarea type="text" rows="3" cols="1" name="ReserveExplain" placeholder="例如:提前一天预订，无单车差..." class="form-control" ng-model="clubServe.ReserveExplain" required></textarea>
+                            <p ng-show="serveForm.ReserveExplain.$invalid && !serveForm.ReserveExplain.$pristine" class="help-block">必填项</p>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : serveForm.CancelExplain.$invalid && !serveForm.CancelExplain.$pristine }">
+                            <label>取消订单说明</label>
+                            <textarea type="text" rows="3" cols="1" name="CancelExplain" placeholder="例如:提前一天取消或变更" class="form-control" ng-model="clubServe.CancelExplain" required></textarea>
+                            <p ng-show="serveForm.CancelExplain.$invalid && !serveForm.CancelExplain.$pristine" class="help-block">必填项</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="padding: 0 30px 10px;">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="serveForm.$invalid">保存</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

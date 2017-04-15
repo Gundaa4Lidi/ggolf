@@ -596,9 +596,12 @@ li.mdc-bg-deep-orange:focus {
     color: #828282;
 }
 
-.a_btn:hover{
+.a_btn:hover,
+.a_btn:focus{
     color: #828282;
 }
+
+
 
 .reBack{
     top: 10px;
@@ -629,3 +632,25 @@ li.mdc-bg-deep-orange:focus {
     border: 3px solid #a9a9a9;
 }
 
+.listings-grid__attrs>li {
+    display: inline-block;
+    vertical-align: top;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: #828282;
+    margin-right: 5px;
+}
+
+.top_back_btn i{
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 24px;
+    color: black;
+}
+
+.top_back_btn i:hover,
+.top_back_btn i:focus{
+    color: #4f4f4f;
+}

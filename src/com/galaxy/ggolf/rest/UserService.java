@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +45,7 @@ import com.galaxy.ggolf.domain.UserDetail;
 import com.galaxy.ggolf.dto.FollowCount;
 import com.galaxy.ggolf.dto.TokenResponse;
 import com.galaxy.ggolf.dto.UserData;
+import com.galaxy.ggolf.dto.UserRanData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.FollowManager;
 import com.galaxy.ggolf.manager.OnlineManager;
@@ -53,6 +55,7 @@ import com.galaxy.ggolf.manager.UserDetailManager;
 import com.galaxy.ggolf.manager.UserManager;
 import com.galaxy.ggolf.tools.CipherUtil;
 import com.galaxy.ggolf.tools.FileUtil;
+import com.galaxy.ggolf.tools.ListUtil;
 import com.galaxy.ggolf.tools.LocationUtil;
 import com.galaxy.ggolf.tools.SDKTestSendTemplateSMS;
 import com.spatial4j.core.shape.Rectangle;
@@ -950,6 +953,33 @@ public class UserService extends BaseService {
 		return getErrorResponse();
 		
 	}
+	
+	/**
+	 * 随机获取未添加关注的用户
+	 * @param UserID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/findFriend")
+	public String findFriend(@FormParam("UserID") String UserID,
+			@Context HttpHeaders headers){
+		try {
+			Collection<User> users = this.manager.getRandomUser(UserID);
+			Collection<UserDetail> userDetails = new ArrayList<UserDetail>(); 
+			for(User user : users){
+				UserDetail ud = this.userDetailManager.getUserDetailByUserID(user.getUserID());
+				if(ud!=null){
+					userDetails.add(ud);				
+				}
+			}
+			return getResponse(userDetails);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	 
 
 }
 

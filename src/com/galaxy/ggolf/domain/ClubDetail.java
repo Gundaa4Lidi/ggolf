@@ -12,7 +12,7 @@ public class ClubDetail {
 	private String PhoneNum;  //电话号码
 	private String CreateTime;  //球场创建时间
 	private String Stylist;  //设计师
-	private String Area;  //球场面积
+	private String Square;  //球场面积
 	private String Length;  //球场长度
 	private String PuttingSeed;  //果岭草种
 	private String FairwaySeed;  //球道草种
@@ -21,12 +21,12 @@ public class ClubDetail {
 	private String Updated_TS;  //修改时间
 	private Collection<String> PhotoList;  //球场图片
 	private Collection<String> MapImg;  //地图图片
-	private Collection<String> Facility; //球场设施
+	private String Facility; //球场设施
 	
 	public ClubDetail(String uID, String clubID, String clubName, String mode, String totalHole, String totalStemNum,
-			String phoneNum, String createTime, String stylist, String area, String length, String puttingSeed,
+			String phoneNum, String createTime, String stylist, String square, String length, String puttingSeed,
 			String fairwaySeed, String address, String intro, String updated_TS, Collection<String> photoList,
-			Collection<String> mapImg, Collection<String> facility) {
+			Collection<String> mapImg, String facility) {
 		super();
 		UID = uID;
 		ClubID = clubID;
@@ -37,7 +37,7 @@ public class ClubDetail {
 		PhoneNum = phoneNum;
 		CreateTime = createTime;
 		Stylist = stylist;
-		Area = area;
+		Square = square;
 		Length = length;
 		PuttingSeed = puttingSeed;
 		FairwaySeed = fairwaySeed;
@@ -121,12 +121,12 @@ public class ClubDetail {
 		Stylist = stylist;
 	}
 
-	public String getArea() {
-		return Area;
+	public String getSquare() {
+		return Square;
 	}
 
-	public void setArea(String area) {
-		Area = area;
+	public void setSquare(String square) {
+		Square = square;
 	}
 
 	public String getLength() {
@@ -193,11 +193,11 @@ public class ClubDetail {
 		MapImg = mapImg;
 	}
 
-	public Collection<String> getFacility() {
+	public String getFacility() {
 		return Facility;
 	}
 
-	public void setFacility(Collection<String> facility) {
+	public void setFacility(String facility) {
 		Facility = facility;
 	}
 	

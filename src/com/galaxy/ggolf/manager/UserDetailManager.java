@@ -167,27 +167,27 @@ public class UserDetailManager {
 	 */
 	public void updateUserDetail(UserDetail user)throws Exception{
 		String sqlString = "";
-		if(user.getHeadPhoto()!=null&&!user.getHeadPhoto().equals("null")){
+		if(user.getHeadPhoto()!=null&&!user.getHeadPhoto().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "HeadPhoto='"+user.getHeadPhoto()+"',";
 		}
-		if(user.getUserName()!=null&&!user.getUserName().equals("null")){
+		if(user.getUserName()!=null&&!user.getUserName().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "UserName='"+user.getUserName()+"',";
 		}
-		if(user.getSex()!=null&&!user.getSex().equals("null")){
+		if(user.getSex()!=null&&!user.getSex().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "Sex='"+user.getSex()+"',";
 		}
-		if(user.getBirthday()!=null&&!user.getBirthday().equals("null")){
+		if(user.getBirthday()!=null&&!user.getBirthday().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "Birthday='"+user.getBirthday()+"',";
 		}
-		if(user.getAge()!=null&&!user.getAge().equals("null")){
+		if(user.getAge()!=null&&!user.getAge().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "Age='"+user.getAge()+"',";
 		}
-		if(user.getScore()!=null&&!user.getScore().equals("null")){
+		if(user.getScore()!=null&&!user.getScore().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "Score='"+user.getScore()+"',";
 		}
@@ -196,15 +196,15 @@ public class UserDetailManager {
 			String photoList = new ListUtil().ListToString(user.getPhotoList());
 			sqlString = sqlString + "PhotoList='"+photoList+"',";
 		}
-		if(user.getCity()!=null&&!user.getCity().equals("null")){
+		if(user.getCity()!=null&&!user.getCity().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "City='"+user.getCity()+"',";
 		}
-		if(user.getSignature()!=null&&!user.getSignature().equals("null")){
+		if(user.getSignature()!=null&&!user.getSignature().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "Signature='"+user.getSignature()+"',";
 		}
-		if(user.getCustomTag()!=null&&!user.getCustomTag().equals("null")){
+		if(user.getCustomTag()!=null&&!user.getCustomTag().equalsIgnoreCase("null")){
 			
 			sqlString = sqlString + "CustomTag='"+user.getCustomTag()+"',";
 		}

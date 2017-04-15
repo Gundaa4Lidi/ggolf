@@ -5,9 +5,9 @@ var lightgallery = function(){
             if(scope.$last){
                 ele.parent().lightGallery();
             }
-            if($(ele)[0]){
-                $(ele).lightGallery();
-            }
+            // if($(ele)[0]){
+            //     $(ele).lightGallery();
+            // }
         }
     }
 }

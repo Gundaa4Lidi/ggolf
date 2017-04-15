@@ -14,11 +14,16 @@ import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.galaxy.ggolf.dao.ClubServeDAO;
+import com.galaxy.ggolf.dao.PriceForTimeDAO;
 import com.galaxy.ggolf.domain.Club;
 import com.galaxy.ggolf.domain.ClubDetail;
 import com.galaxy.ggolf.domain.ClubFairway;
+import com.galaxy.ggolf.domain.ClubServe;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.PriceForTime;
 import com.galaxy.ggolf.dto.ClubData;
+import com.galaxy.ggolf.dto.ClubServeData;
 import com.galaxy.ggolf.manager.ClubDetailManager;
 import com.galaxy.ggolf.manager.ClubManager;
 import com.galaxy.ggolf.manager.CommentManager;
@@ -31,15 +36,19 @@ public class ClubService extends BaseService {
 	private ClubManager manager;
 	private ClubDetailManager clubDetailManager; 
 	private CommentManager commentManager;
-	
+	private ClubServeDAO clubServeDAO;
+	private PriceForTimeDAO priceForTimeDAO;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public ClubService(ClubManager manager, ClubDetailManager clubDetailManager,
-			CommentManager commentManager) {
+			CommentManager commentManager,ClubServeDAO clubServeDAO,
+			PriceForTimeDAO priceForTimeDAO) {
 		this.manager = manager;
 		this.clubDetailManager = clubDetailManager;
 		this.commentManager = commentManager;
+		this.clubServeDAO = clubServeDAO;
+		this.priceForTimeDAO = priceForTimeDAO;
 	}
 	
 	@POST
@@ -152,7 +161,9 @@ public class ClubService extends BaseService {
 	public String getClubDetailByClubID(@FormParam("ClubID") String clubID, @Context HttpHeaders headers){
 		try {
 			ClubDetail result = this.clubDetailManager.getClubDetailByClubID(clubID);
-			return getResponse(result);
+			if(result!=null){
+				return getResponse(result);
+			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -211,6 +222,150 @@ public class ClubService extends BaseService {
 			logger.error("Error occured",e);
 		}
 		return getErrormessage("删除失败");
+	}
+	
+	/**
+	 * 保存球场供应商
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/saveClubServe")
+	public String saveClubServe(String data,@Context HttpHeaders headers){
+		try {
+			ClubServe cs = super.fromGson(data, ClubServe.class);
+			if(cs.getClubserveID()!=null){
+				if(!this.clubServeDAO.update(cs)){
+					throw new GalaxyLabException("Error in update ClubServe");
+				}
+			} else {
+				if(!this.clubServeDAO.create(cs)){
+					throw new GalaxyLabException("Error in create ClubServe");
+				}
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 删除供应商
+	 * @param ClubserveID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/removeClubServe")
+	public String removeClubServe(@FormParam("ClubserveID") String ClubserveID,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.clubServeDAO.delete(ClubserveID)){
+				throw new GalaxyLabException("Error in delete ClubServe");
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	/**
+	 * 获取对应球场的供应商(分页)
+	 * @param keyword
+	 * @param pageNum
+	 * @param rows
+	 * @param ClubID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getClubServeByClubID")
+	public String getClubServeByClubID(@FormParam("keyword") String keyword,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@FormParam("ClubID") String ClubID,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "";
+			if(keyword!=null&&!keyword.equalsIgnoreCase("null")&&!keyword.equals("")){
+				sqlString = "and (Name like '%"
+						+ keyword
+						+ "%' or CancelExplain like '%"
+						+ keyword 
+						+ "%' or ReserveExplain like '%"
+						+ keyword 
+						+ "%' or ServiceExplain like '%"
+						+ keyword 
+						+ "%' or MaxDay like '%"
+						+ keyword
+						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+						+ keyword +"%') ";
+			}
+			Collection<ClubServe> clubServes = this.clubServeDAO.getClubServeByClubID(sqlString, pageNum, rows, ClubID);
+			int count = this.clubServeDAO.getCountByClubID(sqlString, pageNum, rows, ClubID);
+			ClubServeData csd = new ClubServeData(count, clubServes); 
+			return getResponse(csd);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 保存每日每个时段的价格
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/savePriceForClubServe")
+	public String savePriceForClubServe(String data,@Context HttpHeaders headers){
+		try {
+			PriceForTime pft = super.fromGson(data, PriceForTime.class);
+			if(pft.getClubservePriceID()!=null){
+				if(!this.priceForTimeDAO.update(pft)){
+					throw new GalaxyLabException("Error in update pricefortime");
+				}
+			}else{
+				if(!this.priceForTimeDAO.create(pft)){
+					throw new GalaxyLabException("Error in create pricefortime");
+				}
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据供应商编号获取当前时段的价格 或
+	 * 获取对应当天所有时段价格
+	 * @param Week
+	 * @param Time
+	 * @param ClubserveID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getPricesByClubserveID")
+	public String getPricesByClubserveID(@FormParam("Week") String Week,
+			@FormParam("Time") String Time,
+			@FormParam("ClubserveID") String ClubserveID,
+			@Context HttpHeaders headers){
+		try {
+			if(Time!=null){
+				PriceForTime pft = this.priceForTimeDAO.getPriceByClubServeID(Week, Time, ClubserveID);
+				return getResponse(pft);
+			}else{
+				Collection<PriceForTime> priceForTimes = this.priceForTimeDAO.getPricesByClubserveID(Week, ClubserveID);
+				return getResponse(priceForTimes);
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
 	}
 
 }

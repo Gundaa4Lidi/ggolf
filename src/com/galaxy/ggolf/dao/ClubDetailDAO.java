@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.ClubDetailRowMapper;
 import com.galaxy.ggolf.domain.ClubDetail;
+import com.galaxy.ggolf.domain.UserDetail;
 import com.galaxy.ggolf.tools.ListUtil;
 
 public class ClubDetailDAO extends GenericDAO<ClubDetail> {
@@ -14,29 +15,30 @@ public class ClubDetailDAO extends GenericDAO<ClubDetail> {
 	
 	
 	public boolean create(ClubDetail c){
-		String photoList = new ListUtil().ListToString(c.getPhotoList());
-		String mapImg = new ListUtil().ListToString(c.getMapImg());
-		String facility = new ListUtil().ListToString(c.getFacility());
-		String sql = "insert into clubdetail(ClubID,ClubName,Mode,TotalHole,"
-				+ "TotalStemNum,PhoneNum,CreateTime,Stylist,Area,Length,PuttingSeed,"
-				+ "FairwaySeed,Address,Intro,Updated_TS,PhotoList,MapImg,Facility)"
-				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		return super.sqlUpdate(sql, c.getClubID(),c.getClubName(),c.getMode(),c.getTotalHole(),c.getTotalStemNum(),
-						c.getPhoneNum(),c.getCreateTime(),c.getStylist(),c.getArea(),c.getLength(),c.getPuttingSeed(),
-						c.getFairwaySeed(),c.getAddress(),c.getIntro(),Time(),photoList,mapImg,facility);
+		String photoList = "";
+		if(c.getPhotoList()!=null&&c.getPhotoList().size() > 0){
+			photoList = new ListUtil().ListToString(c.getPhotoList());
+		}
+		String sql = "insert into clubdetail(ClubID,"
+				+ "ClubName,"
+				+ "TotalHole,"
+				+ "TotalStemNum,"
+				+ "PhoneNum,"
+				+ "Address,"
+				+ "PhotoList)values(?,?,?,?,?,?,?)";
+		return super.executeUpdate(sql, c.getClubID(),c.getClubName(),c.getTotalHole(),
+				c.getTotalStemNum(),c.getPhoneNum(),c.getAddress(),photoList);
 	}
 	
-	public boolean update(ClubDetail c){
-		String photoList = new ListUtil().ListToString(c.getPhotoList());
-		String mapImg = new ListUtil().ListToString(c.getMapImg());
-		String facility = new ListUtil().ListToString(c.getFacility());
-		String sql = "update clubdetail set ClubName=?,Mode=?,TotalHole=?,TotalStemNum=?,PhoneNum=?,"
-				+ "CreateTime=?,Stylist=?,Area=?,Length=?,PuttingSeed=?,FairwaySeed=?,Address=?,Intro=?,"
-				+ "Updated_TS=?,PhotoList=?,MapImg=?,Facility=? where ClubID=? and DeletedFlag is null";
-		return super.sqlUpdate(sql, c.getClubName(),c.getMode(),c.getTotalHole(),c.getTotalStemNum(),
-						c.getPhoneNum(),c.getCreateTime(),c.getStylist(),c.getArea(),c.getLength(),
-						c.getPuttingSeed(),c.getFairwaySeed(),c.getAddress(),c.getIntro(),Time(),
-						photoList,mapImg,facility);
+	/**
+	 * 修改部分详细
+	 * @param user
+	 * @param sqlString
+	 * @return
+	 */
+	public boolean updateClubDetail(ClubDetail c, String sqlString){
+		String sql = "update clubdetail set "+sqlString+" Updated_TS = '"+Time()+"' where ClubID = '"+c.getClubID()+"'";
+		return super.executeUpdate(sql);
 	}
 	
 	public Collection<ClubDetail> getDetailByClubID(String clubID){
@@ -46,12 +48,11 @@ public class ClubDetailDAO extends GenericDAO<ClubDetail> {
 	
 	public ClubDetail getClubDetailByClubID(String clubID){
 		String sql = "select * from clubdetail where ClubID='"+clubID+"' and DeletedFlag is null ";
-		Collection<ClubDetail> club = super.executeQuery(sql);
-		if(club.size() > 0){
-			return (ClubDetail) club.toArray()[0];
-		}else{
-			return null;
+		Collection<ClubDetail> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return (ClubDetail) result.toArray()[0];
 		}
+		return null;
 	}
 	
 	public boolean detele(String clubID){

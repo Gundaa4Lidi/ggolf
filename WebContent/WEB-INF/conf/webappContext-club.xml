@@ -7,6 +7,8 @@
 	    <constructor-arg ref="clubManager"/>
 	    <constructor-arg ref="clubDetailManager"/>
 	    <constructor-arg ref="commentManager"/>
+	    <constructor-arg ref="clubServeDAO"/>
+	    <constructor-arg ref="priceForTimeDAO"/>
 	</bean>
 	<bean id="clubManager" class="com.galaxy.ggolf.manager.ClubManager">
 	    <constructor-arg ref="clubDAO"/>
@@ -26,5 +28,9 @@
 	    <constructor-arg ref="commentDAO"/>
 	</bean>
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+	<bean id="clubServeDAO" class="com.galaxy.ggolf.dao.ClubServeDAO">
+	</bean>
+	<bean id="priceForTimeDAO" class="com.galaxy.ggolf.dao.PriceForTimeDAO">
 	</bean>
 </beans>

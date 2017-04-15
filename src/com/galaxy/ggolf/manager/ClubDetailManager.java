@@ -14,6 +14,7 @@ import com.galaxy.ggolf.domain.ClubDetail;
 import com.galaxy.ggolf.domain.ClubFairway;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Staff;
+import com.galaxy.ggolf.tools.ListUtil;
 
 public class ClubDetailManager {
 
@@ -72,10 +73,60 @@ public class ClubDetailManager {
 	}
 
 	private void updateDetail(ClubDetail cd)throws GalaxyLabException {
-		if(!clubDetailDAO.update(cd)){
+		String sqlString = "";
+		if(cd.getClubName()!=null&&!cd.getClubName().equalsIgnoreCase("null")){
+			sqlString += "ClubName='"+cd.getClubName()+"',";
+		}
+		if(cd.getMode()!=null&&!cd.getMode().equalsIgnoreCase("null")){
+			sqlString += "Mode='"+cd.getMode()+"',";
+		}
+		if(cd.getTotalHole()!=null&&!cd.getTotalHole().equalsIgnoreCase("null")){
+			sqlString += "TotalHole='"+cd.getTotalHole()+"',";
+		}
+		if(cd.getTotalStemNum()!=null&&!cd.getTotalStemNum().equalsIgnoreCase("null")){
+			sqlString += "TotalStemNum='"+cd.getTotalStemNum()+"',";
+		}
+		if(cd.getPhoneNum()!=null&&!cd.getPhoneNum().equalsIgnoreCase("null")){
+			sqlString += "PhoneNum='"+cd.getPhoneNum()+"',";
+		}
+		if(cd.getCreateTime()!=null&&!cd.getCreateTime().equalsIgnoreCase("null")){
+			sqlString += "CreateTime='"+cd.getCreateTime()+"',";
+		}
+		if(cd.getStylist()!=null&&!cd.getStylist().equalsIgnoreCase("null")){
+			sqlString += "Stylist='"+cd.getStylist()+"',";
+		}
+		if(cd.getSquare()!=null&&!cd.getSquare().equalsIgnoreCase("null")){
+			sqlString += "Square='"+cd.getSquare()+"',";
+		}
+		if(cd.getLength()!=null&&!cd.getLength().equalsIgnoreCase("null")){
+			sqlString += "Length='"+cd.getLength()+"',";
+		}
+		if(cd.getPuttingSeed()!=null&&!cd.getPuttingSeed().equalsIgnoreCase("null")){
+			sqlString += "PuttingSeed='"+cd.getPuttingSeed()+"',";
+		}
+		if(cd.getFairwaySeed()!=null&&!cd.getFairwaySeed().equalsIgnoreCase("null")){
+			sqlString += "FairwaySeed='"+cd.getFairwaySeed()+"',";
+		}
+		if(cd.getAddress()!=null&&!cd.getAddress().equalsIgnoreCase("null")){
+			sqlString += "Address='"+cd.getAddress()+"',";
+		}
+		if(cd.getIntro()!=null&&!cd.getIntro().equalsIgnoreCase("null")){
+			sqlString += "Intro='"+cd.getIntro()+"',";
+		}
+		if(cd.getPhotoList()!=null&&cd.getPhotoList().size() > 0){
+			String photoList = new ListUtil().ListToString(cd.getPhotoList());
+			sqlString += "PhotoList='"+photoList+"',";
+		}
+		if(cd.getMapImg()!=null&&cd.getMapImg().size() > 0){
+			String mapImg = new ListUtil().ListToString(cd.getMapImg());
+			sqlString += "MapImg='"+mapImg+"',";
+		}
+		if(cd.getFacility()!=null&&!cd.getFacility().equalsIgnoreCase("null")){
+			sqlString += "Facility='"+cd.getFacility()+"',";
+		}
+		if(!clubDetailDAO.updateClubDetail(cd, sqlString)){
 			throw new GalaxyLabException("Error in update ClubDetail");
 		}
-		
 		cache.put(cd.getClubID(), cd);
 		
 	}

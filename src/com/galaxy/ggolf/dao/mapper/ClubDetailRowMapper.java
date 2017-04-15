@@ -9,7 +9,7 @@ import com.galaxy.ggolf.domain.ClubDetail;
 
 public class ClubDetailRowMapper implements RowMapper<ClubDetail> {
     public static final String COLUMN_UID = "UID";
-    public static final String COLUMN_ClubID = "";
+    public static final String COLUMN_ClubID = "ClubID";
     public static final String COLUMN_ClubName = "ClubName";
     public static final String COLUMN_Mode = "Mode";
     public static final String COLUMN_TotalHole = "TotalHole";
@@ -17,7 +17,7 @@ public class ClubDetailRowMapper implements RowMapper<ClubDetail> {
     public static final String COLUMN_PhoneNum = "PhoneNum";
     public static final String COLUMN_CreateTime = "CreateTime";
     public static final String COLUMN_Stylist = "Stylist";
-    public static final String COLUMN_Area = "Area";
+    public static final String COLUMN_Square = "Square";
     public static final String COLUMN_Length = "Length";
     public static final String COLUMN_PuttingSeed = "PuttingSeed";
     public static final String COLUMN_FairwaySeed = "FairwaySeed";
@@ -39,7 +39,7 @@ public class ClubDetailRowMapper implements RowMapper<ClubDetail> {
 		String PhoneNum = res.getString(COLUMN_PhoneNum);
 		String CreateTime = res.getString(COLUMN_CreateTime);
 		String Stylist = res.getString(COLUMN_Stylist);
-		String Area = res.getString(COLUMN_Area);
+		String Square = res.getString(COLUMN_Square);
 		String Length = res.getString(COLUMN_Length);
 		String PuttingSeed = res.getString(COLUMN_PuttingSeed);
 		String FairwaySeed = res.getString(COLUMN_FairwaySeed);
@@ -54,10 +54,10 @@ public class ClubDetailRowMapper implements RowMapper<ClubDetail> {
 		Collection<String> mapImgs = StringToList(MapImg);
 		
 		String Facility = res.getString(COLUMN_Facility);
-		Collection<String> facility = StringToList(Facility);
+//		Collection<String> facility = StringToList(Facility);
 
-		return new ClubDetail(UID,ClubID,ClubName,Mode,TotalHole,TotalStemNum,PhoneNum,CreateTime,Stylist,Area,Length,PuttingSeed,
-							FairwaySeed,Address,Intro,Updated_TS,Photos,mapImgs,facility);
+		return new ClubDetail(UID,ClubID,ClubName,Mode,TotalHole,TotalStemNum,PhoneNum,CreateTime,Stylist,Square,Length,PuttingSeed,
+							FairwaySeed,Address,Intro,Updated_TS,Photos,mapImgs,Facility);
 	}
 
 	private Collection<String> StringToList(String str){
@@ -71,7 +71,7 @@ public class ClubDetailRowMapper implements RowMapper<ClubDetail> {
 					}
 				}
 			}else{
-				if(str.equals("")){
+				if(!str.equals("")){
 					list.add(str);
 				}
 			}

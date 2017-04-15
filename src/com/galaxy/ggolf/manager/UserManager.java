@@ -283,6 +283,16 @@ public class UserManager {
 		return userDAO.getAll();
 	}
 	
+	/**
+	 * 随机获取未添加好友的用户
+	 * @param UserID
+	 * @return
+	 * @throws Exception
+	 */
+	public Collection<User> getRandomUser(String UserID)throws Exception{
+		return userDAO.getRandomUser(UserID);
+	}
+	
 	
 	public boolean removeUser(String phone)throws Exception{
 		boolean result = false;

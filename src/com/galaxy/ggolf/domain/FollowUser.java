@@ -9,9 +9,10 @@ public class FollowUser {
 	private String Relation;   //关系(已关注,互相关注,黑名单)
 	private String Remark;	   //好友备注
 	private String Status;	   //状态(0:提醒有新的好友,1:已查看)
+	private String UID;
 	
 	public FollowUser(String userID, String name, String age, String sex, String head, String relation, String remark,
-			String status) {
+			String status,String uID) {
 		UserID = userID;
 		Name = name;
 		Age = age;
@@ -20,6 +21,7 @@ public class FollowUser {
 		Relation = relation;
 		Remark = remark;
 		Status = status;
+		UID = uID;
 	}
 	public String getUserID() {
 		return UserID;
@@ -68,6 +70,12 @@ public class FollowUser {
 	}
 	public void setStatus(String status) {
 		Status = status;
+	}
+	public String getUID() {
+		return UID;
+	}
+	public void setUID(String uID) {
+		UID = uID;
 	}
 	
 }

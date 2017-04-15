@@ -30,9 +30,9 @@
                             </div>
 
                             <ul class="listings-grid__attrs">
-                                <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}} 洞</li>
-                                <li><i class="glyphicon glyphicon-flag icon-size"></i> {{item.TotalStemNum}}杆</li>
-                                <li><i class="zmdi zmdi-directions-walk big-icon-size"></i> 2393 码</li>
+                                <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}}洞</li>
+                                <li><i class="glyphicon glyphicon-flag icon-size"></i>{{item.TotalStemNum}}杆</li>
+                                <li><i class="zmdi zmdi-directions-walk big-icon-size"></i>2393码</li>
                             </ul>
                         </a>
                         <div class="actions list-group__actions" style="top: 235px;">
@@ -183,6 +183,30 @@
                                     <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice"
                                            class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9]{1,2})?)|(0\.\d*[1-9]{1,2})$/">
                                     <p ng-show="clubForm.DiscountPrice.$error.pattern" class="help-block">输入正确的数值</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label>是否热门球场</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="radio" name="IsHot" ng-model="currentClub.IsHot" value="1">是
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="radio" name="IsHot" ng-model="currentClub.IsHot" value="0">不是
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>是否置顶轮播图</label>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="radio" name="IsTop" ng-model="currentClub.IsTop" value="1">是
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="radio" name="IsTop" ng-model="currentClub.IsTop" value="0">不是
+                                    </div>
                                 </div>
                             </div>
                         </div>

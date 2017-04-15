@@ -147,6 +147,8 @@ var CourseController = function($scope,$http,appConfig,$window,$q,Upload,$timeou
     sc.addClub = function () {
         sc.currentClub = new Object();
         sc.currentClub.ClubPhoto = [];
+        sc.currentClub.IsHot = '0';
+        sc.currentClub.IsTop = '0';
         sc.address();
         sc.openModal(false);
     }

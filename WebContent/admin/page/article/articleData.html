@@ -2,9 +2,9 @@
     <section id="main__content">
         <div class="action-header-alt">
             <div class="col col-md-2">
-                <a href="" class="top-nav__back reBack" ng-click="back()" title="返回"></a>
+                <!--<a href="" class="top-nav__back reBack" ng-click="back()" title="返回"></a>-->
+                <a href="" class="top_back_btn" ng-click="back()" title="返回"><i class="zmdi zmdi-long-arrow-left"></i></a>
             </div>
-
             <div class="col col-md-4 pull-right" ng-if="!ArticleData.ReleaseOrNot">
                 <button type="submit" class="btn btn-send" style="margin: 0;"  ng-show="editor" data-toggle="modal" href="#root_in">发布</button>
                 <button class="btn" style="float: right;font-size: 16px;" ng-click="editData()">{{editor?'取消':'编辑'}}</button>

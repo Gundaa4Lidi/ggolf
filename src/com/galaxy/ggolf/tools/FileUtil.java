@@ -120,24 +120,20 @@ public class FileUtil {
 		boolean result = false;
 		try {
 			createDirIfNotExist(filePath);
-			if(base64Img.indexOf("data:image/png;base64")!=-1){
+			if(base64Img.indexOf("data:image/")!=-1){
 				base64Img = base64Img.split(",")[1];
-			}else if(base64Img.indexOf("data:image/jpeg;base64")!=-1){
-				base64Img = base64Img.split(",")[1];
-			}else if(base64Img.indexOf("data:image/jpg;base64")!=-1){
-				base64Img = base64Img.split(",")[1];
+				BufferedImage image = null;
+				byte[] imgByte;
+				BASE64Decoder decoder = new BASE64Decoder();
+				imgByte = decoder.decodeBuffer(base64Img);
+				ByteArrayInputStream bis = new ByteArrayInputStream(imgByte);
+				image = ImageIO.read(bis);
+				bis.close();
+				File outputfile = new File(filePath+fileName);
+				deleteFile(outputfile);
+				ImageIO.write(image, "png", outputfile);
+				result = true;
 			}
-			BufferedImage image = null;
-			byte[] imgByte;
-			BASE64Decoder decoder = new BASE64Decoder();
-			imgByte = decoder.decodeBuffer(base64Img);
-			ByteArrayInputStream bis = new ByteArrayInputStream(imgByte);
-			image = ImageIO.read(bis);
-			bis.close();
-			File outputfile = new File(filePath+fileName);
-			deleteFile(outputfile);
-			ImageIO.write(image, "png", outputfile);
-			result = true;
 //			String url = CommonConfig.CONNECT+CommonConfig.FILE_DOWNLOAD+fileName;
 //			return url;
 		} catch (Exception e) {

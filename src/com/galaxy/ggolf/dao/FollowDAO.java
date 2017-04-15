@@ -12,7 +12,7 @@ public class FollowDAO extends GenericDAO<Follow> {
 	}
 	
 	public boolean create(Follow fol){//创建
-		String sql = "insert into follow(UserID,FenID,Relation,Status,Created_TS)values(?,?,?,?)";
+		String sql = "insert into follow(UserID,FenID,Relation,Status,Created_TS)values(?,?,?,?,?)";
 		return super.sqlUpdate(sql, fol.getUserID(),fol.getFenID(),fol.getRelation(),fol.getStatus(),Time());
 	}
 	

@@ -97,13 +97,15 @@ public class FileService  extends BaseService{
 				f = f + p +"\\";
 			}
 			fileName = f.substring(0,f.lastIndexOf("\\"));
-			logger.debug("文件路径-----{}",fileName);
 		}
 		File file = new File(CommonConfig.FILE_UPLOAD_PATH + fileName);
-		ResponseBuilder response = Response.ok((Object) file);
-		response.header("Content-Disposition", "attachment; filename="
-				+ fileName);
-		return response.build();
+		if(file.exists()){
+			ResponseBuilder response = Response.ok((Object) file);
+			response.header("Content-Disposition", "attachment; filename="
+					+ fileName);
+			return response.build();
+		}
+		return null;
 	}
 	
 	
@@ -354,7 +356,7 @@ public class FileService  extends BaseService{
 				String result = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "user_UH_" +  fileName+"?t="+date;
 				logger.debug("result: ------{}", result);
 				this.userManager.saveHead(result, UserID);
-				UserDetail user = new UserDetail(UserID, null, null, null, null);
+				UserDetail user = new UserDetail(UserID, null, result, null, null);
 				this.userDetailManager.updateUserDetail(user);
 				return getSuccessResponse();
 			}
@@ -434,19 +436,15 @@ public class FileService  extends BaseService{
             return null;
  
         for (int i = 0; i < files.length; i++) {
-             
             if (files[i].isDirectory()){
                 System.out.println("---" + files[i].getAbsolutePath());
                 refreshFileList(files[i].getAbsolutePath());//递归文件夹！！！
- 
             } else {
                 filename = files[i].getName(); 
                 int j = filename.lastIndexOf("."); 
                 suf = filename.substring(j+1);//得到文件后缀
                 String strFileName = files[i].getAbsolutePath().toLowerCase();
-                
                 fileLists.add(files[i].getAbsolutePath());//对于文件才把它的路径加到filelist中
-                           
             }
              
         }

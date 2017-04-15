@@ -14,6 +14,7 @@ public class FollowUserRowMapper implements RowMapper<FollowUser> {
 	private static final String COLUMN_Relation = "Relation";
 	private static final String COLUMN_Remark = "Remark";
 	private static final String COLUMN_Status = "Status";
+	private static final String COLUMN_UID = "UID";
 	@Override
 	public FollowUser mapRow(ResultSet res) throws SQLException {
 		// TODO Auto-generated method stub
@@ -25,7 +26,8 @@ public class FollowUserRowMapper implements RowMapper<FollowUser> {
 		String Relation = res.getString(COLUMN_Relation);
 		String Remark = res.getString(COLUMN_Remark);
 		String Status = res.getString(COLUMN_Status);
-		return new FollowUser(UserID,Name,Age,Sex,Head,Relation,Remark,Status);
+		String UID = res.getString(COLUMN_UID);
+		return new FollowUser(UserID,Name,Age,Sex,Head,Relation,Remark,Status,UID);
 	}
 
 }
