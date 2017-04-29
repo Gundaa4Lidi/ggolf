@@ -18,7 +18,7 @@ public class FollowDAO extends GenericDAO<Follow> {
 	
 	//修改关系
 	public boolean update(String relation, String status, String uid){
-		String sql = "update follow set Relation='"+relation+"',Status='"+status+"' where UID='"+uid+"' and DeletedFlag is null";
+		String sql = "update follow set Relation='"+relation+"',Status='"+status+"',Updated_TS='"+Time()+"' where UID='"+uid+"' and DeletedFlag is null";
 		return super.executeUpdate(sql);
 	}
 	
@@ -70,12 +70,12 @@ public class FollowDAO extends GenericDAO<Follow> {
 	
 	
 	public boolean cancel(String uid){//取消关注
-		String sql = "update follow set DeletedFlag = 'Y' where UID = '"+uid+"'";
+		String sql = "update follow set DeletedFlag = 'Y',Updated_TS='"+Time()+"' where UID = '"+uid+"'";
 		return super.executeUpdate(sql);
 	}
 	//修改备注
 	public boolean updateRemark(String remark,String uid){
-		String sql = "update follow set Remark='"+remark+"' where DeletedFlag is null and UID='"+uid+"' and Relation!='黑名单'";
+		String sql = "update follow set Remark='"+remark+"',Updated_TS='"+Time()+"' where DeletedFlag is null and UID='"+uid+"' and Relation!='黑名单'";
 		return super.executeUpdate(sql);
 	}
 	/*
@@ -86,13 +86,13 @@ public class FollowDAO extends GenericDAO<Follow> {
 	
 	//好友提醒已查看
 	public boolean updateStatus(String UID){
-		String sql = "update follow set Status='1' where DeletedFlag is null and UID='"+UID+"' and Relation!='黑名单'";
+		String sql = "update follow set Status='1',Updated_TS='"+Time()+"' where DeletedFlag is null and UID='"+UID+"' and Relation!='黑名单'";
 		return super.executeUpdate(sql);
 	}
 	
 	//拉入黑名单
 	public boolean DrawInblackList(String UID){
-		String sql = "update follow set Relation='黑名单' where DeletedFlag is null and UID='"+UID+"'";
+		String sql = "update follow set Relation='黑名单',Updated_TS='"+Time()+"' where DeletedFlag is null and UID='"+UID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -104,7 +104,7 @@ public class FollowDAO extends GenericDAO<Follow> {
 	
 	//移出黑名单
 	public boolean removeBlackList(String UID){
-		String sql = "update follow set DeletedFlag='Y' where UID='"+UID+"' and Relation='黑名单'";
+		String sql = "update follow set DeletedFlag='Y',Updated_TS='"+Time()+"' where UID='"+UID+"' and Relation='黑名单'";
 		return super.executeUpdate(sql);
 	}
 	

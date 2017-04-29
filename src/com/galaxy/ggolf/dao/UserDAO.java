@@ -99,7 +99,7 @@ public class UserDAO extends GenericDAO<User> {
 	
 	//微信号创建用户
 	public boolean createUserByWechat(User user){
-		String sql = "insert into user(wechat,name,head_portait,Created_TS)values(?,?,?,?)";
+		String sql = "insert into user(wechat,name,head_portrait,Created_TS)values(?,?,?,?)";
 		return super.sqlUpdate(sql, user.getWechat(),user.getName(),user.getHead_portrait(),Time());
 	}
 
@@ -239,8 +239,19 @@ public class UserDAO extends GenericDAO<User> {
 	 */
 	public Collection<User> getRandomUser(String UserID){
 		String sql = "SELECT * FROM `user` where UserID!='"+UserID+"'"
-				+ " and UserID NOT IN (select FenID from follow where DeletedFlag is null AND UserID='"+UserID+"')"
+				+ " and UserID NOT IN (select FenID from follow where DeletedFlag is null AND UserID='"+UserID+"' AND Relation!='黑名单')"
 				+ " ORDER BY RAND() LIMIT 20";
+		return GetUserList(super.executeQuery(sql));
+	}
+	
+	/**
+	 * 查询电话簿是否有注册用户
+	 * @param phones
+	 * @param UserID
+	 * @return
+	 */
+	public Collection<User> haveRegister(String phones,String UserID){
+		String sql = "select * from user where UserID!='"+UserID+"' and Phone in("+phones+")";
 		return GetUserList(super.executeQuery(sql));
 	}
 //	//根据关系获取好友列表

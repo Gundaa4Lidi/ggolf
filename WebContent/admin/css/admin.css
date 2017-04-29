@@ -601,7 +601,27 @@ li.mdc-bg-deep-orange:focus {
     color: #828282;
 }
 
+.time_btn a{
+    font-size:14px;
+    float: inherit;
+    display: inline-block;
+    border: 2px solid #bfbfbf;
+    padding: 7px 15px;
+    border-radius: 2px;
+    color: #828282;
+}
 
+.time_btn a:hover{
+    background-color: #00b3ee;
+    color: white;
+    border: 2px solid black;
+}
+
+.time_btn a.active{
+    background-color: #00b3ee;
+    color: white;
+    border: 2px solid black;
+}
 
 .reBack{
     top: 10px;
@@ -653,4 +673,17 @@ li.mdc-bg-deep-orange:focus {
 .top_back_btn i:hover,
 .top_back_btn i:focus{
     color: #4f4f4f;
+}
+.uib-button-bar .btn-group .uib-clear{
+    display: none;
+}
+
+.btn{
+    border: 1px solid transparent;
+}
+
+.has-error .input-group-addon {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #a94442;
 }

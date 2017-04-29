@@ -1,21 +1,14 @@
 package com.galaxy.ggolf.rest;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 
 import javax.activation.DataHandler;
-import javax.imageio.ImageIO;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -60,7 +53,8 @@ import com.galaxy.ggolf.tools.LocationUtil;
 import com.galaxy.ggolf.tools.SDKTestSendTemplateSMS;
 import com.spatial4j.core.shape.Rectangle;
 
-@Consumes("application/json")
+
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/User")
 public class UserService extends BaseService {
@@ -80,6 +74,8 @@ public class UserService extends BaseService {
 	private final LikeDAO likeDAO;
 	
 	private final CollectDAO collectDAO;
+	
+	
 	
 	public UserService(UserManager manager,UserDetailManager userDetailManager, SessionManager sessionManager, 
 			PhoneCodeManager phonecode,FollowManager followManager,
@@ -148,7 +144,7 @@ public class UserService extends BaseService {
 	
 	
 	/**
-	 * 发送验证码
+	 * 发送验证码(用于忘记密码)
 	 * @param phone
 	 * @return
 	 */
@@ -157,8 +153,8 @@ public class UserService extends BaseService {
 	public String sendcode2(@FormParam("phone") String phone, @Context HttpHeaders headers) {
 		String result = "";
 		try {
-			logger.info("手机号码----------",phone);
-			if (!manager.checkUser(phone)) {
+			logger.info("手机号码----------{}",phone);
+			if (manager.getUserByPhone(phone)==null) {
 				result = "该号码不存在,请重新输入";
 				return getResponse(result);
 			} else if (phonecode.getcodeByPhone(phone) != null) {
@@ -672,7 +668,7 @@ public class UserService extends BaseService {
 			@FormParam("Rows") String Rows,
 			@Context HttpHeaders headers){
 		try {
-			if(Rows == null || Rows.equals("") || Rows.equalsIgnoreCase("undefined")){
+			if(Rows == null || Rows.equals("") || Rows.equalsIgnoreCase("null")){
 				Rows = null;
 			}
 			double lon = Double.parseDouble(Lon);
@@ -801,10 +797,9 @@ public class UserService extends BaseService {
 	//拉入黑名单
 	@POST
 	@Path("/DrawInBlackList")
-	public String DrawInBlackList(String data,@Context HttpHeaders headers){
+	public String DrawInBlackList(@FormParam("UID") String UID,@Context HttpHeaders headers){
 		try {
-			Follow fol = super.fromGson(data, Follow.class);
-			this.followManage.DrawInBlackList(fol.getUID());
+			this.followManage.DrawInBlackList(UID);
 			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -815,10 +810,9 @@ public class UserService extends BaseService {
 	//移出黑名单
 	@POST
 	@Path("/removeBlackList")
-	public String removeBlackList(String data,@Context HttpHeaders headers){
+	public String removeBlackList(@FormParam("UID") String UID,@Context HttpHeaders headers){
 		try {
-			Follow fol = super.fromGson(data, Follow.class);
-			this.followManage.removeBlackList(fol.getUID());
+			this.followManage.removeBlackList(UID);
 			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -861,8 +855,9 @@ public class UserService extends BaseService {
 	public String cancelFollow(String data, @Context HttpHeaders headers){
 		Follow follow = fromGson(data,Follow.class);
 		try {
-			this.followManage.cancel(follow);
-			return getSuccessResponse();
+			if(this.followManage.cancel(follow)){
+				return getSuccessResponse();
+			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -980,6 +975,37 @@ public class UserService extends BaseService {
 		return getErrorResponse();
 	}
 	 
+	/**
+	 * 查询电话簿是否有注册用户
+	 * @param phones
+	 * @param UserID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/haveRegister")
+	public String haveRegister(@FormParam("phones") String phones,
+			@FormParam("UserID") String UserID,
+			@Context HttpHeaders headers){
+		try {
+			if(phones!=null){
+				Collection<UserDetail> userDetails = new ArrayList<UserDetail>();
+				Collection<User> users = this.manager.haveRegister(phones, UserID);
+				if(users.size() > 0){
+					for(User u : users){
+						UserDetail ud = this.userDetailManager.getUserDetailByUserID(u.getUserID());
+						if(ud!=null){
+							userDetails.add(ud);
+						}
+					}
+					return getResponse(userDetails);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
 
 }
 

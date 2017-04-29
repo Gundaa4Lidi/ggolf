@@ -23,12 +23,16 @@
             <value>4096</value>  
         </property>  
     </bean>
+    <bean id="securityInterceptor" class="com.galaxy.ggolf.interceptor.SecurityInterceptor">
+ 		<property name="sessionManager" ref="sessionManager" />
+ 	</bean>
 	<cxf:bus>
 		<cxf:features>
 			<cxf:logging />
 		</cxf:features>
 		<cxf:inInterceptors>
-		</cxf:inInterceptors>
+            <ref bean="securityInterceptor"/>
+        </cxf:inInterceptors>   
 	</cxf:bus>
 
 	<bean id="jsonProvider" class="org.codehaus.jackson.jaxrs.JacksonJsonProvider" />
@@ -45,6 +49,11 @@
 			<ref bean="inviteService"/>
 			<ref bean="articleService"/>
 			<ref bean="searchService"/>
+			<ref bean="trackService"/>
+			<ref bean="scoreService"/>
+			<ref bean="clubOrderService"/>
+			<ref bean="hotCityService"/>
+			<ref bean="coachService"/>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean='jsonProvider' />

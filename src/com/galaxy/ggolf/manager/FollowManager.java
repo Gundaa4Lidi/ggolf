@@ -96,9 +96,9 @@ public class FollowManager {
 				if(!followDAO.update(relation, "1", follow1.getUID())){
 					throw new GalaxyLabException("Errow in update follow1 relation");
 				}
+				result = relation;
 			}
-			result = relation;
-		}else{//如果对方不存在,创建一条已被关注数据,用于提醒对方,我方关注了你
+		}else{//如果对方不存在,创建一条已被关注数据,用于提醒对方,我方关注了对方
 			follow1 = new Follow(fol.getFenID(),fol.getUserID(),YI_BEI_GUAN_ZHU,"0");
 			if(!followDAO.create(follow1)){
 				throw new GalaxyLabException("Error in create follow1");

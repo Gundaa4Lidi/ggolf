@@ -85,7 +85,12 @@ public class FileService  extends BaseService{
 	public void kong(){
 	}
 	
-	
+	/**
+	 * 下载
+	 * @param fileName
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/download/{fileName}")
 	public Response downloadFile(@PathParam("fileName") String fileName, @Context HttpHeaders headers) {
@@ -109,7 +114,14 @@ public class FileService  extends BaseService{
 	}
 	
 	
-
+	/**
+	 * 上传文件
+	 * @param filePath
+	 * @param attachments
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/upload{filePath}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -119,13 +131,15 @@ public class FileService  extends BaseService{
 			@Context HttpHeaders headers) {
 		createDirIfNotExist(CommonConfig.FILE_UPLOAD_PATH);
 		String filePath1 = "";
-		if(filePath!=null){
+		if(filePath!=null&&!filePath.equals("")){
 			//
 			if(filePath.indexOf("_")!=-1){
 				String[] path = filePath.split("_");
 				String f = "";
 				for(String p : path){
-					f = f + p +"\\";
+					if(!p.equals("")){
+						f = f + p +"\\";
+					}
 				}
 				filePath1 = f;
 			}else{
@@ -246,7 +260,7 @@ public class FileService  extends BaseService{
 	 * @return
 	 */
 	@GET
-	@Path("load_images")
+	@Path("/load_images")
 	public String load_images(@Context HttpServletRequest req){
 		String fileRoute = CommonConfig.FROALA_UPLOAD_PATH;
 		String downloadPath = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "froala_";
@@ -374,7 +388,7 @@ public class FileService  extends BaseService{
 	 * @return
 	 */
 	@POST
-	@Path("imgDecoding")
+	@Path("/imgDecoding")
 	public String imgDecoding(@FormParam("Image") String img){
 		try {
 			logger.debug("文件-----{}",img);

@@ -24,14 +24,18 @@
 	    <constructor-arg ref="userLogRecDAO"/>
 	    <constructor-arg ref="configDAO"/>
 	</bean>
+	<bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
+	    <constructor-arg ref="commentDAO"/>
+	    <constructor-arg ref="likeDAO"/>
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="messageDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	</bean>
 	
 	<bean id="locationSessionManager" class="com.galaxy.ggolf.manager.LocationSessionManager">
 	</bean>
 	
-	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
-	</bean>
-	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
-	</bean>
 	<bean id="notifyListDAO" class="com.galaxy.ggolf.dao.NotifyListDAO">
 	</bean>
 	<bean id="userLogRecDAO" class="com.galaxy.ggolf.dao.UserLogRecDAO">
@@ -41,12 +45,17 @@
 	<bean id="messageCloseService" class="com.galaxy.ggolf.manager.MessageCloseService">
 	    <constructor-arg ref="messageDAO"/>
 	</bean>
-	<bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
-	    <constructor-arg ref="commentDAO"/>
-	    <constructor-arg ref="likeDAO"/>
-	</bean>
+	
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
 	</bean>
 	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="articleDAO" class="com.galaxy.ggolf.dao.ArticleDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
 	</bean>
 </beans>

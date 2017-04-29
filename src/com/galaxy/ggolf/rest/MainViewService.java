@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.galaxy.ggolf.dao.CarouselDAO;
 import com.galaxy.ggolf.domain.Carousel;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/MainView")
 public class MainViewService extends BaseService {

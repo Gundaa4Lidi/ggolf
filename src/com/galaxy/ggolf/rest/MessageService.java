@@ -30,7 +30,7 @@ import com.galaxy.ggolf.manager.UserManager;
 import com.galaxy.ggolf.tools.LocationUtil;
 import com.spatial4j.core.shape.Rectangle;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Message")
 public class MessageService extends BaseService{
@@ -194,7 +194,7 @@ public class MessageService extends BaseService{
 	}
 	
 	/**
-	 * 通知是否阅读
+	 * 通知是否阅读(约球)
 	 * @param NotifyID
 	 * @param headers
 	 * @return
@@ -306,6 +306,14 @@ public class MessageService extends BaseService{
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 用户获取相关评论(回复)下的回复
+	 * @param rows
+	 * @param UserID
+	 * @param CommentID
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/getReplyList")
 	public String getReplyList(@FormParam("rows") String rows,

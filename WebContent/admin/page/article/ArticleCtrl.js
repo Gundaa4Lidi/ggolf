@@ -70,7 +70,27 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 
     sc.addArticle = function(){
         sc.currentArticle = new Object();
+        sc.test();
     }
+    sc.test = function(){
+    	var url = appConfig.url + 'Score/create';
+    	var method = 'POST';
+    	var params = {
+			standardScores : '1',
+			score : '1',
+			userId:'2',
+			playGroundName:'dfdf',
+			playerName:'fdf'
+    	}
+    	var promise = sc.httpParams(url,method,params);
+    	promise.then(function (data) {
+    		console.log(data);
+            sc.processResult(data);
+        }),function(data){
+    		sc.Load_Failed(data);
+    	}
+    }
+    
 
     sc.editArticle = function(e){
         sc.currentArticle = e;

@@ -19,4 +19,9 @@
     <import resource="webappContext-invite.xml"/>
     <import resource="webappContext-article.xml"/>
     <import resource="webappContext-search.xml"/>
-</beans>
+    <import resource="webappContext-score.xml"/>
+    <import resource="webappContext-track.xml"/>
+    <import resource="webappContext-clubOrder.xml"/>
+    <import resource="webappContext-hotCity.xml"/>
+    <import resource="webappContext-coach.xml"/>
+</beans> 

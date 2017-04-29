@@ -1,17 +1,24 @@
 package com.galaxy.ggolf.manager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.cache.GenericCache;
+import com.galaxy.ggolf.dao.ArticleDAO;
+import com.galaxy.ggolf.dao.ClubDAO;
 import com.galaxy.ggolf.dao.CommentDAO;
 import com.galaxy.ggolf.dao.LikeDAO;
+import com.galaxy.ggolf.dao.MessageDAO;
+import com.galaxy.ggolf.dao.UserDAO;
 import com.galaxy.ggolf.domain.Comment;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Likes;
 import com.galaxy.ggolf.dto.CommentData;
+import com.galaxy.ggolf.dto.GroupData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 
 public class CommentManager {
@@ -21,11 +28,22 @@ public class CommentManager {
 	private GenericCache<String, CommentData> cache;
 	private CommentDAO commentDAO;
 	private LikeDAO likeDAO;
+	private ClubDAO clubDAO;
+	private ArticleDAO articleDAO;
+	private MessageDAO messageDAO;
+	private UserDAO userDAO;
 	
-	public CommentManager(CommentDAO commentDAO,LikeDAO likeDAO) {
+	public CommentManager(CommentDAO commentDAO,LikeDAO likeDAO,
+			ClubDAO clubDAO,ArticleDAO articleDAO,
+			MessageDAO messageDAO,UserDAO userDAO) {
 		this.cache = new GenericCache<String,CommentData>();
 		this.commentDAO = commentDAO;
 		this.likeDAO = likeDAO;
+		this.clubDAO = clubDAO;
+		this.articleDAO = articleDAO;
+		this.messageDAO = messageDAO;
+		this.userDAO = userDAO;
+		
 	}
 	
 	/**
@@ -35,26 +53,57 @@ public class CommentManager {
 	 * @return
 	 * @throws GalaxyLabException
 	 */
-	public CommentData getAll(String keyword,String rows)throws GalaxyLabException{
+	public CommentData getAll(String keyword,String rows,int days)throws GalaxyLabException{
 		String sqlString = "";
+		int row = Integer.parseInt(rows);
 		if(keyword!=null){
 			sqlString = getSqlString(keyword);
 		}
-		Collection<Comment> comment = this.commentDAO.getAll(sqlString, rows);
-		for(Comment com : comment){
-			int replyRows = this.commentDAO.getCountByReply(com.getUserID(), com.getCommentID());
-			if(replyRows > 0){
-				String replyRow = "5";
-				Collection<Comment> replyList = this.commentDAO.getCommentByReply(replyRow, com.getUserID(), com.getCommentID());
-				CommentData replyData = new CommentData(replyRows, replyList);
-				com.setReplyData(replyData);
+		Collection<GroupData<Comment>> Data = new ArrayList<GroupData<Comment>>();
+		if(days > 0){
+			DateTime time = DateTime.now().minusDays(days);
+			sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"'";
+		}
+		Collection<Comment> comment = this.commentDAO.getDTGroup(sqlString, rows);
+		if(comment.size() > 0){
+			for(Comment com : comment){
+				String date = com.getCreated_TS().substring(0, 10);
+				String dateFormat = "and date_format(Created_TS,'%Y-%m-%d')='"+date+"'";
+				Collection<Comment> result = this.commentDAO.getCommentBySearch(sqlString+dateFormat, row+"");
+				if(result.size() <= row && row > 0){
+					for(Comment com1 : result){
+						if(com1.getAction().equalsIgnoreCase("reply")){
+							Comment com2 = this.commentDAO.getByCommentID(com1.getParentID());
+							com1.setParentObj(com2);
+						}else if(com1.getAction().equalsIgnoreCase("comment")){
+							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_CLUB_COMMENT)){
+								
+							}
+							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_DYNAMIC_COMMENT)){
+								
+							}
+							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_ARTICLE_COMMENT)){
+								
+							}
+							
+						}
+						
+					}
+				}
+				int replyRows = this.commentDAO.getCountByReply(com.getUserID(), com.getCommentID());
+				if(replyRows > 0){
+					String replyRow = "5";
+					Collection<Comment> replyList = this.commentDAO.getCommentByReply(replyRow, com.getUserID(), com.getCommentID());
+					CommentData replyData = new CommentData(replyRows, replyList);
+					com.setReplyData(replyData);
+				}
 			}
+			
 		}
 		int count = this.commentDAO.getCount(sqlString);
 		int commentCount = this.commentDAO.getCommentCount(sqlString);
 		CommentData commentData = new CommentData(count,commentCount, comment);
 		return commentData;
-		
 	}
 	
 	/**
@@ -200,7 +249,7 @@ public class CommentManager {
 				+ "%' or ReplyName like '%"
 				+ keyword 
 				+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
-				+ keyword +"%')";
+				+ keyword +"%') ";
 		return sql;
 	}
 	

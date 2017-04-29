@@ -9,6 +9,8 @@
 
             <div class="action-header__item action-header__add">
                 <a class="btn btn-danger btn-sm" ng-click="addClub()">新建球场</a>
+                <a class="btn btn-info btn-sm" ng-show="IsImprotCity" ng-click="importCity()">导入城市</a>
+                <a class="btn btn-info btn-sm" ng-show="!IsImprotCity" data-toggle="modal" href="#setHotCity">设置热门城市</a>
             </div>
         </div>
 
@@ -173,7 +175,7 @@
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine || clubForm.Price.$error.pattern }">
                                     <label>价格<span style="color: red">*</span></label>
                                     <input type="text" name="Price" ng-model="currentClub.Price"
-                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9]{1,2})?)|(0\.\d*[1-9]{1,2})$/">
+                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
                                     <p ng-show="clubForm.Price.$error.pattern || (clubForm.Price.$invalid && !clubForm.Price.$pristine)"
                                        class="help-block">{{clubForm.Price.$error.pattern?'输入正确的数值':'必填项'}}</p>
                                 </div>
@@ -182,23 +184,11 @@
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && clubForm.DiscountPrice.$error.pattern}">
                                     <label>优惠价</label>
                                     <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice"
-                                           class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9]{1,2})?)|(0\.\d*[1-9]{1,2})$/">
+                                           class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
                                     <p ng-show="clubForm.DiscountPrice.$error.pattern" class="help-block">输入正确的数值</p>
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="col-md-4">-->
-                        <!--<div class="form-group">-->
-                        <!--<label>热门球场</label>-->
-                        <!--<input type="checkbox" name="IsHot" class="form-control" ng-true-value="1" ng-false-value="0" ng-model="currentClub.IsHot">-->
-                        <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="col-md-4">-->
-                        <!--<div class="form-group">-->
-                        <!--<label>置顶轮播图</label>-->
-                        <!--<input type="checkbox" name="IsTop" class="form-control" ng-true-value="1" ng-false-value="0" ng-model="currentClub.IsTop">-->
-                        <!--</div>-->
-                        <!--</div>-->
                         <div class="row">
                             <div class="col-md-4">
                                 <label>是否热门球场</label>

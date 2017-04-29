@@ -9,6 +9,9 @@
 	    <constructor-arg ref="commentManager"/>
 	    <constructor-arg ref="clubServeDAO"/>
 	    <constructor-arg ref="priceForTimeDAO"/>
+	    <constructor-arg ref="clubserveLimitTimeDAO"/>
+	    <constructor-arg ref="clubScoreDAO"/>
+	    <constructor-arg ref="clubTotalScoreDAO"/>
 	</bean>
 	<bean id="clubManager" class="com.galaxy.ggolf.manager.ClubManager">
 	    <constructor-arg ref="clubDAO"/>
@@ -26,6 +29,19 @@
 	</bean>
 	<bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
 	    <constructor-arg ref="commentDAO"/>
+	    <constructor-arg ref="likeDAO"/>
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="messageDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	</bean>
+	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+	<bean id="articleDAO" class="com.galaxy.ggolf.dao.ArticleDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
 	</bean>
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
 	</bean>
@@ -33,4 +49,11 @@
 	</bean>
 	<bean id="priceForTimeDAO" class="com.galaxy.ggolf.dao.PriceForTimeDAO">
 	</bean>
+	<bean id="clubserveLimitTimeDAO" class="com.galaxy.ggolf.dao.ClubserveLimitTimeDAO">
+	</bean>
+	<bean id="clubScoreDAO" class="com.galaxy.ggolf.dao.ClubScoreDAO">
+	</bean>
+	<bean id="clubTotalScoreDAO" class="com.galaxy.ggolf.dao.ClubTotalScoreDAO">
+	</bean>
+	
 </beans>

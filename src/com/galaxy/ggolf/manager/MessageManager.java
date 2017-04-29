@@ -159,7 +159,7 @@ public class MessageManager {
 		}
 		Collection<GroupData<Message>> Data = new ArrayList<GroupData<Message>>();
 		if(keyword!=null&&!keyword.equalsIgnoreCase("null")){
-			sqlString += "and"
+			sqlString += "and "
 					+ "(SenderID like '%"
 					+ keyword 
 					+ "%' or SenderName like '%"

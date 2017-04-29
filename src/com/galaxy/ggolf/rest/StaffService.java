@@ -27,7 +27,7 @@ import com.galaxy.ggolf.manager.StaffSessionManager;
 import com.galaxy.ggolf.tools.CipherUtil;
 import com.galaxy.ggolf.tools.FileUtil;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Staff")
 public class StaffService extends BaseService{
@@ -40,7 +40,12 @@ public class StaffService extends BaseService{
 		super.setStaffSessionManager(staffSessionManager);
 		this.manager = manager;
 	}
-
+	/**
+	 * 保存管理员
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/")
 	public String saveStaff(String data, @Context HttpHeaders headers) {

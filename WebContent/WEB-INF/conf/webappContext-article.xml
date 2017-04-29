@@ -18,6 +18,16 @@
     <bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
 	    <constructor-arg ref="commentDAO"/>
 	    <constructor-arg ref="likeDAO"/>
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="messageDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	</bean>
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
 	</bean>
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
 	</bean>

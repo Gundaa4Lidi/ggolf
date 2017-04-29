@@ -151,7 +151,7 @@ public class ClubDetailManager {
 	}
 	
 	private void createFairway(ClubFairway cf)throws GalaxyLabException {
-		Collection<ClubFairway> exist = clubFairwayDAO.getClubFairway(cf.getClubID());
+		ClubFairway exist = clubFairwayDAO.getClubFairwayByUID(cf.getUID());
 		if(exist != null){
 			throw new GalaxyLabException("ClubFairway exist");
 		}

@@ -1,6 +1,5 @@
 package com.galaxy.ggolf.domain;
 
-import java.util.Collection;
 
 import com.galaxy.ggolf.dto.CommentData;
 
@@ -19,9 +18,14 @@ public class Comment {
     private String ReplyID;//回复的用户编号(当Action为reply才会出现)
     private String ReplyName;//回复的用户名称(当Action为reply才会出现)
     private String Created_TS;//评论创建日期
+    private Object ParentObj;
 	private CommentData replyData;
 	private int likeCount;
     
+	public Comment() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public Comment(String commentID, String action, String rootType, String rootID, String userName, String userHead,
 			String userID, String parentType, String parentID, String parentUserID, String memo, String replyID,
 			String replyName, String created_TS) {
@@ -136,6 +140,14 @@ public class Comment {
 	}
 	public void setLikeCount(int likeCount) {
 		this.likeCount = likeCount;
+	}
+
+	public Object getParentObj() {
+		return ParentObj;
+	}
+
+	public void setParentObj(Object parentObj) {
+		ParentObj = parentObj;
 	}
 	
     

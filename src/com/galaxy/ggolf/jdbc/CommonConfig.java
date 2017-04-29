@@ -36,7 +36,8 @@ public interface CommonConfig {
 	
 	public static final String LOGO_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\ROOT\\file\\";
 	
-	public static final String CONNECT = "http://192.168.1.107:8085";
+//	public static final String CONNECT = "http://192.168.1.107:8085";
+	public static final String CONNECT = "";
 	
 	public static final String FILE_DOWNLOAD = "/GGolfz/rest/file/download/";
 	
@@ -83,4 +84,8 @@ public interface CommonConfig {
 	public static final String UserPhotoList = "UPL";
 	
 	public static final String ArticlePhoto = "AP";
+	
+	public static final String PingPP_Apikey = "app_uvnv505GOCyLivn1";
+	
+//	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
 }

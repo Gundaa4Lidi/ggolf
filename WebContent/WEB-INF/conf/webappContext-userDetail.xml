@@ -16,12 +16,15 @@
 	    <constructor-arg ref="userDAO"/>
 	    <constructor-arg ref="userLogRecDAO"/>
 	    <constructor-arg ref="configDAO"/>
+	    <constructor-arg ref="coachDAO"/>
 	</bean>
 	<bean id="userLogRecDAO" class="com.galaxy.ggolf.dao.UserLogRecDAO">
 	</bean>
 	<bean id="configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
 	</bean>
 	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
 	</bean>
 	<bean id="userDetailDAO" class="com.galaxy.ggolf.dao.UserDetailDAO">
 	</bean>

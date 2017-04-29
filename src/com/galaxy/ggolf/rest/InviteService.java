@@ -29,7 +29,7 @@ import com.galaxy.ggolf.manager.MessageManager;
 import com.galaxy.ggolf.manager.UserManager;
 
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Invite")
 public class InviteService extends BaseService{
@@ -113,7 +113,6 @@ public class InviteService extends BaseService{
 			Collection<Location> locList = locationSessionManager.getLocationUsers();
 			for(Location loc : locList){
 				User user = this.manager.getUserByUserID(loc.getUserID());
-				
 			}
 			String site = getLocation(Longitude+","+Latitude);
 		} catch (Exception e) {

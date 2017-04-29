@@ -45,6 +45,7 @@ app.controller("SystemDataController",SystemDataController);
 app.controller("UserMsgPageController",UserMsgPageController);
 app.controller("UserMsgController",UserMsgController);
 app.controller("UserMsgDataController",UserMsgDataController);
+app.controller("ClubOrderController",ClubOrderController);
 
 app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$timeout,$interval){
 	
@@ -143,7 +144,7 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 			$scope.currentPage = "page/article/articlePage.html";
 		}
 		if(e==7){
-			$scope.currentPage = "page/order/order.html";
+			$scope.currentPage = "page/order/clubOrder.html";
 		}
 		if(e==8){
 			$scope.currentPage = "page/files/files.html";
@@ -249,7 +250,6 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
             data: data
         }).then(function(response){
             dfd.resolve(response.data);
-            console.log(response)
         },function(response){
             $rootScope.errorResult(response)
             dfd.reject(response.data);
@@ -265,7 +265,6 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
             params:params
         }).then(function(response){
             dfd.resolve(response.data);
-            console.log(response)
         },function(response){
             $rootScope.errorResult(response)
             dfd.reject(response.data);

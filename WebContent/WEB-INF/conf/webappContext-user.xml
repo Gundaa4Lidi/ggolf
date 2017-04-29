@@ -19,6 +19,7 @@
 	    <constructor-arg ref="userDAO"/>
 	    <constructor-arg ref="userLogRecDAO"/>
 	    <constructor-arg ref="configDAO"/>
+	    <constructor-arg ref="coachDAO"/>
 	</bean>
 	<bean id="userDetailManager" class="com.galaxy.ggolf.manager.UserDetailManager">
 	    <constructor-arg ref="userDAO"/>
@@ -55,7 +56,8 @@
 	</bean>
 	<bean id="collectDAO" class="com.galaxy.ggolf.dao.CollectDAO">
 	</bean>
-	
+	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
+	</bean>
 	
 	<bean id="sessionManager" class="com.galaxy.ggolf.manager.SessionManager">
 	</bean>

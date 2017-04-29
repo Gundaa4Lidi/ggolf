@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.cache.GenericCache;
+import com.galaxy.ggolf.dao.CoachDAO;
 import com.galaxy.ggolf.dao.Common_configDAO;
 import com.galaxy.ggolf.dao.UserDAO;
 import com.galaxy.ggolf.dao.UserLogRecDAO;
@@ -27,6 +28,7 @@ public class UserManager {
 	public UserDAO userDAO;
 	public UserLogRecDAO userLogRecDAO;
 	public Common_configDAO configDAO;
+	public CoachDAO coachDAO;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final String YI_GUAN_ZHU = "已关注";
@@ -35,11 +37,13 @@ public class UserManager {
 	private static final String QU_XIAO_GUAN_ZHU = "取消关注";
 	private static final String BLACKLIST = "黑名单";
 
-	public UserManager(UserDAO userDAO, UserLogRecDAO userLogRecDAO, Common_configDAO configDAO) {
+	public UserManager(UserDAO userDAO, UserLogRecDAO userLogRecDAO, 
+			Common_configDAO configDAO, CoachDAO coachDAO) {
 		this.userCache = new GenericCache<String, User>();
 		this.userDAO = userDAO;
 		this.userLogRecDAO = userLogRecDAO;
 		this.configDAO = configDAO;
+		this.coachDAO = coachDAO;
 	}
 	
 	//创建用户
@@ -202,6 +206,14 @@ public class UserManager {
 		if(!userDAO.updateUser(user)){
 			throw new GalaxyLabException("Error in update user");
 		}
+		if(this.coachDAO.getCoachByCoachID(user.getUserID())!=null){
+			String sql = "CoachName='"+user.getName()+"',"
+					+ "CoachHead='"+user.getHead_portrait()+"',"
+					+ "Age='"+user.getAge()+"'";
+			if(!this.coachDAO.update(user.getUserID(), sql)){
+				throw new GalaxyLabException("Error in update Coach");
+			}
+		}
 		User user1 = userDAO.getUserByUserID(user.getUserID());
 		if(user1 != null){
 			userCache.put(user1.getUserID(), user1);
@@ -291,6 +303,16 @@ public class UserManager {
 	 */
 	public Collection<User> getRandomUser(String UserID)throws Exception{
 		return userDAO.getRandomUser(UserID);
+	}
+	
+	/**
+	 * 查询电话簿是否有注册用户
+	 * @param phones
+	 * @param UserID
+	 * @return
+	 */
+	public Collection<User> haveRegister(String phones,String UserID){
+		return userDAO.haveRegister(phones, UserID);
 	}
 	
 	

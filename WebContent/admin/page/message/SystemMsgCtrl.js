@@ -9,7 +9,7 @@ var SystemMsgController = function($scope,$rootScope,$http,$q,appConfig,$window,
     sc.loadMore = false;
     sc.filterDays = [
 		{key:"默认",   id:"0",value:0},
-		{key:"最近1天", id:"1",value:1},
+		{key:"最近7天", id:"1",value:7},
         {key:"最近30天",id:"2",value:30},
         {key:"最近60天",id:"3",value:60},
         {key:"最近90天",id:"4",value:90},

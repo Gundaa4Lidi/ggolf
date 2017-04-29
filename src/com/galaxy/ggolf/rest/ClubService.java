@@ -1,6 +1,8 @@
 package com.galaxy.ggolf.rest;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -11,24 +13,32 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.galaxy.ggolf.dao.ClubScoreDAO;
 import com.galaxy.ggolf.dao.ClubServeDAO;
+import com.galaxy.ggolf.dao.ClubTotalScoreDAO;
+import com.galaxy.ggolf.dao.ClubserveLimitTimeDAO;
 import com.galaxy.ggolf.dao.PriceForTimeDAO;
 import com.galaxy.ggolf.domain.Club;
 import com.galaxy.ggolf.domain.ClubDetail;
 import com.galaxy.ggolf.domain.ClubFairway;
+import com.galaxy.ggolf.domain.ClubScore;
 import com.galaxy.ggolf.domain.ClubServe;
+import com.galaxy.ggolf.domain.ClubserveLimitTime;
+import com.galaxy.ggolf.domain.Comment;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.PriceForTime;
 import com.galaxy.ggolf.dto.ClubData;
 import com.galaxy.ggolf.dto.ClubServeData;
+import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.ClubDetailManager;
 import com.galaxy.ggolf.manager.ClubManager;
 import com.galaxy.ggolf.manager.CommentManager;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Club")
 public class ClubService extends BaseService {
@@ -38,19 +48,32 @@ public class ClubService extends BaseService {
 	private CommentManager commentManager;
 	private ClubServeDAO clubServeDAO;
 	private PriceForTimeDAO priceForTimeDAO;
+	private ClubserveLimitTimeDAO clubserveLimitTimeDAO;
+	private ClubScoreDAO clubScoreDAO;
+	private ClubTotalScoreDAO clubTotalScoreDAO;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public ClubService(ClubManager manager, ClubDetailManager clubDetailManager,
 			CommentManager commentManager,ClubServeDAO clubServeDAO,
-			PriceForTimeDAO priceForTimeDAO) {
+			PriceForTimeDAO priceForTimeDAO,ClubserveLimitTimeDAO clubserveLimitTimeDAO,
+			ClubScoreDAO clubScoreDAO,ClubTotalScoreDAO clubTotalScoreDAO) {
 		this.manager = manager;
 		this.clubDetailManager = clubDetailManager;
 		this.commentManager = commentManager;
 		this.clubServeDAO = clubServeDAO;
 		this.priceForTimeDAO = priceForTimeDAO;
+		this.clubserveLimitTimeDAO = clubserveLimitTimeDAO;
+		this.clubScoreDAO = clubScoreDAO;
+		this.clubTotalScoreDAO = clubTotalScoreDAO;
 	}
 	
+	/**
+	 * 保存球场,练习场
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/saveClub")
 	public String saveClub(String data, @Context HttpHeaders headers){
@@ -67,18 +90,39 @@ public class ClubService extends BaseService {
 		}
 	}
 	
+	/**
+	 * 获取全部球场,练习场
+	 * @param headers
+	 * @return
+	 * @throws Exception
+	 */
 	@GET
 	@Path("/getAll")
 	public String getAll(@Context HttpHeaders headers)throws Exception{
 		return getResponse(this.manager.getAll());
 	}
 	
+	/**
+	 * 获取全部球场,练习场的数量
+	 * @param headers
+	 * @return
+	 * @throws Exception
+	 */
 	@GET
 	@Path("/getCount")
 	public String getCount(@Context HttpHeaders headers)throws Exception{
 		return getResponse(this.manager.getCount());
 	}
 	
+	/**
+	 * 根据关键字搜索球场或练习场
+	 * @param keyword
+	 * @param rows
+	 * @param pageNum
+	 * @param clubType
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/getClubByKeyword")
 	public String getClubByKeyword(@FormParam("keyword") String keyword,
@@ -121,11 +165,34 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 根据搜索关键字获取球场的数量
+	 * @param keyword
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/getCountByKeyword")
 	public String getCountByKeyword(@FormParam("keyword") String keyword, @Context HttpHeaders headers){
 		try {
-			int count = this.manager.getSearchCount(keyword);
+			String sqlString = "";
+			if(keyword!=null&&!keyword.equalsIgnoreCase("null")){
+				sqlString += "and (ClubName like '%"
+						+ keyword
+						+"%' or ClubPhoneNumber like '%"
+						+ keyword
+						+"%' or ClubAddress like '%"
+						+ keyword
+						+"%' or Province like '%"
+						+ keyword
+						+"%' or City like '%"
+						+ keyword
+						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+						+ keyword 
+						+"%' or Area like '%"
+						+ keyword +"%')";
+			}
+			int count = this.manager.getSearchCount(sqlString);
 			return getResponse(count);
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -133,7 +200,12 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 	}
 	
-	
+	/**
+	 * 删除球场,练习场
+	 * @param clubID
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/removeClub")
 	public String removeClub(@FormParam("ClubID") String clubID, @Context HttpHeaders headers){
@@ -155,7 +227,12 @@ public class ClubService extends BaseService {
 		return getErrormessage("删除球场失败");
 	}
 	
-	
+	/**
+	 * 获取球场明细
+	 * @param clubID
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/getClubDetail")
 	public String getClubDetailByClubID(@FormParam("ClubID") String clubID, @Context HttpHeaders headers){
@@ -170,6 +247,12 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 获取球场的球道信息
+	 * @param clubID
+	 * @param headers
+	 * @return
+	 */
 	@GET
 	@Path("/getClubFairway")
 	public String getClubFairwayByClubID(@FormParam("ClubID") String clubID, @Context HttpHeaders headers){
@@ -182,6 +265,12 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 保存球场,练习场的明细
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/saveClubDetail")
 	public String saveClubDetail(String data, @Context HttpHeaders headers){
@@ -194,6 +283,12 @@ public class ClubService extends BaseService {
 		}
 		return getErrormessage("保存失败");
 	}
+	/**
+	 * 保存球道信息
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/saveClubFairway")
 	public String saveClubFairway(String data, @Context HttpHeaders headers){
@@ -207,6 +302,12 @@ public class ClubService extends BaseService {
 		return getErrormessage("保存失败");
 	}
 	
+	/**
+	 * 删除球道信息
+	 * @param clubID
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/removeClubFairway")
 	public String removeClubFairway(@FormParam("ClubID") String clubID, @Context HttpHeaders headers){
@@ -240,9 +341,12 @@ public class ClubService extends BaseService {
 					throw new GalaxyLabException("Error in update ClubServe");
 				}
 			} else {
+				String ClubserveID = this.clubServeDAO.getClubserveID() + "";
+				cs.setClubserveID(ClubserveID);
 				if(!this.clubServeDAO.create(cs)){
 					throw new GalaxyLabException("Error in create ClubServe");
 				}
+				return getResponse(cs);
 			}
 			return getSuccessResponse();
 		} catch (Exception e) {
@@ -265,6 +369,7 @@ public class ClubService extends BaseService {
 			if(!this.clubServeDAO.delete(ClubserveID)){
 				throw new GalaxyLabException("Error in delete ClubServe");
 			}
+			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -289,7 +394,7 @@ public class ClubService extends BaseService {
 		try {
 			String sqlString = "";
 			if(keyword!=null&&!keyword.equalsIgnoreCase("null")&&!keyword.equals("")){
-				sqlString = "and (Name like '%"
+				sqlString += "and (Name like '%"
 						+ keyword
 						+ "%' or CancelExplain like '%"
 						+ keyword 
@@ -303,7 +408,7 @@ public class ClubService extends BaseService {
 						+ keyword +"%') ";
 			}
 			Collection<ClubServe> clubServes = this.clubServeDAO.getClubServeByClubID(sqlString, pageNum, rows, ClubID);
-			int count = this.clubServeDAO.getCountByClubID(sqlString, pageNum, rows, ClubID);
+			int count = this.clubServeDAO.getCountByClubID(sqlString,ClubID);
 			ClubServeData csd = new ClubServeData(count, clubServes); 
 			return getResponse(csd);
 		} catch (Exception e) {
@@ -313,22 +418,41 @@ public class ClubService extends BaseService {
 	}
 	
 	/**
-	 * 保存每日每个时段的价格
+	 * 修改供应商每日每个时段的价格
 	 * @param data
 	 * @param headers
 	 * @return
 	 */
 	@POST
-	@Path("/savePriceForClubServe")
-	public String savePriceForClubServe(String data,@Context HttpHeaders headers){
+	@Path("/updatePriceForClubServe")
+	public String updatePriceForClubServe(String data,
+			@Context HttpHeaders headers){
 		try {
 			PriceForTime pft = super.fromGson(data, PriceForTime.class);
-			if(pft.getClubservePriceID()!=null){
-				if(!this.priceForTimeDAO.update(pft)){
-					throw new GalaxyLabException("Error in update pricefortime");
-				}
-			}else{
-				if(!this.priceForTimeDAO.create(pft)){
+			if(!this.priceForTimeDAO.update(pft)){
+				throw new GalaxyLabException("Error in create pricefortime");
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 创建供应商每日每个时段的价格
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/createPriceForClubServe")
+	public String createPriceForClubServe(String data,
+			@Context HttpHeaders headers){
+		try {
+			Collection<PriceForTime> timeList = super.fromJsonArray(data, PriceForTime.class);
+			if(timeList!=null && timeList.size() > 0){
+				if(!this.priceForTimeDAO.create2(timeList)){
 					throw new GalaxyLabException("Error in create pricefortime");
 				}
 			}
@@ -338,6 +462,7 @@ public class ClubService extends BaseService {
 		}
 		return getErrorResponse();
 	}
+	
 	
 	/**
 	 * 根据供应商编号获取当前时段的价格 或
@@ -355,7 +480,7 @@ public class ClubService extends BaseService {
 			@FormParam("ClubserveID") String ClubserveID,
 			@Context HttpHeaders headers){
 		try {
-			if(Time!=null){
+			if(Time!=null&&!Time.equals("")){
 				PriceForTime pft = this.priceForTimeDAO.getPriceByClubServeID(Week, Time, ClubserveID);
 				return getResponse(pft);
 			}else{
@@ -366,6 +491,200 @@ public class ClubService extends BaseService {
 			logger.error("Error occured",e);
 		}
 		return getErrorResponse();
+	}
+	
+	/**
+	 * 保存限时抢购
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/saveClubserveLimitTime")
+	public String saveClubserveLimitTime(String data,@Context HttpHeaders headers){
+		try {
+			ClubserveLimitTime clt = super.fromGson(data, ClubserveLimitTime.class);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			if(clt.getClubserveLimitTimeID()!=null){
+				if(!this.clubserveLimitTimeDAO.update(clt)){
+					throw new GalaxyLabException("Error in update ClubserveLimitTime");
+				}
+			}else {
+				String id = this.clubserveLimitTimeDAO.getClubserveLimitTimeID()+"";
+				clt.setClubserveLimitTimeID(id);
+				ClubserveLimitTime result = this.clubserveLimitTimeDAO.getLimitTimeByClubserveID(clt.getClubserveID(), clt.getDate());
+				if(result!=null){
+					String cst = clt.getDate() + " " +clt.getStartTime();//传递数据的开始时间
+					String cet = clt.getDate() + " " + clt.getEndTime();//传递数据的结束时间
+					Date csT = sdf.parse(cst);
+					Date ceT = sdf.parse(cet);
+					String rst = result.getDate() + " " +result.getStartTime();//查询结果的开始时间
+					String ret = result.getDate() + " " + result.getEndTime();//查询结果的结束时间
+					Date rsT = sdf.parse(rst);
+					Date reT = sdf.parse(ret);
+					//判断开始时间和结束时间在同一天是否在原有时间内
+					if((csT.getTime()>=rsT.getTime()&&csT.getTime()<reT.getTime())||
+							(ceT.getTime()>=rsT.getTime()&&ceT.getTime()<reT.getTime())){
+						return getErrormessage("设置限时时间不能重叠");
+					}
+					
+				}
+				if(!this.clubserveLimitTimeDAO.create(clt)){
+					throw new GalaxyLabException("Error in create ClubserveLimitTime");
+				}
+				return getSuccessResponse();
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据供应商获取限时抢购
+	 * @param ClubserveID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getbyClubserveID")
+	public String getbyClubserveID(@FormParam("ClubserveID") String ClubserveID,
+			@Context HttpHeaders headers){
+		try {
+			Collection<ClubserveLimitTime> result = this.clubserveLimitTimeDAO.getbyClubserveID(ClubserveID);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据编号获取限时抢购信息
+	 * @param ClubserveLimitTimeID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getByClubserveLimitTimeID")
+	public String getByClubserveLimitTimeID(@FormParam("ClubserveLimitTimeID") String ClubserveLimitTimeID,
+			@Context HttpHeaders headers){
+		try {
+			ClubserveLimitTime result = this.clubserveLimitTimeDAO.getByClubserveLimitTimeID(ClubserveLimitTimeID);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 删除限时
+	 * @param ClubserveLimitTimeID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/removeClubserveLimitTime")
+	public String removeClubserveLimitTime(@FormParam("ClubserveLimitTimeID") String ClubserveLimitTimeID,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.clubserveLimitTimeDAO.delete(ClubserveLimitTimeID)){
+				throw new GalaxyLabException("Error in delete ClubserveLimitTime");
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 评论球场
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/publishScore")
+	public String publishScore(String data,
+			@Context HttpHeaders headers){
+		try {
+			ClubScore cs = super.fromGson(data, ClubScore.class);
+			if(this.clubScoreDAO.getClubScoreByUserID(cs.getUserID(), cs.getClubID())!=null){
+				return getErrormessage("您今天已经点评过该球场，再次感谢您的慷慨。");
+			}
+			if(!this.clubScoreDAO.create(cs)){
+				throw new GalaxyLabException("Error in create ClubScore");
+			}
+			if(cs.getContent()!=null){
+				Comment com = new Comment();
+				com.setAction(CommonConfig.ACTION_COMMENT);
+				com.setRootType(CommonConfig.TYPE_CLUB_COMMENT);
+				com.setRootID(cs.getClubID());
+				com.setUserName(cs.getUserName());
+				com.setUserHead(cs.getUserHead());
+				com.setUserID(cs.getUserID());
+				com.setParentType(CommonConfig.ACTION_COMMENT);
+				com.setParentID(cs.getClubID());
+				com.setMemo(cs.getContent());
+				this.commentManager.create(com);
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取对应球场的评论
+	 * @param ClubID
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
+	@GET
+	@Path("/getCommentByClubID")
+	public String getCommentByClubID(@FormParam("ClubID") String ClubID,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
+		try {
+			int page = 1;
+			String sqlString = "";
+			if(pageNum!=null&&!pageNum.equalsIgnoreCase("null")&&!pageNum.equals("")){
+				page = Integer.parseInt(pageNum);
+			}
+			if(rows!=null&&!rows.equalsIgnoreCase("null")&&!rows.equals("")){
+				int Rows = Integer.parseInt(rows);
+				sqlString = "limit "+ ((page - 1) * Rows) + " , " + Rows + " ";
+			}
+			Collection<ClubScore> result = this.clubScoreDAO.getCommentByClubID(ClubID, sqlString);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取球场的总评分
+	 * @param ClubID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getScoreByClubID")
+	public String getScoreByClubID(@FormParam("ClubID") String ClubID,
+			@Context HttpHeaders headers){
+		try {
+			return getResponse(this.clubTotalScoreDAO.getTotalScoreByClubID(ClubID));
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+		
 	}
 
 }

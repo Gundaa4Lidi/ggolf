@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.CommentRowMapper;
 import com.galaxy.ggolf.domain.Comment;
+import com.galaxy.ggolf.domain.Message;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 
@@ -57,6 +58,18 @@ public class CommentDAO extends GenericDAO<Comment> {
 		String sql = "select count(*) from comment where DeletedFlag is null and Action='"
 				+ CommonConfig.ACTION_COMMENT +"' "+ sqlString +"";
 		return super.count(sql);
+	}
+	
+	/**
+	 * 获取全部评论和回复
+	 * @param sqlString
+	 * @param rows
+	 * @return
+	 */
+	public Collection<Comment> getCommentBySearch(String sqlString,String rows){
+		String sql = "select count(*) from comment where DeletedFlag is null "+ sqlString +" order by Created_TS desc "
+				+ "limit 0 , "+Integer.parseInt(rows)+"";
+		return super.executeQuery(sql);
 	}
 	
 	/**
@@ -129,5 +142,13 @@ public class CommentDAO extends GenericDAO<Comment> {
 	public boolean delete(String CommentID){
 		String sql = "update comment set DeletedFlag='Y' where CommentID='"+CommentID+"'";
 		return super.executeUpdate(sql);
+	}
+	
+	//获取时间分组
+	public Collection<Comment> getDTGroup(String sqlString,String rows){
+		String sql = "select * from comment where DeletedFlag is null"
+				+ " "+sqlString+" GROUP BY date_format(`Created_TS`,'%Y-%m-%d')"
+				+ " order by Created_TS desc limit 0 , "+Integer.parseInt(rows)+"";
+		return super.executeQuery(sql);
 	}
 }

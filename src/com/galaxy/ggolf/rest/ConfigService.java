@@ -26,7 +26,7 @@ import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.Common_configManager;
 
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Config")
 public class ConfigService extends BaseService {

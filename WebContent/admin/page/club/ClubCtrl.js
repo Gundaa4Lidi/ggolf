@@ -1,4 +1,4 @@
-var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout){
+var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,cities){
 	var sc = $scope;
 	var ClubPageCtrl = sc.$parent;
     sc.rows = 20;
@@ -28,6 +28,7 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
 
 	sc.load=function(){
 		sc.getClubList();
+        sc.getProvince();
 	}
 
 	sc.openModal = function(flag){
@@ -196,6 +197,63 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout)
 
     sc.deleteImg = function(index){
         sc.currentClub.ClubPhoto.splice(index,1);
+    }
+
+    sc.importCity = function () {
+        var arr = [];
+        var flag = true;
+        angular.forEach(cities,function (e) {
+            if(e.p=='北京'||e.p=='天津'||e.p=='上海'||e.p=='香港'||e.p=='澳门'||e.p=='台湾'){
+                var obj = new Object();
+                flag = false;
+                obj.Province = e.p;
+                obj.City = e.p;
+                obj.IsHot = 0;
+                arr.push(obj);
+            }else if(e.p == '国外'){
+                flag = false;
+            }else{
+                flag = true;
+            }
+            if(flag){
+                angular.forEach(e.c,function (c) {
+                    var obj1 = new Object()
+                    obj1.Province = e.p;
+                    obj1.City = c.n;
+                    obj1.IsHot = 0;
+                    arr.push(obj1);
+                })
+            }
+        })
+        var url = appConfig.url + 'HotCity/importCity';
+        var method = 'POST';
+        var data = arr;
+        var promise = sc.httpDataUrl(url,method,data);
+        promise.then(function (data) {
+            sc.processResult(data);
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+    }
+
+    sc.IsImprotCity = false;
+
+    sc.getProvince = function () {
+        var p = new Array();
+        var url = appConfig.url + 'HotCity/getProvince';
+        var method = 'GET';
+        var params = {};
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            p = data;
+            if(p.length==0){
+                sc.IsImprotCity = true;
+            }else if(p.length>0){
+                sc.IsImprotCity = false;
+            }
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
     }
 
 

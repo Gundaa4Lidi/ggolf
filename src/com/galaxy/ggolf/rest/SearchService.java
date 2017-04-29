@@ -25,7 +25,7 @@ import com.galaxy.ggolf.domain.Message;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.SearchData;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/Search")
 public class SearchService extends BaseService {
@@ -73,7 +73,7 @@ public class SearchService extends BaseService {
 			if(rows == null || rows.equals("") || rows.equalsIgnoreCase("null") || rows.equalsIgnoreCase("undefined")){
 				rows = null;
 			}
-			if(!keyword.equalsIgnoreCase("undefined")){
+			if(!keyword.equalsIgnoreCase("null")&&keyword!=null){
 				String userSql = "and Name like '%"+keyword+"%' ";
 				String articleSql = "and Title like '%"+keyword+"%'";
 				String messageSql = "and Type='"+TYPE_DYNAMIC+"' and (Details like '%"+keyword+"%' or Site like '%"+keyword+"%')";

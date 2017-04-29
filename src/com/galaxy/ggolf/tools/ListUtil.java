@@ -38,5 +38,16 @@ public class ListUtil {
 		}
 		return str;
 	}
+	
+	public String ListToString(Collection<String> list, String s){
+		String str = "";
+		for(String str1 : list){
+			str = str + s + str1;
+		}
+		if(str.indexOf(s)!=-1){
+			str = str.substring(1 , str.length());
+		}
+		return str;
+	}
 
 }

@@ -197,6 +197,12 @@ public abstract class GenericDAO<T> {
 		String dt = new String(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(now));
 		return dt;
 	}
+	
+	public String Time1(){
+		Date now = new Date();
+		String dt = new String(new SimpleDateFormat("yyyy-MM-dd").format(now));
+		return dt;
+	}
 
 	/**
 	 * Return an integer which maps the number of rows
@@ -210,6 +216,29 @@ public abstract class GenericDAO<T> {
 			ResultSet rest = stmt.executeQuery(sql);
 			while (rest.next()) {
 				return rest.getInt(1);
+			}
+		} catch (Exception e) {
+			logger.error("Error", e);
+		} finally {
+			if (conn != null)
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					logger.error("Error", e);
+				}
+		}
+		return 0;
+	}
+	
+	public double avg(String sql) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			Statement stmt = conn.createStatement();
+			logger.debug("SQL is: {}", sql);
+			ResultSet rest = stmt.executeQuery(sql);
+			while (rest.next()) {
+				return rest.getDouble(1);
 			}
 		} catch (Exception e) {
 			logger.error("Error", e);
@@ -281,6 +310,26 @@ public abstract class GenericDAO<T> {
 				}
 		}
 		return false;
+	}
+	
+	
+	public String getCustomID(String prefix,String main,String count){
+		String CustomID = "";
+		main = main.substring(0,main.length() - count.length());
+		CustomID = prefix + main + count;
+		return CustomID;
+	}
+	
+	public String limit(String pageNum,String rows){
+		String limit = "";
+		int page = 1;
+		if(pageNum!=null&&!pageNum.equals("")&&!pageNum.equalsIgnoreCase("null")){
+			page = Integer.parseInt(pageNum);
+		}
+		if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
+			limit += "limit "+(page-1)*Integer.parseInt(rows)+" , "+Integer.parseInt(rows);
+		}
+		return limit;
 	}
 
 }

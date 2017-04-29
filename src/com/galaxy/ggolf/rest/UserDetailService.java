@@ -24,7 +24,7 @@ import com.galaxy.ggolf.manager.UserDetailManager;
 import com.galaxy.ggolf.manager.UserManager;
 import com.galaxy.ggolf.tools.FileUtil;
 
-@Consumes("application/json")
+//@Consumes("multipart/form-data")
 @Produces("application/json")
 @Path("/UserDetail")
 public class UserDetailService extends BaseService {

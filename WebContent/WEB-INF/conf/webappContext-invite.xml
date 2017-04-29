@@ -14,6 +14,7 @@
 	    <constructor-arg ref="userDAO"/>
 	    <constructor-arg ref="userLogRecDAO"/>
 	    <constructor-arg ref="configDAO"/>
+	    <constructor-arg ref="coachDAO"/>
 	</bean>
 	
 	<bean id="messageManager" class="com.galaxy.ggolf.manager.MessageManager">
@@ -39,6 +40,8 @@
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
 	</bean>
 	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
 	</bean>
 	
 </beans>

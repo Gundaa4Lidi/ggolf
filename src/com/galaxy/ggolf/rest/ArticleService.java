@@ -22,7 +22,7 @@ import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.manager.ArticleManager;
 import com.galaxy.ggolf.manager.CommentManager;
 
-@Consumes("application/json")
+
 @Produces("application/json")
 @Path("/Article")
 public class ArticleService extends BaseService {
