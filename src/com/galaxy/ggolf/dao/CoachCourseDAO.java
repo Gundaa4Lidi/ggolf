@@ -1,5 +1,7 @@
 package com.galaxy.ggolf.dao;
 
+import java.util.Collection;
+
 import com.galaxy.ggolf.dao.mapper.CoachCourseRowMapper;
 import com.galaxy.ggolf.domain.CoachCourse;
 
@@ -28,7 +30,31 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 	}
 	
 	public boolean CourseVerify(String CourseID,String Verify){
-		String sql = "update coachcourse set Verify='"+Verify+"' where DeletedFlag is null and CourseID='"+CourseID+"'";
+		String sql = "update coachcourse set Verify='"+Verify+"',Updated_TS='"+Time()+"' where DeletedFlag is null and CourseID='"+CourseID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	
+	public Collection<CoachCourse> getCourse(String CoachID,String sqlString,String pageNum,String rows){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from coachcourse where DeletedFlag is null"
+				+ " and CoachID='"+CoachID+"' "+sqlString+" order by Created_TS "+limit+"";
+		return super.executeQuery(sql);
+	}
+	
+	public CoachCourse getByCourseID(String CourseID){
+		String sql = "select * from coachcourse where CourseID='"+CourseID+"' and DeletedFlag is null";
+		Collection<CoachCourse> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return (CoachCourse) result.toArray()[0];
+		}
+		return null;
+	}
+	
+	
+	public boolean update(String sqlString,String CourseID){
+		String sql = "update coachcourse set "+sqlString+" Updated_TS='"+Time()+"' "
+				+ "where DeletedFlag is null and CourseID='"+CourseID+"'";
 		return super.executeUpdate(sql);
 	}
 

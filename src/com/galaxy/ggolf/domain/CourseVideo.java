@@ -5,21 +5,15 @@ import java.util.Collection;
 public class CourseVideo {
 	private String UID;
 	private String CreatorID;
+	private String CourseID;
 	private String RoomID;
 	private String Password;
 	private String RoomName;
 	private Collection<User> Users;
-	/**
-	 * @param uID
-	 * @param creatorID
-	 * @param roomID
-	 * @param password
-	 * @param roomName
-	 */
-	public CourseVideo(String uID, String creatorID, String roomID, String password, String roomName) {
-		super();
+	public CourseVideo(String uID, String creatorID, String courseID, String roomID, String password, String roomName) {
 		UID = uID;
 		CreatorID = creatorID;
+		CourseID = courseID;
 		RoomID = roomID;
 		Password = password;
 		RoomName = roomName;
@@ -35,6 +29,12 @@ public class CourseVideo {
 	}
 	public void setCreatorID(String creatorID) {
 		CreatorID = creatorID;
+	}
+	public String getCourseID() {
+		return CourseID;
+	}
+	public void setCoachID(String courseID) {
+		CourseID = courseID;
 	}
 	public String getRoomID() {
 		return RoomID;
@@ -60,9 +60,6 @@ public class CourseVideo {
 	public void setUsers(Collection<User> users) {
 		Users = users;
 	}
-	
-	
-	
 	
 	
 }
