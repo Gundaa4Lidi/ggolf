@@ -1,0 +1,15 @@
+var PriceForTime = {
+   "ClubservePriceID":"",
+   "ClubserveID":"",
+   "ClubID":"",
+   "Week":"",
+   "Time":"",
+   "DownPayment":"",
+   "OtherPrice":"",
+   "Type":"",
+   "IsPrivilege":"",
+   "IsDeposit":"",
+   "DateTime":"",
+   "Created_TS":"",
+   "Updated_TS":"",
+}

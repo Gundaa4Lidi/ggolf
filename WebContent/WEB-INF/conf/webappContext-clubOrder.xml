@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="clubOrderService" class="com.galaxy.ggolf.rest.ClubOrderService">
+		<constructor-arg ref="clubOrderDAO" />
+		<constructor-arg ref="clubDAO"/>
+		<constructor-arg ref="clubServe"/>
+	</bean>
+	
+	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
+	</bean>
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="clubServe" class="com.galaxy.ggolf.dao.ClubServeDAO">
+	</bean>
+</beans>

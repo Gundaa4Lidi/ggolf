@@ -1,0 +1,183 @@
+<div ng-controller="ClubOrderController" data-ng-init="load()">
+    <section id="main__content" >
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="搜索相关球场订单信息" ng-model="keyword" ng-change="load()">
+                </form>
+            </div>
+
+            <!--<div class="action-header__item action-header__add">-->
+                <!--<a href="" class="btn btn-danger btn-sm" ng-click="addFee()">新增配置</a>-->
+            <!--</div>-->
+        </div>
+
+        <div class="main__container" style="max-width: 1600px;">
+            <header class="main__title">
+                <h1 style="font-family: '黑体'">球场订单管理</h1>
+            </header>
+            <div class="row" >
+                <div class="col-md-2">
+                    <select ng-model="filterDay" class="form-control" ng-change="load()" style="background: white"
+                            ng-options="day.value as day.key for day in filterDays"></select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="payment_method" style="background: white">
+                        <option value="" selected="selected">支付方式</option>
+                        <option value="全额支付">全额支付</option>
+                        <option value="球场现付">球场现付</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="order_status" style="background: white">
+                        <option value="" selected="selected">订单状态</option>
+                        <option value="提交订单">提交订单</option>
+                        <option value="确认球位">确认球位</option>
+                        <option value="在线预订">在线预订</option>
+                        <option value="预订完成">预订完成</option>
+                        <option value="取消订单">取消订单</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" ng-click="payment_method=''; order_status = '';filterDay='0'">清空筛选</button>
+                </div>
+            </div>
+            <hr>
+
+            <div class="card">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="6%">订单编号</th>
+                        <th width="7%">球场名称</th>
+                        <th width="7%">供应商</th>
+                        <th width="7%">限时抢购</th>
+                        <th width="6%">订单状态</th>
+                        <th width="7%">订单时间</th>
+                        <th width="7%">支付方式</th>
+                        <th width="6%">订场费用</th>
+                        <th width="8%">打球日期</th>
+                        <th width="6%">打球时间</th>
+                        <th width="6%">客户姓名</th>
+                        <th width="6%">联系电话</th>
+                        <th width="8%">服务说明</th>
+                        <th width="13%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="order in orderList | filter: payment_method | filter: order_status">
+                        <td width="6%">{{order.OrderID}}</td>
+                        <td width="7%">{{order.ClubName}}</td>
+                        <td width="7%">{{order.ClubserveName}}</td>
+                        <td width="7%">{{order.ClubserveLimitTimeID}}</td>
+                        <td width="6%">
+                            <p ng-if="order.State==='提交订单'" style="color: green;">{{order.State}}</p>
+                            <p ng-if="order.State==='确认球位'" style="color: #61b8ff;">{{order.State}}</p>
+                            <p ng-if="order.State==='在线预订'" style="color: #0a6ebd;">{{order.State}}</p>
+                            <p ng-if="order.State==='预订完成'" style="color: blue;">{{order.State}}</p>
+                            <p ng-if="order.State==='取消订单'" style="color: red;">{{order.State}}</p>
+                        </td>
+                        <td width="7%">{{order.CreateTime}}</td>
+                        <td width="7%">
+                            <p ng-if="order.Type==='全额支付'" style="color: blue;">{{order.Type}}</p>
+                            <p ng-if="order.Type==='球场现付'" style="color: green;">{{order.Type}}</p>
+                        </td>
+                        <td width="6%">{{order.DownPayment}}</td>
+                        <td width="8%">{{order.StartDate}}</td>
+                        <td width="6%">{{order.StartTime}}</td>
+                        <td width="6%">{{order.Names}}</td>
+                        <td width="6%">{{order.Tel}}</td>
+                        <td width="8%">{{order.ServiceExplain}}</td>
+                        <td width="13%" align="center">
+                            <button type="button" class="btn btn-success btn-xs"
+                                    href="#OrderDetail" data-toggle="modal" ng-click="checkOrder(order)">查看</button>
+                            <button type="button" class="btn btn-info btn-xs" ng-click="confirmBall(order)">球位确认</button>
+                            <button type="button" class="btn btn-xs" ng-if="order.Type=='球场现付'&&order.State=='确认球位'"
+                                    data-toggle="modal" href="#PayCash" ng-click="checkOrder(order)">现金支付</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="OrderDetail" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">明细</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">打球人姓名</th><td width="60%">{{currentOrder.Names}}</td></tr>
+                        <tr><th width="40%">联系电话</th><td width="60%">{{currentOrder.Tel}}</td></tr>
+                        <tr><th width="40%">订场费用</th><td width="60%">{{currentOrder.DownPayment}}</td></tr>
+                        <tr><th width="40%">打球日期</th><td width="60%">{{currentOrder.StartDate}}</td></tr>
+                        <tr><th width="40%">打球时间</th><td width="60%">{{currentOrder.StartTime}}</td></tr>
+                        <tr><th width="40%">支付方式</th><td width="60%">{{currentOrder.Type}}</td></tr>
+                        <tr><th width="40%">服务说明</th><td width="60%">{{currentOrder.ServiceExplain}}</td></tr>
+                    </table>
+
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">时间</th><th width="60%">操作</th></tr>
+                        <tr ng-repeat="activity in currentOrder.Activities"><td width="40%">{{activity.time}}</td><td width="60%">{{activity.action}}</td></tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="PayCash" tabindex="-1" role="dialog" data-backdrop="static"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="width: 250px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">现金支付</h4>
+                </div>
+                <form name="cashForm" class="ng-pristine ng-valid" ng-submit="submitCashForm(cashForm.$valid)" novalidate>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            订单编号为<span style="color:blue">{{currentOrder.OrderID}}</span>的订单需要收取现金￥<span style="color:blue">{{currentOrder.DownPayment-0}}</span>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group" ng-class="{ 'has-error' : cashForm.cash.$invalid && !cashForm.cash.$pristine
+                                        || cashForm.cash.$error.pattern || (cashForm.cash.$valid&&cash!=currentOrder.DownPayment) }">
+                                    <label>确认已收款</label>
+                                    <div class="input-group">
+                                        <input type="text" name="cash" ng-model="cash"
+                                               class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
+                                        <span class="input-group-addon">元</span>
+                                    </div>
+                                    <p ng-show="cashForm.cash.$invalid && !cashForm.cash.$pristine" class="help-block">
+                                        <span ng-show="cashForm.cash.$error.required">请输入金额</span>
+                                        <span ng-show="cashForm.cash.$error.pattern">请输入正确的数值</span>
+                                    </p>
+                                    <p ng-show="cashForm.cash.$valid&&cash!=currentOrder.DownPayment" class="help-block">输入金额不一致</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" ng-disabled="cashForm.$invalid || cash!=currentOrder.DownPayment"
+                                data-dismiss="modal" ng-click="cashForm.$setPristine()">确认已收款</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cashForm.$setPristine()">关闭</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>

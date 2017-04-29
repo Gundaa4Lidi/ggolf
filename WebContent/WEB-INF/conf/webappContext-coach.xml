@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="coachService" class="com.galaxy.ggolf.rest.CoachService">
+		<constructor-arg ref="coachDAO" />
+		<constructor-arg ref="userDAO"/>
+		<constructor-arg ref="coachScoreDAO"/>
+		<constructor-arg ref="coachCommentDAO"/>
+	</bean>
+	
+	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="coachScoreDAO" class="com.galaxy.ggolf.dao.CoachScoreDAO">
+	</bean>
+	<bean id="coachCommentDAO" class="com.galaxy.ggolf.dao.CoachCommentDAO">
+	</bean>
+</beans>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+    <bean id="trackService" class="com.galaxy.ggolf.rest.TrackService">
+	    <constructor-arg ref="trackManager"/>
+	</bean>
+	
+   <bean id="trackManager" class="com.galaxy.ggolf.manager.TrackManager">
+	    <constructor-arg ref="trackDAO"/>
+	</bean>
+	
+	<bean id="trackDAO" class="com.galaxy.ggolf.dao.TrackDAO">
+	</bean>
+	
+</beans>

@@ -1,0 +1,17 @@
+var UserDetail = {
+    "UID":"",
+    "UserID":"",
+    "PhoneNum":"",
+    "HeadPhoto":"",
+    "UserName":"",
+    "Sex":"",
+    "Birthday":"",
+    "Age":"",
+    "Score":"",
+    "City":"",
+    "PhotoList":[],
+    "Signature":"",
+    "Status":"",
+    "CustomTag":"",
+    "Updated_TS":"",
+}
