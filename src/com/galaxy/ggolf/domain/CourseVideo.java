@@ -9,14 +9,20 @@ public class CourseVideo {
 	private String RoomID;
 	private String Password;
 	private String RoomName;
+	private String Created_TS;
+	private String Updated_TS;
 	private Collection<User> Users;
-	public CourseVideo(String uID, String creatorID, String courseID, String roomID, String password, String roomName) {
+	
+	public CourseVideo(String uID, String creatorID, String courseID, String roomID, String password, String roomName,
+			String created_TS, String updated_TS) {
 		UID = uID;
 		CreatorID = creatorID;
 		CourseID = courseID;
 		RoomID = roomID;
 		Password = password;
 		RoomName = roomName;
+		Created_TS = created_TS;
+		Updated_TS = updated_TS;
 	}
 	public String getUID() {
 		return UID;
@@ -33,7 +39,7 @@ public class CourseVideo {
 	public String getCourseID() {
 		return CourseID;
 	}
-	public void setCoachID(String courseID) {
+	public void setCourseID(String courseID) {
 		CourseID = courseID;
 	}
 	public String getRoomID() {
@@ -54,12 +60,26 @@ public class CourseVideo {
 	public void setRoomName(String roomName) {
 		RoomName = roomName;
 	}
+	public String getCreated_TS() {
+		return Created_TS;
+	}
+	public void setCreated_TS(String created_TS) {
+		Created_TS = created_TS;
+	}
+	public String getUpdated_TS() {
+		return Updated_TS;
+	}
+	public void setUpdated_TS(String updated_TS) {
+		Updated_TS = updated_TS;
+	}
 	public Collection<User> getUsers() {
 		return Users;
 	}
 	public void setUsers(Collection<User> users) {
 		Users = users;
 	}
+	
+	
 	
 	
 }

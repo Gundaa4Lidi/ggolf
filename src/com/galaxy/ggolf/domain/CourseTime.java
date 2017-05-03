@@ -5,18 +5,16 @@ public class CourseTime {
 	private String CourseID;
 	private String CoachID;
 	private String IsOpen;
-	private String OpenDate;
 	private String OpenTime;
 	private String Created_TS;
 	private String Updated_TS;
 	
-	public CourseTime(String courseTimeID, String courseID, String coachID, String isOpen, String openDate,
+	public CourseTime(String courseTimeID, String courseID, String coachID, String isOpen,
 			String openTime, String created_TS, String updated_TS) {
 		CourseTimeID = courseTimeID;
 		CourseID = courseID;
 		CoachID = coachID;
 		IsOpen = isOpen;
-		OpenDate = openDate;
 		OpenTime = openTime;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
@@ -45,12 +43,6 @@ public class CourseTime {
 	}
 	public void setIsOpen(String isOpen) {
 		IsOpen = isOpen;
-	}
-	public String getOpenDate() {
-		return OpenDate;
-	}
-	public void setOpenDate(String openDate) {
-		OpenDate = openDate;
 	}
 	public String getOpenTime() {
 		return OpenTime;

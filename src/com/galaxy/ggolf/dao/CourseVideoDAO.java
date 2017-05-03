@@ -23,9 +23,10 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 				+ "CourseID,"
 				+ "RoomID,"
 				+ "Password,"
-				+ "RoomName)values(?,?,?,?,?)";
+				+ "RoomName,"
+				+ "Created_TS)values(?,?,?,?,?,?)";
 		return super.executeUpdate(sql,cv.getCreatorID(),cv.getRoomID(),cv.getCourseID(),
-				cv.getPassword(),cv.getRoomName());
+				cv.getPassword(),cv.getRoomName(),Time());
 	}
 	
 	/**
@@ -34,8 +35,19 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @param UID
 	 * @return
 	 */
-	public boolean updatePassword(String pwd,String roomName,String UID){
-		String sql = "update coursevideo set Password='"+pwd+"',RoomName='"+roomName+"' WHERE DeletedFlag is null and UID='"+UID+"'";
+	public boolean updatePassword(String pwd,String CourseID){
+		String sql = "update coursevideo set Password='"+pwd+"' Updated_TS='"+Time()+"' WHERE DeletedFlag is null and CourseID='"+CourseID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 修改直播间的房间名称
+	 * @param roomName
+	 * @param UID
+	 * @return
+	 */
+	public boolean updateRoomName(String roomName,String UID){
+		String sql = "update coursevideo set RoomName='"+roomName+"',Updated_TS='"+Time()+"' WHERE DeletedFlag is null and UID='"+UID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -46,7 +58,7 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public boolean delete(String UID){
-		String sql = "update coursevideo set DeletedFlag='Y' WHER UID='"+UID+"'";
+		String sql = "update coursevideo set DeletedFlag='Y' Updated_TS='"+Time()+"' WHER UID='"+UID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -56,9 +68,9 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public Collection<CourseVideo> getVideoByCoachID(String CoachID){
-		String sql = "select * from coursevideo where CreatorID='"+CoachID+"' and ("
+		String sql = "select * from coursevideo where DeletedFlag is null and  CreatorID='"+CoachID+"' and ("
 				+ "select count(*) from coachcourse where DeletedFlag is null"
-				+ " and CoachID='"+CoachID+"' and IsVideo='1' and IsOpen='1' and Verify='申请通过')>0 ";
+				+ " and CoachID='"+CoachID+"' and IsVideo='1' and IsOpen='1' and Verify='1')>0 ";
 		return super.executeQuery(sql);
 	}
 	
@@ -68,9 +80,9 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public CourseVideo getByCourseID(String CourseID){
-		String sql = "select * from coursevideo where CourseID=("
+		String sql = "select * from coursevideo where DeletedFlag is null and CourseID=("
 				+ "select CourseID from coachcourse where DeletedFlag is null"
-				+ " and CourseID='"+CourseID+"' and IsVideo='1' and IsOpen='1' and Verify='申请通过') ";
+				+ " and CourseID='"+CourseID+"' and IsVideo='1' and IsOpen='1' and Verify='1') ";
 		Collection<CourseVideo> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (CourseVideo) result.toArray()[0];

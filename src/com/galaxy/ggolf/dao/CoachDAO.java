@@ -30,7 +30,7 @@ public class CoachDAO extends GenericDAO<Coach> {
 				+ "Verify,"
 				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,coach.getCoachID(),coach.getCoachName(),coach.getCoachHead(),coach.getAge(),coach.getClubID(),
-				coach.getClubName(),coach.getSeniority(),coach.getIntro(),coach.getACHV(),coach.getTeachACHV(),"申请中",Time());
+				coach.getClubName(),coach.getSeniority(),coach.getIntro(),coach.getACHV(),coach.getTeachACHV(),"0",Time());
 	}
 	
 	/**
@@ -66,12 +66,16 @@ public class CoachDAO extends GenericDAO<Coach> {
 	}
 	
 	/**
-	 * 查询教练信息是否存在
+	 * 查询验证通过的有没这个教练
 	 * @param UserID
 	 * @return
 	 */
-	public Coach getCoachByCoachID(String CoachID){
-		String sql = "select * from coach where DeletedFlag is null and CoachID="+CoachID+"";
+	public Coach getCoachByCoachID(String CoachID,String Verify){
+		String sqlString = "";
+		if(Verify!=null){
+			sqlString += "Verify='"+Verify+"'";
+		}
+		String sql = "select * from coach where DeletedFlag is null and CoachID="+CoachID+" "+sqlString+"";
 		Collection<Coach> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (Coach) result.toArray()[0];

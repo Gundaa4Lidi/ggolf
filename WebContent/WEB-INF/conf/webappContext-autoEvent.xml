@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+			
+	<bean id="autoEventService" class="com.galaxy.ggolf.service.AutoEventService">
+		<constructor-arg ref="messageDAO" />
+		<constructor-arg ref="courseTimeDAO"/>
+		<constructor-arg ref="clubOrderDAO"/>
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
+	</bean>
+	<bean id="courseTimeDAO" class="com.galaxy.ggolf.dao.CourseTimeDAO">
+	</bean>
+	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
+	</bean>
+</beans>

@@ -22,6 +22,7 @@ public class Coach {
 	private String Updated_TS;
 	private CoachScore coachScore;
 	private Collection<CoachComment> coachComments;
+	private Collection<CoachCourse> coachCourses;
 	
 	public Coach(String uID, String coachID, String coachName, String coachHead, String age, String clubID,
 			String clubName, String seniority, String intro, String aCHV, String teachACHV, String verify,
@@ -79,6 +80,12 @@ public class Coach {
 	}
 	public void setClubID(String clubID) {
 		ClubID = clubID;
+	}
+	public Collection<CoachCourse> getCoachCourses() {
+		return coachCourses;
+	}
+	public void setCoachCourses(Collection<CoachCourse> coachCourses) {
+		this.coachCourses = coachCourses;
 	}
 	public String getClubName() {
 		return ClubName;

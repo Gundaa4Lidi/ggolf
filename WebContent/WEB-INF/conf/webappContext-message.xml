@@ -42,9 +42,10 @@
 	</bean>
 	<bean id="configDAO" class="com.galaxy.ggolf.dao.Common_configDAO">
 	</bean>
-	<bean id="messageCloseService" class="com.galaxy.ggolf.manager.MessageCloseService">
+	<!-- <bean id="messageCloseService" class="com.galaxy.ggolf.manager.MessageCloseService">
 	    <constructor-arg ref="messageDAO"/>
-	</bean>
+	    <constructor-arg ref="courseTimeDAO"/>
+	</bean> -->
 	
 	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
 	</bean>
@@ -58,4 +59,6 @@
 	</bean>
 	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
 	</bean>
+	<!-- <bean id="courseTimeDAO" class="com.galaxy.ggolf.dao.CourseTimeDAO">
+	</bean> -->
 </beans>

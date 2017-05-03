@@ -206,7 +206,7 @@ public class UserManager {
 		if(!userDAO.updateUser(user)){
 			throw new GalaxyLabException("Error in update user");
 		}
-		if(this.coachDAO.getCoachByCoachID(user.getUserID())!=null){
+		if(this.coachDAO.getCoachByCoachID(user.getUserID(),null)!=null){
 			String sql = "CoachName='"+user.getName()+"',"
 					+ "CoachHead='"+user.getHead_portrait()+"',"
 					+ "Age='"+user.getAge()+"'";

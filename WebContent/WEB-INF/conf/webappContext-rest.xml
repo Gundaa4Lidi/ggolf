@@ -54,6 +54,8 @@
 			<ref bean="clubOrderService"/>
 			<ref bean="hotCityService"/>
 			<ref bean="coachService"/>
+			<ref bean="autoEventService"/>
+			<ref bean="courseOrderService"/>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean='jsonProvider' />

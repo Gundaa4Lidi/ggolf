@@ -182,15 +182,16 @@ public class ClubOrderService extends BaseService {
 				if(!this.orderDAO.createOrder(order)){
 					throw new GalaxyLabException("Error in create cluborder");
 				}
-				String channel = "alipay";
-				if(order.getType().equals("支付宝支付")){
-					channel = "alipay";
-				}else if(order.getType().equals("微信支付")){
-					channel = "wx";
-				}
-				String clientIp = "127.0.0.1";
-				Charge c = sendPingppOrder(order.getOrderID(), order.getDownPayment(), channel, clientIp, "1", "12544", "13202845411");
-				return getResponse(c);
+//				String channel = "alipay";
+//				if(order.getType().equals("支付宝支付")){
+//					channel = "alipay";
+//				}else if(order.getType().equals("微信支付")){
+//					channel = "wx";
+//				}
+//				String clientIp = "127.0.0.1";
+//				Charge c = sendPingppOrder(order.getOrderID(), order.getDownPayment(), channel, clientIp, "1", "12544", "13202845411");
+//				return getResponse(c);
+				return getSuccessResponse();
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -209,6 +210,7 @@ public class ClubOrderService extends BaseService {
 	@Path("/updateOrderState")
 	public String updateState(@FormParam("StateType") String StateType,
 			@FormParam("OrderID") String OrderID,
+			@FormParam("PayType") String payType,
 			@Context HttpHeaders headers){
 		try {
 			if(StateType.equals("0")){
@@ -227,7 +229,7 @@ public class ClubOrderService extends BaseService {
 				}
 			}
 			if(StateType.equals("4")){
-				if(!this.orderDAO.finishBooking(OrderID)){
+				if(!this.orderDAO.finishBooking(OrderID,payType)){
 					throw new GalaxyLabException("Error in finish booking");
 				}
 			}

@@ -12,27 +12,28 @@ public class CoachCourse {
 	private String Valid;
 	private String IsOpen;
 	private String MaxPeople;
+	private String IsBatch;
+	private String ClassHour;
 	private String ContainExplain;
 	private String IsVideo;
 	private String Created_TS;
 	private String Updated_TS;
 	private CourseVideo courseVideo;
+	private CourseTime courseTime;
 	
-	
-	public CoachCourse(String courseID, String coachID, String coachName, String coachHead, String coachPhone, String title,
-			String price, String verify, String valid, String isOpen, String maxPeople, String containExplain,
+	public CoachCourse(String courseID, String coachID,String title, String price, String verify, String valid,
+			String isOpen, String maxPeople, String isBatch,String classHour, String containExplain,
 			String isVideo, String created_TS, String updated_TS) {
 		CourseID = courseID;
 		CoachID = coachID;
-		CoachName = coachName;
-		CoachHead = coachHead;
-		CoachPhone = coachPhone;
 		Title = title;
 		Price = price;
 		Verify = verify;
 		Valid = valid;
 		IsOpen = isOpen;
 		MaxPeople = maxPeople;
+		IsBatch = isBatch;
+		ClassHour = classHour;
 		ContainExplain = containExplain;
 		IsVideo = isVideo;
 		Created_TS = created_TS;
@@ -133,6 +134,24 @@ public class CoachCourse {
 	}
 	public void setCourseVideo(CourseVideo courseVideo) {
 		this.courseVideo = courseVideo;
+	}
+	public String getIsBatch() {
+		return IsBatch;
+	}
+	public void setIsBatch(String isBatch) {
+		IsBatch = isBatch;
+	}
+	public String getClassHour() {
+		return ClassHour;
+	}
+	public void setClassHour(String classHour) {
+		ClassHour = classHour;
+	}
+	public CourseTime getCourseTime() {
+		return courseTime;
+	}
+	public void setCourseTime(CourseTime courseTime) {
+		this.courseTime = courseTime;
 	}
 	
 	

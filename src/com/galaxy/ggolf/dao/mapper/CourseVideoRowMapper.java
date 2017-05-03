@@ -12,6 +12,9 @@ public class CourseVideoRowMapper implements RowMapper<CourseVideo> {
 	public static final String COLUMN_RoomID = "RoomID";
 	public static final String COLUMN_Password = "Password";
 	public static final String COLUMN_RoomName = "RoomName";
+	private static final String COLUMN_Created_TS = "Created_TS";
+	private static final String COLUMN_Updated_TS = "Updated_TS";
+
 	@Override
 	public CourseVideo mapRow(ResultSet res) throws SQLException {
 		String UID = res.getString(COLUMN_UID);
@@ -20,7 +23,9 @@ public class CourseVideoRowMapper implements RowMapper<CourseVideo> {
 		String RoomID = res.getString(COLUMN_RoomID);
 		String Password = res.getString(COLUMN_Password);
 		String RoomName = res.getString(COLUMN_RoomName);
-		return new CourseVideo(UID,CreatorID,CourseID,RoomID,Password,RoomName);
+		String Created_TS = res.getString(COLUMN_Created_TS);
+		String Updated_TS = res.getString(COLUMN_Updated_TS);
+		return new CourseVideo(UID,CreatorID,CourseID,RoomID,Password,RoomName,Created_TS,Updated_TS);
 	}
 
 }

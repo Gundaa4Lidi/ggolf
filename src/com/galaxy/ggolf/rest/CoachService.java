@@ -1,6 +1,10 @@
 package com.galaxy.ggolf.rest;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -14,13 +18,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.dao.CoachCommentDAO;
+import com.galaxy.ggolf.dao.CoachCourseDAO;
 import com.galaxy.ggolf.dao.CoachDAO;
 import com.galaxy.ggolf.dao.CoachScoreDAO;
+import com.galaxy.ggolf.dao.CourseOrderDAO;
+import com.galaxy.ggolf.dao.CourseTimeDAO;
+import com.galaxy.ggolf.dao.CourseVideoDAO;
 import com.galaxy.ggolf.dao.UserDAO;
 import com.galaxy.ggolf.domain.Coach;
 import com.galaxy.ggolf.domain.CoachComment;
+import com.galaxy.ggolf.domain.CoachCourse;
 import com.galaxy.ggolf.domain.CoachScore;
+import com.galaxy.ggolf.domain.CourseOrder;
+import com.galaxy.ggolf.domain.CourseTime;
+import com.galaxy.ggolf.domain.CourseVideo;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.User;
+import com.galaxy.ggolf.dto.CoachData;
+import com.galaxy.ggolf.dto.UserData;
+import com.galaxy.ggolf.tools.CipherUtil;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -28,19 +44,31 @@ import com.galaxy.ggolf.domain.GalaxyLabException;
 public class CoachService extends BaseService {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	private CoachDAO coachDAO;
-	private UserDAO userDAO;
-	private CoachScoreDAO coachScoreDAO;
-	private CoachCommentDAO coachCommentDAO;
+	private final CoachDAO coachDAO;
+	private final UserDAO userDAO;
+	private final CoachScoreDAO coachScoreDAO;
+	private final CoachCommentDAO coachCommentDAO;
+	private final CoachCourseDAO coachCourseDAO;
+	private final CourseTimeDAO courseTimeDAO;
+	private final CourseVideoDAO courseVideoDAO;
+	private final CourseOrderDAO courseOrderDAO;
 	
 	public CoachService(CoachDAO coachDAO,
 			UserDAO userDAO,
 			CoachScoreDAO coachScoreDAO,
-			CoachCommentDAO coachCommentDAO) {
+			CoachCommentDAO coachCommentDAO,
+			CoachCourseDAO coachCourseDAO,
+			CourseTimeDAO courseTimeDAO,
+			CourseVideoDAO courseVideoDAO,
+			CourseOrderDAO courseOrderDAO) {
 		this.coachDAO = coachDAO;
 		this.userDAO = userDAO;
 		this.coachScoreDAO = coachScoreDAO;
 		this.coachCommentDAO = coachCommentDAO;
+		this.coachCourseDAO = coachCourseDAO;
+		this.courseTimeDAO = courseTimeDAO;
+		this.courseVideoDAO = courseVideoDAO;
+		this.courseOrderDAO = courseOrderDAO;
 	}
 	
 	/**
@@ -54,9 +82,9 @@ public class CoachService extends BaseService {
 	public String saveCoach(String data, @Context HttpHeaders headers){
 		try {
 			Coach coach = super.fromGson(data,Coach.class);
-			Coach c = this.coachDAO.getCoachByCoachID(coach.getCoachID());
+			Coach c = this.coachDAO.getCoachByCoachID(coach.getCoachID(),null);
 			if(c!=null){
-				if(c.getVerify().equals("审核通过")){
+				if(c.getVerify().equals("1")){
 					String sqlString = update(coach);
 					if(!this.coachDAO.update(coach.getCoachID(), sqlString)){
 						return getErrormessage("修改教练信息失败");
@@ -115,13 +143,13 @@ public class CoachService extends BaseService {
 			@FormParam("CoachID") String CoachID,
 			@Context HttpHeaders headers){
 		try {
-			if(!Verify.equals("审批拒绝")&&!Verify.equals("审核通过")){
+			if(!Verify.equals("2")&&!Verify.equals("1")){
 				if(!this.coachDAO.updateVerify(CoachID, Verify)){
 					throw new GalaxyLabException("Error in update verify for coach");
 				}
-				Coach co = this.coachDAO.getCoachByCoachID(CoachID);
+				Coach co = this.coachDAO.getCoachByCoachID(CoachID,null);
 				if(co!=null){
-					if(co.getVerify().equals("审核通过")){
+					if(co.getVerify().equals("1")){
 						CoachScore cs = new CoachScore();
 						cs.setCoachID(co.getCoachID());
 						cs.setScore("0");
@@ -152,15 +180,22 @@ public class CoachService extends BaseService {
 	public String getCoachDetail(@FormParam("CoachID") String CoachID,
 			@Context HttpHeaders headers){
 		try {
-			Coach c = this.coachDAO.getCoachByCoachID(CoachID);
+			Coach c = this.coachDAO.getCoachByCoachID(CoachID,null);
 			if(c!=null){
-				CoachScore cs = this.coachScoreDAO.getByCoachID(CoachID);//教练的评分
-				Collection<CoachComment> coachComments= this.coachCommentDAO.getCommentByCoachID(CoachID);//教练的学员评价
-				if(cs!=null){
-					c.setCoachScore(cs);
-				}
-				if(coachComments.size()>0){
-					c.setCoachComments(coachComments);
+				if(c.getVerify().equals("1")){
+					CoachScore cs = this.coachScoreDAO.getByCoachID(CoachID);//教练的评分
+					Collection<CoachComment> coachComments= this.coachCommentDAO.getCommentByCoachID(CoachID);//教练的学员评价
+					String sqlString = "and CoachID='"+CoachID+"' ";
+					Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, null, "5");
+					if(cs!=null){
+						c.setCoachScore(cs);
+					}
+					if(coachComments.size()>0){
+						c.setCoachComments(coachComments);
+					}
+					if(coachCourses.size() > 0){
+						c.setCoachCourses(coachCourses);
+					}
 				}
 				// TODO
 				return getResponse(c);
@@ -205,7 +240,7 @@ public class CoachService extends BaseService {
 	public String getCoach(@FormParam("keyword") String keyword, @FormParam("pageNum") String pageNum,
 			@FormParam("rows") String rows, @FormParam("ClubID") String ClubID, @Context HttpHeaders headers) {
 		try {
-			String sqlString = search(keyword);
+			String sqlString = search(keyword,"0");
 			String limit = limit(pageNum, rows);
 			if (ClubID != null && !ClubID.equalsIgnoreCase("null") && !ClubID.equalsIgnoreCase("")) {
 				sqlString += "and ClubID='" + ClubID + "' ";
@@ -218,26 +253,45 @@ public class CoachService extends BaseService {
 		}
 		return getErrorResponse();
 	}
-
-	public String search(String keyword){
+	
+	//搜索关键字
+	public String search(String keyword,String type){
 		String sqlString = "";
 		if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
-			sqlString = "and (CoachName like '%"
-					+ keyword
-					+ "%' or Age like '%"
-					+ keyword 
-					+ "%' or ClubName like '%"
-					+ keyword 
-					+ "%' or Seniority like '%"
-					+ keyword 
-					+ "%' or Intro like '%"
-					+ keyword
-					+ "%' or ACHV like '%"
-					+ keyword
-					+ "%' or TeachACHV like '%"
-					+ keyword
-					+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
-					+ keyword +"%') ";
+			if(type.equals("0")){//教练
+				sqlString = "and (CoachName like '%"
+						+ keyword
+						+ "%' or Age like '%"
+						+ keyword 
+						+ "%' or ClubName like '%"
+						+ keyword 
+						+ "%' or Seniority like '%"
+						+ keyword 
+						+ "%' or Intro like '%"
+						+ keyword
+						+ "%' or ACHV like '%"
+						+ keyword
+						+ "%' or TeachACHV like '%"
+						+ keyword
+						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+						+ keyword +"%') ";
+			}
+			if(type.equals("1")){//课程
+				sqlString = "and (CoachName like '%"
+						+ keyword
+						+ "%' or CoachPhone like '%"
+						+ keyword 
+						+ "%' or Title like '%"
+						+ keyword 
+						+ "%' or Price like '%"
+						+ keyword 
+						+ "%' or MaxPeople like '%"
+						+ keyword
+						+ "%' or ContainExplain like '%"
+						+ keyword
+						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+						+ keyword +"%') ";
+			}
 		}
 		return sqlString;
 	}
@@ -284,9 +338,6 @@ public class CoachService extends BaseService {
 	}
 	
 	
-	
-	
-	
 	/**
 	 * 获取教练的球员评价
 	 * @param CoachID
@@ -305,5 +356,464 @@ public class CoachService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 教练申请开设课程
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/ApplyCourse")
+	public String ApplyCourse(String data,@Context HttpHeaders headers){
+		try {
+			CoachCourse cc = super.fromGson(data, CoachCourse.class);
+			if(!this.coachCourseDAO.create(cc)){
+				throw new GalaxyLabException("Error in create coach course");
+			}
+			return getSuccessResponse();
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 确认课程是否可通过审核
+	 * @param CourseID
+	 * @param Verify
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/CourseVerify")
+	public String CourseVerify(@FormParam("CourseID") String CourseID,
+			@FormParam("Verify") String Verify,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.coachCourseDAO.CourseVerify(CourseID, Verify)){
+				throw new GalaxyLabException("Error in verify Course");
+			}
+			// TODO
+//			CoachCourse coachCourse = this.coachCourseDAO.getByCourseID(CourseID);
+//			if(coachCourse!=null&&coachCourse.getVerify().equals("1")){
+//				if(coachCourse.getIsVideo().equals("1")){
+//					
+//				}
+//			}
+			return getSuccessResponse();
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据教练编号,关键字,页码,条数 获取教练的课程
+	 * @param CoachID
+	 * @param keyword
+	 * @param pageNum
+	 * @param rows
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getCourseByCoachID")
+	public String getCourseByCoachID(@FormParam("CoachID") String CoachID,
+			@FormParam("keyword") String keyword,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "";
+			if(this.coachDAO.getCoachByCoachID(CoachID,"1")!=null){//查询验证通过的有没这个教练
+				sqlString += "and CoachID='"+CoachID+"' ";
+				sqlString += search(keyword, "1");
+				Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, pageNum, rows);
+				if(coachCourses.size() > 0){
+					Map<String,String> cMap = new HashMap<String,String>();
+					for(CoachCourse ccs : coachCourses){
+						if(cMap.get(ccs.getCoachID())==null){
+							Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
+							if(coach != null){
+								ccs.setCoachName(coach.getCoachName());
+								ccs.setCoachHead(ccs.getCoachHead());
+								ccs.setCoachPhone(ccs.getCoachPhone());
+								cMap.put(ccs.getCoachID(), ccs.getCoachID());
+							}
+						}
+					}
+					return getResponse(coachCourses);
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据关键字,页码,条数获取课程
+	 * @param keyword
+	 * @param pageNum
+	 * @param rows
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getCourse")
+	public String getCourse(
+			@FormParam("keyword") String keyword,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = search(keyword, "1");
+			Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, pageNum, rows);
+			if(coachCourses.size() > 0){
+				Map<String,String> cMap = new HashMap<String,String>();
+				for(CoachCourse ccs : coachCourses){
+					if(cMap.get(ccs.getCoachID())==null){
+						Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
+						if(coach != null){
+							ccs.setCoachName(coach.getCoachName());
+							ccs.setCoachHead(ccs.getCoachHead());
+							ccs.setCoachPhone(ccs.getCoachPhone());
+							cMap.put(ccs.getCoachID(), ccs.getCoachID());
+						}
+					}
+				}
+				return getResponse(coachCourses);
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	//修改课程内容
+	public String updateCourse(CoachCourse cc){
+		String sqlString = "";
+		if(cc.getTitle()!=null&&!cc.getTitle().equalsIgnoreCase("null")){
+			sqlString += "Title="+cc.getTitle()+",";
+		}
+		if(cc.getPrice()!=null&&!cc.getPrice().equalsIgnoreCase("null")){
+			sqlString += "="+cc.getPrice()+",";
+		}
+		if(cc.getValid()!=null&&!cc.getValid().equalsIgnoreCase("null")){
+			sqlString += "Valid="+cc.getValid()+",";
+		}
+		if(cc.getIsOpen()!=null&&!cc.getIsOpen().equalsIgnoreCase("null")){
+			sqlString += "IsOpen="+cc.getIsOpen()+",";
+		}
+		if(cc.getMaxPeople()!=null&&!cc.getMaxPeople().equalsIgnoreCase("null")){
+			sqlString += "MaxPeople="+cc.getMaxPeople()+",";
+		}
+		if(cc.getContainExplain()!=null&&!cc.getContainExplain().equalsIgnoreCase("null")){
+			sqlString += "ContainExplain="+cc.getContainExplain()+",";
+		}
+		if(cc.getIsVideo()!=null&&!cc.getIsVideo().equalsIgnoreCase("null")){
+			sqlString += "IsVideo="+cc.getIsVideo()+",";
+		}
+		return sqlString;
+	}
+	
+	/**
+	 * 修改课程描述内容
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/updateCourse")
+	public String updateCourse(String data,@Context HttpHeaders headers){
+		try {
+			CoachCourse course = super.fromGson(data, CoachCourse.class);
+			String sqlString = updateCourse(course);
+			if(!this.coachCourseDAO.update(sqlString, course.getCourseID())){
+				throw new GalaxyLabException("Error in update course");
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 设置课程的开放时间
+	 * @param json
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/IsOpenTime")
+	public String IsOpenTime(String json,@Context HttpHeaders headers){
+		try {
+			Collection<CourseTime> courseTimes = super.fromJsonArray(json, CourseTime.class);
+			if(!this.courseTimeDAO.IsOpenTime(courseTimes)){
+				throw new GalaxyLabException("Error in create CourseTime");
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取课程的开放时间
+	 * @param CourseID
+	 * @param dateTime 
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getCourseOpenTime")
+	public String getCourseOpenTime(@FormParam("CourseID") String CourseID,
+			@FormParam("dateTime") String dateTime,
+			@Context HttpHeaders headers){
+		try {
+			Collection<CourseTime> courseTimes = this.courseTimeDAO.getTimebyCourseID(CourseID);
+			if(dateTime!=null&&!dateTime.equals("")&&!dateTime.equalsIgnoreCase("null")){
+				courseTimes = this.courseTimeDAO.getTimeByDate(CourseID, dateTime);
+			}
+			return getResponse(courseTimes);
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 创建直播间
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/createCourseVideo")
+	public String createCourseVideo(String data,@Context HttpHeaders headers){
+		try {
+			CourseVideo courseVideo = super.fromGson(data, CourseVideo.class);
+			CourseVideo cv = this.courseVideoDAO.getByCourseID(courseVideo.getCourseID());
+			if(cv!=null){
+				return getErrormessage("该课程房间已存在");
+			}
+			if(!this.courseVideoDAO.create(courseVideo)){
+				throw new GalaxyLabException("Error in create createCourseVideo");
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 修改房间名称
+	 * @param RoomName
+	 * @param UID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/updateRoomName")
+	public String updateRoomName(@FormParam("RoomName") String RoomName,
+			@FormParam("UID") String UID,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.courseVideoDAO.updateRoomName(RoomName, UID)){
+				throw new GalaxyLabException("Error in update roomname");
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+		
+	}
+	/**
+	 * 修改直播间的房间密码
+	 * @param password
+	 * @param password1
+	 * @param CourseID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/updateRoomPwd")
+	public String updateRoomPwd(@FormParam("password") String password,
+			@FormParam("password1") String password1,
+			@FormParam("CourseID") String CourseID,
+			@Context HttpHeaders headers){
+		try {
+			CourseVideo cv = this.courseVideoDAO.getByCourseID(CourseID);
+			if(cv!=null){
+				if(password.equals(cv.getPassword())){
+					if(!this.courseVideoDAO.updatePassword(password1, CourseID)){
+						throw new GalaxyLabException("Error in update password");
+					}
+				}
+			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+		
+	}
+	
+//	@POST
+//	@Path("/test")
+//	public String test(String data,
+//			@FormParam("test") String test,
+//			@Context HttpHeaders headers){
+//		try {
+//			
+//		} catch (Exception e) {
+//			logger.error("Error occured",e);
+//		}
+//		return getErrorResponse();
+//	}
+	
+	/**
+	 * 获取教练的学生(我的学生)
+	 * @param CoachID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getStudentsByCoach")
+	public String getStudentsByCoach(@FormParam("CoachID") String CoachID,
+			@Context HttpHeaders headers){
+		try {
+			Coach c = this.coachDAO.getCoachByCoachID(CoachID, null);
+			Collection<User> students = new ArrayList<User>();
+			if(c!=null){
+				String sqlString = "and CoachID='"+CoachID+"' and State='3' Group by UserID ";
+				Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
+				int count = this.courseOrderDAO.getOrderCount(sqlString);
+				if(orders.size() > 0 ){
+					for(CourseOrder order : orders){
+						User user = this.userDAO.getUserByUserID(order.getUserID());
+						if(user!=null){
+							students.add(user);
+						}
+					}
+					UserData userData = new UserData(count, students);
+					return getResponse(userData);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取用户的教练(我的教练)
+	 * @param UserID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getCoachByUserID")
+	public String getCoachByUserID(@FormParam("UserID") String UserID,
+			@Context HttpHeaders headers){
+		try {
+			User u = this.userDAO.getUserByUserID(UserID);
+			Collection<Coach> coachs = new ArrayList<Coach>();
+			if(u!=null){
+				String sqlString = "and UserID='"+UserID+"' and State='3' Group by CoachID";
+				Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
+				int count = this.courseOrderDAO.getOrderCount(sqlString);
+				if(orders.size()>0){
+					for(CourseOrder co : orders){
+						Coach coach = this.coachDAO.getCoachByCoachID(co.getCoachID(), "1");
+						if(coach!=null){
+							coachs.add(coach);
+						}
+					}
+					CoachData data = new CoachData(count,coachs); 
+					return getResponse(data);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取该课程下的所有学生
+	 * @param CourseID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getStudentByCourseID")
+	public String getStudentByCourseID(@FormParam("CourseID") String CourseID,
+			@Context HttpHeaders headers){
+		try {
+			Collection<User> students = new ArrayList<User>();
+			String sqlString = "and CourseID='"+CourseID+"' and State='3' Group by UserID";
+			Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
+			int count = this.courseOrderDAO.getOrderCount(sqlString);
+			if(orders.size() > 0){
+				for(CourseOrder co : orders){
+					User user = this.userDAO.getUserByUserID(co.getUserID());
+					if(user!=null){
+						students.add(user);
+					}
+				}
+				UserData data = new UserData(count, students);
+				return getResponse(data);
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 根据时段获取学生
+	 * @param CourseID 课程编号
+	 * @param StartDateTime 开课时间(yyyy-MM-dd格式获取当天的学生,yyyy-MM-dd HH:mm格式获取当前时间点的学生)
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getStudentByDateTime")
+	public String getStudentByDateTime(@FormParam("CourseID") String CourseID,
+			@FormParam("StartDateTime") String StartDateTime,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "";
+			Collection<User> students = new ArrayList<User>();
+			CoachCourse course = this.coachCourseDAO.getByCourseID(CourseID);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			sdf.setLenient(false);
+			SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sdf1.setLenient(false);
+			if(course.getIsBatch().equals("0")){
+				if(sdf.parse(StartDateTime)!=null){
+					sqlString = "and CourseID='"+CourseID+"' and State='3' and date_format(`StartDateTime`,'%Y-%m-%d')='"+StartDateTime+"' Group by UserID";
+				}
+				if(sdf.parse(StartDateTime)!=null){
+					sqlString = "and CourseID='"+CourseID+"' and State='3' and StartDateTime='"+StartDateTime+"' Group by UserID";
+				}
+				Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
+				int count = this.courseOrderDAO.getOrderCount(sqlString);
+				if(orders.size() > 0){
+					for(CourseOrder co : orders){
+						User user = this.userDAO.getUserByUserID(co.getUserID());
+						if(user!=null){
+							students.add(user);
+						}
+					}
+					UserData data = new UserData(count, students);
+					return getResponse(data);
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
 	
 }

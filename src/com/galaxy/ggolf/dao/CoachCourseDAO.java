@@ -22,11 +22,14 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 				+ "Valid,"
 				+ "IsOpen,"
 				+ "MaxPeople,"
+				+ "IsBatch,"
+				+ "ClassHour,"
 				+ "ContainExplain,"
 				+ "IsVideo,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,cc.getCoachID(),cc.getCoachName(),cc.getCoachPhone(),cc.getTitle(),cc.getPrice(),
-				"申请中",cc.getValid(),"0",cc.getMaxPeople(),cc.getContainExplain(),cc.getIsVideo(),Time());
+				"0",cc.getValid(),"0",cc.getMaxPeople(),cc.getIsBatch(),cc.getClassHour(),cc.getContainExplain(),
+				cc.getIsVideo(),Time());
 	}
 	
 	public boolean CourseVerify(String CourseID,String Verify){
@@ -35,10 +38,10 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 	}
 	
 	
-	public Collection<CoachCourse> getCourse(String CoachID,String sqlString,String pageNum,String rows){
+	public Collection<CoachCourse> getCourse(String sqlString,String pageNum,String rows){
 		String limit = super.limit(pageNum, rows);
-		String sql = "select * from coachcourse where DeletedFlag is null"
-				+ " and CoachID='"+CoachID+"' "+sqlString+" order by Created_TS "+limit+"";
+		String sql = "select * from coachcourse where DeletedFlag is null "
+				+ ""+sqlString+" order by Created_TS "+limit+"";
 		return super.executeQuery(sql);
 	}
 	

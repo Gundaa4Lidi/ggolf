@@ -10,6 +10,10 @@
 		<constructor-arg ref="userDAO"/>
 		<constructor-arg ref="coachScoreDAO"/>
 		<constructor-arg ref="coachCommentDAO"/>
+		<constructor-arg ref="coachCourseDAO"/>
+		<constructor-arg ref="courseTimeDAO"/>
+		<constructor-arg ref="courseVideoDAO"/>
+		<constructor-arg ref="courseOrderDAO"/>
 	</bean>
 	
 	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
@@ -20,4 +24,13 @@
 	</bean>
 	<bean id="coachCommentDAO" class="com.galaxy.ggolf.dao.CoachCommentDAO">
 	</bean>
+	<bean id="coachCourseDAO" class="com.galaxy.ggolf.dao.CoachCourseDAO">
+	</bean>
+	<bean id="courseTimeDAO" class="com.galaxy.ggolf.dao.CourseTimeDAO">
+	</bean>
+	<bean id="courseVideoDAO" class="com.galaxy.ggolf.dao.CourseVideoDAO">
+	</bean>
+	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
+	</bean>
+	
 </beans>

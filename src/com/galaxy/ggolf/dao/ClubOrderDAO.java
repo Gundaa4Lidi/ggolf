@@ -25,8 +25,8 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public int getOrderID(){
 		String[] s = new String[2];
-		s[0] = "insert into cluborderid(`Num`)values(NULL)";
-		s[1] = "select max(Num) as a  from cluborderid";
+		s[0] = "insert into orderid(`Num`)values(NULL)";
+		s[1] = "select max(Num) as a  from orderid";
 		return super.getId(s);
 	}
 	
@@ -42,7 +42,6 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "ClubservePriceID,"
 				+ "State,"
 				+ "CreateTime,"
-				+ "Type,"
 				+ "DownPayment,"
 				+ "StartDate,"
 				+ "StartTime,"
@@ -51,10 +50,10 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "ServiceExplain,"
 				+ "Created_TS,"
 				+ "Activity"
-				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,o.getOrderID(),o.getUserID(),o.getClubID(),o.getClubName(),o.getClubserveID(),
 				o.getClubserveName(),o.getClubserveLimitTimeID(),o.getClubservePriceID(),Submit_order,Time1(),
-				o.getType(),o.getDownPayment(),o.getStartDate(),o.getStartTime(),o.getNames(),o.getTel(),
+				o.getDownPayment(),o.getStartDate(),o.getStartTime(),o.getNames(),o.getTel(),
 				o.getServiceExplain(),Time(),Time()+",提交订单|");
 	}
 	
@@ -105,9 +104,6 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	/**
 	 * 获取订单数量
 	 * @param sqlString
-	 * @param pageNum
-	 * @param rows
-	 * @param ClubID
 	 * @return
 	 */
 	public int getOrderCount(String sqlString){
@@ -136,7 +132,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean confirmBall(String OrderID){
 		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",确认球位|'), State = '"+Confirm_ball
-				+"' where State = '"+Submit_order+"' and OrderID='"+OrderID+"'";
+				+"',Updated_TS='"+Time()+"' where State = '"+Submit_order+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -147,7 +143,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean onlineBooking(String OrderID){
 		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",在线预订|'), State = '"+Online_booking
-				+"' where State = '"+Confirm_ball+"' and OrderID='"+OrderID+"'";
+				+"',Updated_TS='"+Time()+"' where State = '"+Confirm_ball+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -156,9 +152,9 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @param OrderID
 	 * @return
 	 */
-	public boolean finishBooking(String OrderID){
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'), State = '"+Finish_booking
-				+"' where State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
+	public boolean finishBooking(String OrderID,String Type){
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'),Type='"+Type+"' State = '"+Finish_booking
+				+"',Updated_TS='"+Time()+"' where State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -170,7 +166,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean cancel(String OrderID){
 		String sql = "update `cluborder` set Activity = concat(Activity,'"+Time()+",取消订单|'),"
-				+ "State='"+Cancel_order+"' where State != '"+Finish_booking+"' and OrderID='"+OrderID+"'";
+				+ "State='"+Cancel_order+"',Updated_TS='"+Time()+"' where State != '"+Finish_booking+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -182,7 +178,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean cancelOrders(String dateTime)throws Exception{
 		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",下单30分钟没有付款取消订单|'), State = '"+Cancel_order
-				+"' where State != '"+Finish_booking+"' and Created_TS<'"+dateTime+"'";
+				+"',Updated_TS='"+Time()+"' where State != '"+Finish_booking+"' and Created_TS<'"+dateTime+"'";
 		return super.executeUpdate(sql);
 	}
 	
