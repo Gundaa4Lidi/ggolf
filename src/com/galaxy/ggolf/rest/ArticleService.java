@@ -1,5 +1,6 @@
 package com.galaxy.ggolf.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -19,6 +20,7 @@ import com.galaxy.ggolf.domain.ArticleContent;
 import com.galaxy.ggolf.domain.ArticleSubject;
 import com.galaxy.ggolf.domain.ArticleType;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.dto.ArticleData;
 import com.galaxy.ggolf.manager.ArticleManager;
 import com.galaxy.ggolf.manager.CommentManager;
 
@@ -151,6 +153,43 @@ public class ArticleService extends BaseService {
 	}
 	
 	/**
+	 * 获取文章的树状结构
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getTree")
+	public String getTree(@Context HttpHeaders headers){
+		try {
+			Collection<ArticleCategory> articleCategories = this.articleManager.getAllCategory();
+			if(articleCategories.size() > 0){
+				for(ArticleCategory ac : articleCategories){
+					Collection<ArticleType> articleTypes = this.articleManager.getTypeByCategoryID(ac.getCategoryID());
+					if(articleTypes.size() > 0){
+						for(ArticleType at : articleTypes){
+							if(ac.getSubOrNot()!=null&&ac.getSubOrNot().equals("1")){
+								Collection<ArticleSubject> articleSubjects = this.articleManager.getSubjectByTypeID(at.getTypeID());
+								if(articleSubjects.size() > 0){
+									at.setArticleSubject(articleSubjects);
+								}
+							}
+						}
+						ac.setArticleType(articleTypes);
+					}
+				}
+				return getResponse(articleCategories);
+			}
+		} catch (GalaxyLabException ex) {
+			logger.error(ex.getMessage(), ex);
+			return getErrorResponse(ex.getMessage());
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+			return getErrorResponse();
+		}
+		return getErrorResponse();
+	}
+	
+	/**
 	 * 根据是否发布获取文章
 	 * @param ReleaseOrAll
 	 * @param headers
@@ -212,8 +251,58 @@ public class ArticleService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	
 	/**
-	 * 根据文集类型获取其下的专题
+	 * 获取所有文集
+	 * @return
+	 */
+	@GET
+	@Path("/getAllCategory")
+	public String getAllCategory(){
+		try {
+			return getResponse(this.articleManager.getAllCategory());
+		} catch (GalaxyLabException ex) {
+			logger.error(ex.getMessage(), ex);
+			return getErrorResponse(ex.getMessage());
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+			return getErrorResponse();
+		}
+	}
+	
+	/**
+	 * 根据文集编号获取其下的类别
+	 * @param CategoryID
+	 * @return
+	 */
+	@GET
+	@Path("/getTypeByCategoryID")
+	public String getTypeByCategoryID(@FormParam("CategoryID") String CategoryID){
+		try {
+			ArticleCategory ac = this.articleManager.getbyCategoryID(CategoryID);
+			Collection<ArticleType> articleTypes = this.articleManager.getTypeByCategoryID(CategoryID);
+			if(articleTypes.size() > 0){
+				for(ArticleType at : articleTypes){
+					if(ac.getSubOrNot()!=null&&ac.getSubOrNot().equals("1")){
+						Collection<ArticleSubject> articleSubjects = this.articleManager.getSubjectByTypeID(at.getTypeID());
+						if(articleSubjects.size() > 0){
+							at.setArticleSubject(articleSubjects);
+						}
+					}
+				}
+			}
+			return getResponse(articleTypes);
+		} catch (GalaxyLabException ex) {
+			logger.error(ex.getMessage(), ex);
+			return getErrorResponse(ex.getMessage());
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+			return getErrorResponse();
+		}
+	}
+	
+	/**
+	 * 根据文集类别获取其下的专题
 	 * @param TypeID
 	 * @return
 	 */
@@ -244,17 +333,19 @@ public class ArticleService extends BaseService {
 			@FormParam("SubjectID") String SubjectID,
 			@Context HttpHeaders headers){
 		try {
+			String sqlString = "and SubjectID='"+SubjectID+"'";
+			int count = 0;
+			Collection<Article> articles = new ArrayList<Article>();
 			if(ReleaseOrAll.equals("release")){
-				Collection<Article> releaseaRticles = this.articleManager.getReleaseBySubjectID(SubjectID);
-				if(releaseaRticles.size() > 0){
-					return getResponse(releaseaRticles);
-				}
+				articles = this.articleManager.getReleaseBySubjectID(SubjectID);
+				count = this.articleManager.getRelCount(sqlString);
+					
 			}else if(ReleaseOrAll.equals("all")){
-				Collection<Article> allArticles = this.articleManager.getBySubjectID(SubjectID);
-				if(allArticles.size() > 0){
-					return getResponse(allArticles);
-				}
+				articles = this.articleManager.getBySubjectID(SubjectID);
+				count = this.articleManager.getCount(sqlString);
 			}
+			ArticleData articleData = new ArticleData(count, articles);
+			return getResponse(articleData);
 		} catch (GalaxyLabException ex) {
 			logger.error(ex.getMessage(), ex);
 			return getErrorResponse(ex.getMessage());
@@ -262,7 +353,6 @@ public class ArticleService extends BaseService {
 			logger.error("Error occured", ex);
 			return getErrorResponse();
 		}
-		return getErrorResponse();
 	}
 	
 	/**
@@ -279,17 +369,19 @@ public class ArticleService extends BaseService {
 			@FormParam("CategoryID") String CategoryID,
 			@FormParam("TypeID") String TypeID, @Context HttpHeaders headers){
 		try {
+			String sqlString = "and CategoryID='"+CategoryID+"' and TypeID='"+TypeID+"' and SubjectID is null ";
+			int count = 0;
+			Collection<Article> articles = new ArrayList<Article>();
 			if(ReleaseOrAll.equals("release")){
-				Collection<Article> releaseaRticles = this.articleManager.getRelease(CategoryID,TypeID);
-				if(releaseaRticles.size() > 0){
-					return getResponse(releaseaRticles);
-				}
+				articles = this.articleManager.getRelease(CategoryID,TypeID);
+				count = this.articleManager.getRelCount(sqlString);
+					
 			}else if(ReleaseOrAll.equals("all")){
-				Collection<Article> allArticles = this.articleManager.getByCategoryIDAndTypeID(CategoryID, TypeID);
-				if(allArticles.size() > 0){
-					return getResponse(allArticles);
-				}
+				articles = this.articleManager.getByCategoryIDAndTypeID(CategoryID, TypeID);
+				count = this.articleManager.getCount(sqlString);
 			}
+			ArticleData articleData = new ArticleData(count, articles);
+			return getResponse(articleData);
 		} catch (GalaxyLabException ex) {
 			logger.error(ex.getMessage(), ex);
 			return getErrorResponse(ex.getMessage());
@@ -297,7 +389,6 @@ public class ArticleService extends BaseService {
 			logger.error("Error occured", ex);
 			return getErrorResponse();
 		}
-		return getErrorResponse();
 	}
 	/**
 	 * 获取所有文章
@@ -318,16 +409,53 @@ public class ArticleService extends BaseService {
 		}
 	}
 	/**
-	 * 根据类别名称获取文章
-	 * @param TypeName
+	 * 根据是否发布,关键字获取文章(分页)
+	 * @param IsRelease
+	 * @param TypeID
+	 * @param keyword
+	 * @param rows
+	 * @param pageNum
 	 * @param headers
 	 * @return
 	 */
 	@GET
-	@Path("/getByTypeName")
-	public String getByTypeName(@FormParam("TypeName") String TypeName, @Context HttpHeaders headers){
+	@Path("/getSearch")
+	public String getSearch(
+			@FormParam("IsRelease") String IsRelease,
+			@FormParam("CategoryID") String CategoryID,
+			@FormParam("TypeID") String TypeID,
+			@FormParam("TypeKey") String TypeKey,
+			@FormParam("SubjectID") String SubjectID,
+			@FormParam("keyword") String keyword,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers){
 		try {
-			return getResponse(this.articleManager.getByTypeName(TypeName));
+			String sqlString = search(keyword,"0");
+			Collection<Article> articles = new ArrayList<Article>();
+			int count = 0;
+			if(CategoryID!=null&&!CategoryID.equals("")&&!CategoryID.equalsIgnoreCase("null")){
+				sqlString += "and CategoryID='"+CategoryID+"' ";
+			}
+			if(TypeID!=null&&!TypeID.equals("")&&!TypeID.equalsIgnoreCase("null")&&
+					(SubjectID==null||SubjectID.equals("")||SubjectID.equalsIgnoreCase("null"))){
+				sqlString += "and TypeID='"+TypeID+"' and SubjectID is null ";
+			}
+			if(SubjectID!=null&&!SubjectID.equals("")&&!SubjectID.equalsIgnoreCase("null")){
+				sqlString += "and SubjectID='"+SubjectID+"' ";
+			}
+			if(TypeKey!=null&&!TypeKey.equals("")&&!TypeKey.equalsIgnoreCase("null")){
+				sqlString += "and TypeKey='"+TypeKey+"' ";
+			}
+			if(IsRelease.equals("1")){//已发布
+				articles = this.articleManager.getReleaseByKeyword(sqlString, rows, pageNum);
+				count = this.articleManager.getRelCount(sqlString);
+			}else if(IsRelease.equals("0")){//全部
+				articles = this.articleManager.getBykeyword(sqlString, rows, pageNum);
+				count = this.articleManager.getCount(sqlString);
+			}
+			ArticleData articleData = new ArticleData(count,articles);
+			return getResponse(articleData);
 		} catch (GalaxyLabException ex) {
 			logger.error(ex.getMessage(), ex);
 			return getErrorResponse(ex.getMessage());
@@ -335,6 +463,29 @@ public class ArticleService extends BaseService {
 			logger.error("Error occured", ex);
 			return getErrorResponse();
 		}
+	}
+	
+	//搜索关键字
+	public String search(String keyword,String type){
+		String sqlString = "";
+		if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
+			if(type.equals("0")){
+				sqlString = "and (Title like '%"
+						+ keyword
+						+ "%' or Content like '%"
+						+ keyword
+						+ "%' or RootIN like '%"
+						+ keyword 
+						+ "%' or ReleaseName like '%"
+						+ keyword 
+						+ "%' or TypeName like '%"
+						+ keyword 
+						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+						+ keyword +"%') ";
+			}
+			
+		}
+		return sqlString;
 	}
 	/**
 	 * 获取文章下的内容

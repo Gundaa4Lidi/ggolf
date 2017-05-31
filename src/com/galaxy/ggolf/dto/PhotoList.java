@@ -2,31 +2,26 @@ package com.galaxy.ggolf.dto;
 
 public class PhotoList {
 	private String Image;
-	private String ID;
-	private String Name;
+	private String Intro;
+	
+	public PhotoList() {
+		// TODO Auto-generated constructor stub
+	}
+	public PhotoList(String image, String intro) {
+		Image = image;
+		Intro = intro;
+	}
 	public String getImage() {
 		return Image;
 	}
 	public void setImage(String image) {
 		Image = image;
 	}
-	public String getID() {
-		return ID;
+	public String getIntro() {
+		return Intro;
 	}
-	public void setID(String iD) {
-		ID = iD;
-	}
-	public String getName() {
-		return Name;
-	}
-	public void setName(String name) {
-		Name = name;
-	}
-	
-	public PhotoList(String image, String iD, String name) {
-		Image = image;
-		ID = iD;
-		Name = name;
+	public void setIntro(String intro) {
+		Intro = intro;
 	}
 	
 	

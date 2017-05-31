@@ -34,10 +34,14 @@ public interface CommonConfig {
 	
 	public static final String FROALA_UPLOAD_PATH = "C:\\ggolf_upload\\froala\\";
 	
+	public static final String DEFAULT_UPLOAD_PATH = "c:\\ggolf_upload\\default\\";
+	
 	public static final String LOGO_PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\ROOT\\file\\";
 	
-//	public static final String CONNECT = "http://192.168.1.107:8085";
-	public static final String CONNECT = "";
+	public static final String DEFAULT_PREVFIX = "thumb_";
+	
+	public static final String CONNECT = "http://192.168.1.107:8085";
+//	public static final String CONNECT = "";
 	
 	public static final String FILE_DOWNLOAD = "/GGolfz/rest/file/download/";
 	
@@ -61,11 +65,26 @@ public interface CommonConfig {
 	
 	public static final String TYPE_TRACK_COMMENT = "track";//足迹
 	
+	public static final String TYPE_COACH_COMMENT = "coach";//教练
+	
 	public static final String TYPE_USER_COMMENT = "user";//用户
 	
-	public static final String ACTION_COMMENT = "comment";
+	//主题类型
+	public static final String THEME_TYPE_A = "A";//文章
 	
-	public static final String ACTION_REPLY = "reply";
+	public static final String THEME_TYPE_C = "C";//球场
+	
+	public static final String THEME_TYPE_D = "D";//动态
+
+	public static final String THEME_TYPE_S = "S";//专题
+
+	public static final String THEME_TYPE_CT = "CT";//评论
+
+	public static final String THEME_TYPE_CH = "CH";//教练
+	
+	public static final String ACTION_COMMENT = "comment";//评论标识
+	
+	public static final String ACTION_REPLY = "reply";//回复标识
 	
 	public static String GAODEURL = "http://restapi.amap.com/v3/geocode/regeo?location=<gps>&key=218105e047dd5c735753ba5b78eafa31&extensions=base";
 	
@@ -88,4 +107,7 @@ public interface CommonConfig {
 	public static final String PingPP_Apikey = "app_uvnv505GOCyLivn1";
 	
 //	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
+	
+	
+	
 }

@@ -40,7 +40,7 @@ public class ClubRowMapper implements RowMapper<Club> {
 	    String ClubPhoto = res.getString(COLUMN_ClubPhoto);
 	    Collection<String> clubPhotos = new ArrayList<String>(); 
 	    if(ClubPhoto != null){
-	    	clubPhotos = new ListUtil().StringToList(ClubPhoto);
+	    	clubPhotos = new ListUtil().StringToList(ClubPhoto,";");
 	    }
 	    String Logo = res.getString(COLUMN_Logo);
 	    String Province = res.getString(COLUMN_Province);

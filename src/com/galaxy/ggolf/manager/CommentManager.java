@@ -10,14 +10,21 @@ import org.slf4j.LoggerFactory;
 import com.galaxy.ggolf.cache.GenericCache;
 import com.galaxy.ggolf.dao.ArticleDAO;
 import com.galaxy.ggolf.dao.ClubDAO;
+import com.galaxy.ggolf.dao.CoachDAO;
+import com.galaxy.ggolf.dao.CoachScoreDAO;
 import com.galaxy.ggolf.dao.CommentDAO;
 import com.galaxy.ggolf.dao.LikeDAO;
 import com.galaxy.ggolf.dao.MessageDAO;
 import com.galaxy.ggolf.dao.UserDAO;
+import com.galaxy.ggolf.domain.Article;
+import com.galaxy.ggolf.domain.Club;
+import com.galaxy.ggolf.domain.Coach;
 import com.galaxy.ggolf.domain.Comment;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Likes;
+import com.galaxy.ggolf.domain.Message;
 import com.galaxy.ggolf.dto.CommentData;
+import com.galaxy.ggolf.dto.CommentGroupData;
 import com.galaxy.ggolf.dto.GroupData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 
@@ -32,10 +39,13 @@ public class CommentManager {
 	private ArticleDAO articleDAO;
 	private MessageDAO messageDAO;
 	private UserDAO userDAO;
+	private CoachDAO coachDAO;
+	private CoachScoreDAO coachScoreDAO;
 	
 	public CommentManager(CommentDAO commentDAO,LikeDAO likeDAO,
 			ClubDAO clubDAO,ArticleDAO articleDAO,
-			MessageDAO messageDAO,UserDAO userDAO) {
+			MessageDAO messageDAO,UserDAO userDAO,
+			CoachDAO coachDAO,CoachScoreDAO coachScoreDAO) {
 		this.cache = new GenericCache<String,CommentData>();
 		this.commentDAO = commentDAO;
 		this.likeDAO = likeDAO;
@@ -43,6 +53,8 @@ public class CommentManager {
 		this.articleDAO = articleDAO;
 		this.messageDAO = messageDAO;
 		this.userDAO = userDAO;
+		this.coachDAO = coachDAO;
+		this.coachScoreDAO = coachScoreDAO;
 		
 	}
 	
@@ -53,57 +65,81 @@ public class CommentManager {
 	 * @return
 	 * @throws GalaxyLabException
 	 */
-	public CommentData getAll(String keyword,String rows,int days)throws GalaxyLabException{
+	public CommentGroupData getAll(String keyword,String rows,int days)throws GalaxyLabException{
 		String sqlString = "";
 		int row = Integer.parseInt(rows);
-		if(keyword!=null){
+		if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
 			sqlString = getSqlString(keyword);
 		}
 		Collection<GroupData<Comment>> Data = new ArrayList<GroupData<Comment>>();
 		if(days > 0){
 			DateTime time = DateTime.now().minusDays(days);
-			sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"'";
+			sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"' ";
 		}
-		Collection<Comment> comment = this.commentDAO.getDTGroup(sqlString, rows);
-		if(comment.size() > 0){
-			for(Comment com : comment){
+		Collection<Comment> dtGroup = this.commentDAO.getDTGroup(sqlString, rows);
+		
+		int count = this.commentDAO.getCount(sqlString);
+		
+		if(dtGroup.size() > 0){
+			for(Comment com : dtGroup){
 				String date = com.getCreated_TS().substring(0, 10);
-				String dateFormat = "and date_format(Created_TS,'%Y-%m-%d')='"+date+"'";
+				
+				String dateFormat = "and date_format(Created_TS,'%Y-%m-%d')='"+date+"' ";
+				
 				Collection<Comment> result = this.commentDAO.getCommentBySearch(sqlString+dateFormat, row+"");
+				
 				if(result.size() <= row && row > 0){
+					
 					for(Comment com1 : result){
+						int likeCount = this.likeDAO.getCountByThemeID(com1.getCommentID(), com1.getAction());
+						com1.setLikeCount(likeCount);
 						if(com1.getAction().equalsIgnoreCase("reply")){
+							
 							Comment com2 = this.commentDAO.getByCommentID(com1.getParentID());
+							
 							com1.setParentObj(com2);
+							
 						}else if(com1.getAction().equalsIgnoreCase("comment")){
+							
 							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_CLUB_COMMENT)){
 								
+								Club club = this.clubDAO.getClubByClubID(com1.getParentID());
+								
+								com1.setParentObj(club);
 							}
 							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_DYNAMIC_COMMENT)){
 								
+								Message msg = this.messageDAO.getBy(com1.getParentID());
+								
+								com1.setParentObj(msg);
 							}
 							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_ARTICLE_COMMENT)){
 								
+								Article article = this.articleDAO.getByArticleID(com1.getParentID());
+								
+								com1.setParentObj(article);
+							}
+							if(com1.getParentType().equalsIgnoreCase(CommonConfig.TYPE_COACH_COMMENT)){
+								
+//								Article article = this.articleDAO.getByArticleID(com1.getParentID());
+								Coach coach = this.coachDAO.getCoachByCoachID(com1.getParentID(), "1");
+								
+								com1.setParentObj(coach);
 							}
 							
 						}
 						
 					}
-				}
-				int replyRows = this.commentDAO.getCountByReply(com.getUserID(), com.getCommentID());
-				if(replyRows > 0){
-					String replyRow = "5";
-					Collection<Comment> replyList = this.commentDAO.getCommentByReply(replyRow, com.getUserID(), com.getCommentID());
-					CommentData replyData = new CommentData(replyRows, replyList);
-					com.setReplyData(replyData);
+					row -=result.size();
+					GroupData<Comment> co = new GroupData<Comment>(date,result);
+					Data.add(co);
 				}
 			}
 			
+			
 		}
-		int count = this.commentDAO.getCount(sqlString);
-		int commentCount = this.commentDAO.getCommentCount(sqlString);
-		CommentData commentData = new CommentData(count,commentCount, comment);
-		return commentData;
+		CommentGroupData groupData = new CommentGroupData(count, Data);
+		return groupData;
 	}
 	
 	/**

@@ -26,8 +26,8 @@ public class ClubFairwayRowMapper implements RowMapper<ClubFairway> {
 	    String FairwayName = res.getString(COLUMN_FairwayName);
 	    String Updated_TS = res.getString(COLUMN_Updated_TS);
 	    String Photo = res.getString(COLUMN_Photo);
-	    String Par = res.getString(COLUMN_Par);
-	    Collection<String> photos = new ListUtil().StringToList(Photo);
+	    Collection<String> Par = new ListUtil().StringToList(res.getString(COLUMN_Par),",");
+	    Collection<String> photos = new ListUtil().StringToList(Photo,";");
 		return new ClubFairway(UID, ClubID, HoleNum, FairwayName, Updated_TS, Par, photos);
 	}
 

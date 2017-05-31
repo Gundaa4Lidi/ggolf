@@ -20,6 +20,7 @@ import com.galaxy.ggolf.domain.ArticleContent;
 import com.galaxy.ggolf.domain.ArticleSubject;
 import com.galaxy.ggolf.domain.ArticleType;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.dto.ArticleData;
 import com.galaxy.ggolf.dto.GroupData;
 
 public class ArticleManager {
@@ -64,9 +65,11 @@ public class ArticleManager {
 				throw new GalaxyLabException("Error in update ArticleType");
 			}else{
 				Collection<Article> articles = this.articleDAO.getbyCategoryIDAndTypeID(at.getCategoryID(), at.getTypeID());
-				for(Article art : articles){
-					if(!this.articleDAO.updateTypeName(art.getArticleID(), at.getTypeName())){
-						throw new GalaxyLabException("Error in update TypeName with "+art.getArticleID());
+				if(articles.size() > 0){
+					for(Article art : articles){
+						if(!this.articleDAO.updateTypeName(art.getArticleID(), at.getTypeName())){
+							throw new GalaxyLabException("Error in update TypeName with "+art.getArticleID());
+						}
 					}
 				}
 			}
@@ -130,16 +133,22 @@ public class ArticleManager {
 	}
 	//获取已发布的文章
 	public Collection<Article> getRelease(String CategoryID, String TypeID)throws Exception{
-		return this.articleDAO.getRelease(CategoryID, TypeID);
+		String sqlString = "and CategoryID='"+CategoryID+"' and TypeID='"+TypeID+"' and SubjectID is null ";
+		Collection<Article> articles = this.articleDAO.getRelease(null, null, sqlString);
+		return articles;
 	}
 	//获取专题下的文章
 	public Collection<Article> getBySubjectID(String SubjectID)throws Exception{
-		return this.articleDAO.getbySubjectID(SubjectID);
+		String sqlString = "and SubjectID='"+SubjectID+"' ";
+		Collection<Article> articles = this.articleDAO.getBykeyword(null, null, sqlString);
+		return articles;
 	}
 	
 	//获取专题下发布的文章
 	public Collection<Article> getReleaseBySubjectID(String SubjectID)throws Exception{
-		return this.articleDAO.getReleasebySubjectID(SubjectID);
+		String sqlString = "and SubjectID='"+SubjectID+"' ";
+		Collection<Article> articles = this.articleDAO.getRelease(null, null, sqlString);
+		return articles;
 	}
 	
 	//获取全部文章
@@ -156,10 +165,26 @@ public class ArticleManager {
 		}
 		return articleDatas;
 	}
-	//根据类别名称获取文章
-	public Collection<Article> getByTypeName(String TypeName)throws Exception{
-		return this.articleDAO.getByType(TypeName);
+	//根据关键字搜索获取文章
+	public Collection<Article> getBykeyword(String sqlString,String rows,String pageNum)throws Exception{
+		return this.articleDAO.getBykeyword(rows,pageNum,sqlString);
 	}
+	
+	//根据关键字搜索获取文章的数量
+	public int getCount(String sqlString){
+		return this.articleDAO.getCount(sqlString);
+	}
+	
+	//搜索已发布的文章
+	public Collection<Article> getReleaseByKeyword(String sqlString,String rows,String pageNum)throws Exception{
+		return this.articleDAO.getRelease(pageNum, rows, sqlString);
+	}
+	
+	//搜索已发布的文章的数量
+	public int getRelCount(String sqlString){
+		return this.articleDAO.getRelCount(sqlString);
+	}
+	
 	//查看文章是否存在
 	public Article getByArticleID(String ArticleID){
 		return this.articleDAO.getByArticleID(ArticleID);
@@ -259,7 +284,7 @@ public class ArticleManager {
 									if(!this.articleSubjectDAO.delete(as.getSubjectID())){
 										throw new GalaxyLabException("Error in remove ArticleSubject");
 									}else{
-										Collection<Article> artList = this.articleDAO.getbySubjectID(as.getSubjectID());
+										Collection<Article> artList = this.getBySubjectID(as.getSubjectID());
 										removeArt(artList);
 									}
 								}
@@ -283,7 +308,7 @@ public class ArticleManager {
 						if(!this.articleSubjectDAO.delete(as.getSubjectID())){
 							throw new GalaxyLabException("Error in remove ArticleSubject");
 						}else{
-							Collection<Article> artList = this.articleDAO.getbySubjectID(as.getSubjectID());
+							Collection<Article> artList = this.getBySubjectID(as.getSubjectID());
 							removeArt(artList);
 						}
 					}
@@ -297,7 +322,7 @@ public class ArticleManager {
 			if(!this.articleSubjectDAO.delete(SubjectID)){
 				throw new GalaxyLabException("Error in remove ArticleSubject");
 			}else{
-				Collection<Article> artList = this.articleDAO.getbySubjectID(SubjectID);
+				Collection<Article> artList = this.getBySubjectID(SubjectID);
 				removeArt(artList);
 			}
 		}

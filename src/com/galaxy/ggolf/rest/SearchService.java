@@ -75,15 +75,15 @@ public class SearchService extends BaseService {
 			}
 			if(!keyword.equalsIgnoreCase("null")&&keyword!=null){
 				String userSql = "and Name like '%"+keyword+"%' ";
-				String articleSql = "and Title like '%"+keyword+"%'";
-				String messageSql = "and Type='"+TYPE_DYNAMIC+"' and (Details like '%"+keyword+"%' or Site like '%"+keyword+"%')";
+				String articleSql = "and Title like '%"+keyword+"%' ";
+				String messageSql = "and Type='"+TYPE_DYNAMIC+"' and (Details like '%"+keyword+"%' or Site like '%"+keyword+"%') ";
 				String clubSql = "and ClubName like '%"+keyword+"%' ";
-				String coachSql = "and UserName like'%"+keyword+"%'";
+				String coachSql = "and UserName like'%"+keyword+"%' ";
 				if(type != null && !type.equals("") && !type.equals(TYPE_ALL)){
 					data = getSearchData(rows,keyword,type);
 				}else{
 					Collection<User> users = this.userDAO.getUsers(null, rows, userSql);
-					Collection<Article> articles = this.articleDAO.getbyKeyword(rows, articleSql);
+					Collection<Article> articles = this.articleDAO.getRelease(null,rows, articleSql);
 					Collection<Message> messages = this.messageDAO.getSearch(rows, messageSql);
 					Collection<Club> clubs = this.clubDAO.getSearch(null, rows, clubSql);
 					Collection<Coach> coachs =this.coachDAO.getAll(rows, coachSql);
@@ -114,14 +114,14 @@ public class SearchService extends BaseService {
 	
 	public SearchData getSearchData(String rows,String keyword,String type){
 		SearchData data = new SearchData();
-		String userSql = "and Name like %"+keyword+"% ";
-		String articleSql = "and Title like %"+keyword+"%";
-		String messageSql = "and Type='"+TYPE_DYNAMIC+"'(Details like %"+keyword+"% or Site like %"+keyword+"%";
-		String clubSql = "and ClubName like %"+keyword+"% ";
-		String coachSql = "and UserName like %"+keyword+"%";
+		String userSql = "and Name like '%"+keyword+"%' ";
+		String articleSql = "and Title like '%"+keyword+"%' ";
+		String messageSql = "and Type='"+TYPE_DYNAMIC+"'(Details like '%"+keyword+"%' or Site like '%"+keyword+"%' ";
+		String clubSql = "and ClubName like '%"+keyword+"%' ";
+		String coachSql = "and UserName like '%"+keyword+"%' ";
 		switch (type) {
 		case TYPE_ARTICLE:
-			Collection<Article> articles = this.articleDAO.getbyKeyword(rows, articleSql);
+			Collection<Article> articles = this.articleDAO.getRelease(null,rows, articleSql);
 			if(articles.size() > 0){
 				data.setArticles(articles);
 			}

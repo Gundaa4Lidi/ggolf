@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Roost Documentation</title>
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/prism.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="css/lightgallery.min.css" />
+        <link rel="stylesheet" href="style/style.css">
+
+    </head>
+    <body>
+        <header id="header">
+            <div class="header__logo">Roost Documentation</div>
+
+            <div class="header__links">
+                <a href="">Demo</a>
+                <a href="">Purchase</a>
+            </div>
+        </header>
+
+        <main id="main">
+            <aside id="sidebar" data-spy="affix" data-offset-top="72">
+                <ul class="sidebar__links">
+                    <li>
+                        <span class="sidebar__title">Getting Started</span>
+                        <ul>
+                            <li><a href="index.html#getting-started">What's Included</a></li>
+                            <li><a href="index.html#css-name">CSS Naming Conventions</a></li>
+                            <li><a href="index.html#compiling-css-js">Compiling CSS and JavaScript</a></li>
+                            <li><a href="index.html#using-less">Using LESS</a></li>
+                            <li><a href="index.html#third-party-vendors">Third Party Vendors</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">Basic Template</span>
+                        <ul>
+                            <li><a href="basic-template.html#front-end">Front-end</a></li>
+                            <li><a href="basic-template.html#dashboard">Dashboard</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="sidebar__title">CSS</span>
+
+                        <ul>
+                            <li><a href="css.html#page-headers">Page Headers</a></li>
+                            <li><a href="css.html#un-list">Unordered Lists</a></li>
+                            <li><a href="css.html#containers">Containers</a></li>
+                            <li><a href="css.html#pagination">Pagination</a></li>
+                            <li><a href="css.html#media-object">Media Object</a></li>
+                            <li><a href="css.html#action-header">Action Header</a></li>
+                            <li><a href="css.html#action-icons">Action Icons</a></li>
+                            <li><a href="css.html#cards">Cards</a></li>
+                            <li><a href="css.html#list-groups">List Groups</a></li>
+                            <li><a href="generic-classes.html">Generic Classes</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Form</span>
+
+                        <ul>
+                            <li><a href="form.html#form-groups">Form Groups</a></li>
+                            <li><a href="form.html#custom-selects">Custom Selects</a></li>
+                            <li><a href="form.html#input-sliders">Input Sliders</a></li>
+                            <li><a href="form.html#checkbox-radio">Checkboxes & Radios</a></li>
+                            <li><a href="form.html#wysiwyg-editor">WYSIWYG Editor</a></li>
+                            <li><a href="form.html#autoheight-textarea">Auto-height Textarea</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Site Components</span>
+
+                        <ul>
+                            <li><a href="site-components.html#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li><a href="site-components.html#dynamic-sidebars">Dynamic Sidebars</a></li>
+                            <li><a href="site-components.html#responsive-tabs">Responsive Tabs</a></li>
+                            <li><a href="site-components.html#scroll-to">Scroll To</a></li>
+                            <li><a href="site-components.html#icon-toggles">Icon Toggles</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Bootstrap Components</span>
+                        <ul>
+                            <li><a href="bootstrap-components.html#dropdown">Dropdown</a></li>
+                            <li><a href="bootstrap-components.html#tabs">Tabs</a></li>
+                            <li><a href="bootstrap-components.html#tooltips">Tooltips</a></li>
+                            <li><a href="bootstrap-components.html#modal">Modal</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <span class="sidebar__title">Others</span>
+
+                        <ul>
+                            <li><a href="others-icons.html#material-icons">Material Design Icons</a></li>
+                            <li><a href="others-colors.html#material-icons">Material Design Colors</a></li>
+                            <li><a href="others-animations.html#css-animations">CSS Animations</a></li>
+                            <li><a href="others.html#custom-alerts">Custom Alerts</a></li>
+                            <li><a href="others.html#lightbox">Lightbox</a></li>
+                            <li><a href="others.html#calendar">Calendar</a></li>
+                            <li><a href="others.html#ratings">Ratings</a></li>
+                            <li><a href="others.html#social-network">Social Network Sharing</a></li>
+                            <li><a href="others.html#text-clamping">Text Clamping</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </aside>
+
+            <section id="content">
+                <div class="content__wrapper">
+                    <div class="content__title">
+                        <h2>Site Components</h2>
+                    </div>
+
+                    <div class="card" id="toggleable-blocks">
+                        <div class="card__title">
+                            <h2>Toggleable Blocks</h2>
+                        </div>
+
+                        <p>Toggleable Blocks are used to show/hide any elements using data-attributes set on any other elements. </p>
+
+                        <div class="lightbox">
+                            <a href="img/toggleable-block/1.gif">
+                                <img class="img-thumbnail" src="img/toggleable-block/1.gif" alt="">
+                            </a>
+                            <a href="img/toggleable-block/2.gif">
+                                <img class="img-thumbnail" src="img/toggleable-block/2.gif" alt="">
+                            </a>
+                            <a href="img/toggleable-block/3.gif">
+                                <img class="img-thumbnail" src="img/toggleable-block/3.gif" alt="">
+                            </a>
+                        </div>
+
+                        <br>
+
+                        <p>In order to use this feature, you must set 2 data-attribute values to identify the click as well as the target element.</p>
+
+                        <pre><code class="language-html">&#x3C;a href=&#x22;&#x22; data-rmd-actions=&#x22;block-open&#x22; data-rmd-target=&#x22;#sidebar&#x22;&#x3E;Open Sidebar&#x3C;/a&#x3E;</code></pre>
+
+                        <p>When you click any element holding <code>data-rmd-actions=&#x22;block-open&#x22;</code>, it'll add class <code>.toggled</code> to the target element set using <code>data-rmd-target</code>.</p>
+
+                        <p>Assuming <code>#sidebar</code> is hidden by default and in order to make it visible, we can use the following CSS</p>
+
+                        <pre><code class="language-css">#sidebar.toggled {
+   display: block
+}</code></pre>
+
+                        <p>To reset, use data-attribute <code>data-rmd-actions="block-close"</code> on any clickable element.</p>
+
+                        <p>e.g</p>
+                        <pre><code class="language-html">&#x3C;a href=&#x22;&#x22; data-rmd-action=&#x22;block-close&#x22; data-rmd-target=&#x22;#sidebar&#x22;&#x3E;Close Sidebar&#x3C;/a&#x3E;</code></pre>
+
+                        <p>This will remove <code>.toggled</code> class from the target element(#sidebar) set on <code>data-rmd-target</code>.</p>
+
+                        <hr>
+
+                        <p>Source JS file: <code>/js/inc/actions.js</code></p>
+                        <p>Usage in template:</p>
+                        <ol>
+                            <li><code>/index.html</code></li>
+                            <li><code>/listings-grid.html</code></li>
+                            <li><code>/listings-list.html</code></li>
+                            <li><code>/dashboard/index.html</code></li>
+                            <li>...</li>
+                        </ol>
+
+                    </div>
+
+                    <div class="card" id="dynamic-sidebars">
+                        <div class="card__title">
+                            <h2>Dynamic Sidebars</h2>
+                        </div>
+
+                        <p>This feature is used to display sidebars with different views based on the layout design.</p>
+
+                        <p>There are 2 views available for this feature.</p>
+
+                        <ol>
+                            <li>Basic: Hidden by default, can be toggled using <a href="#toggleable-blocks">Toggleable Blocks</a></li>
+                            <li>Mobile: A <a href="css.html#cards" target="_blank">card</a> transforms in to a sidebar in certain screen size (992px and below).</li>
+                        </ol>
+
+                        <h4 class="card__sub">Basic Example</h4>
+
+                        <pre><code class="language-html">&#x3C;!-- Sidebar --&#x3E;
+&#x3C;aside class=&#x22;rmd-sidebar&#x22; id=&#x22;sidebar&#x22;&#x3E;
+    &#x3C;!-- sidebar content --&#x3E;
+&#x3C;/aside&#x3E;
+
+&#x3C;!-- Sidebar toggle button using 'Toggleable Blocks'--&#x3E;
+&#x3C;button class=&#x22;btn btn--action btn--circle&#x22; data-rmd-action=&#x22;block-open&#x22; data-rmd-target=&#x22;#sidebar&#x22;&#x3E;
+    &#x3C;i class=&#x22;zmdi zmdi-search-for&#x22;&#x3E;&#x3C;/i&#x3E;
+&#x3C;/button&#x3E;</code></pre>
+
+                        <p>Usage in template:</p>
+                        <ol>
+                            <li><code>/listings-list.html</code></li>
+                            <li><code>/listings-grid.html</code></li>
+                            <li><code>/agents.html</code></li>
+                        </ol>
+
+
+                        <h4 class="card__sub">Mobile Example</h4>
+                        <pre><code class="language-html">&#x3C;!-- Sidebar --&#x3E;
+&#x3C;div class=&#x22;rmd-sidebar-mobile&#x22; id=&#x22;sidebar-mobile&#x22;&#x3E;
+   &#x3C;!-- sidebar content --&#x3E;
+&#x3C;/div&#x3E;
+
+&#x3C;!-- Sidebar toggle button using 'Toggleable Blocks'--&#x3E;
+&#x3C;!-- Make sure to display this button in 992px and below screen sizes. Note the the added responsive utility classes --&#x3E;
+&#x3C;button class=&#x22;btn btn--action btn--circle hidden-lg hidden-md&#x22; data-rmd-action=&#x22;block-open&#x22; data-rmd-target=&#x22;#sidebar-mobile&#x22;&#x3E;
+    &#x3C;i class=&#x22;zmdi zmdi-money&#x22;&#x3E;&#x3C;/i&#x3E;
+&#x3C;/button&#x3E;</code></pre>
+
+                        <p>Usage in template: (Resize your window to 992px or below to see the transformation)</p>
+                        <ol>
+                            <li><code>/mortgage.html</code></li>
+                            <li><code>/mortgage-detail-reviews.html</code></li>
+                            <li><code>/mortgage-detail-disclaimer.html</code></li>
+                            <li><code>/agent-detail.html</code></li>
+                            <li><code>/agent-detail-properties.html</code></li>
+                            <li><code>/agent-detail-reviews.html</code></li>
+                            <li><code>/profile-public.html</code></li>
+                            <li><code>/faq.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="responsive-tabs">
+                        <div class="card__title">
+                            <h2>Responsive Tabs</h2>
+                        </div>
+
+                        <p>Transforms long list tabs in to a dropdown menu in smaller screen sizes. Responsive Tabs uses basic Bootstrap tab markup with some added wrappers. This can be also used for menu links.</p>
+
+                        <div class="lightbox">
+                            <a href="img/responsive-tabs/responsive-tabs.gif">
+                                <img class="img-thumbnail img-thumbnail--ful" src="img/responsive-tabs/responsive-tabs.gif" alt="">
+                            </a>
+                        </div>
+
+                        <br><br>
+
+                        <p>In order to use responsive tabs, you must set a screen size breakpoint using data-attribute <code>data-rmd-breakpoint</code>.</p>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;tab-nav tab-nav--justified&#x22; data-rmd-breakpoint=&#x22;650&#x22;&#x3E;
+    &#x3C;div class=&#x22;tab-nav__inner&#x22;&#x3E;
+        &#x3C;ul&#x3E;
+            &#x3C;li class=&#x22;active&#x22;&#x3E;&#x3C;a data-toggle="tab" href=&#x22;#overview&#x22;&#x3E;Overview&#x3C;/a&#x3E;&#x3C;/li&#x3E;
+            &#x3C;li&#x3E;&#x3C;a data-toggle="tab" href=&#x22;#my-searches&#x22;&#x3E;My Searches&#x3C;/a&#x3E;&#x3C;/li&#x3E;
+            &#x3C;li&#x3E;&#x3C;a data-toggle="tab" href=&#x22;#saved-listings&#x22;&#x3E;Saved Listings&#x3C;/a&#x3E;&#x3C;/li&#x3E;
+            &#x3C;li&#x3E;&#x3C;a data-toggle="tab" href=&#x22;#saved-agents&#x22;&#x3E;Saved Agents&#x3C;/a&#x3E;&#x3C;/li&#x3E;
+        &#x3C;/ul&#x3E;
+    &#x3C;/div&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <p>Source JS file: <code>/js/inc/functions.js</code></p>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li><code>/profile.html</code></li>
+                            <li><code>/agent-detail.html</code></li>
+                            <li><code>/agent-detail-properties.html</code></li>
+                            <li><code>/agent-detail-reviews.html</code></li>
+                            <li><code>/mortgage-detail.html</code></li>
+                            <li><code>/mortgage-detail-reviews.html</code></li>
+                            <li><code>/mortgage-detail-disclaimer.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="scroll-to">
+                        <div class="card__title">
+                            <h2>Scroll-To</h2>
+                        </div>
+
+                        <p>Scroll-To is a great way to smooth scroll to any DOM element.</p>
+
+                        <div class="lightbox">
+                            <a href="img/scroll-to/scroll-to.gif"><img class="img-thumbnail img-thumbnail--ful" src="img/scroll-to/scroll-to.gif" alt=""></a>
+                        </div>
+
+                        <pre><code class="language-html">&#x3C;a href=&#x22;&#x22; data-rmd-action=&#x22;scroll-to&#x22; data-rmd-target=&#x22;#comments&#x22; data-rmd-offset=&#x22;85&#x22;&#x3E;
+    Scroll
+&#x3C;/a&#x3E;
+</code></pre>
+
+                        <p>In order to use Scroll-To feature, you must set the following data-attributes:</p>
+
+                        <ol>
+                            <li><code>data-rmd-action="scroll-to"</code>(required): Initiate scroll-to function <br><br></li>
+                            <li>
+                                <p><code>data-rmd-target=[target class/id]</code>(required): Target element to smooth scroll</p>
+                                <p>e.g: data-rmd-target=".main-menu" <br><br></p>
+                            </li>
+                            <li>
+                                <p><code>data-rmd-offset=[value]</code>(optional): Adds extra offset on top to deal with fixed elements</p>
+                                <p>e.g: data-rmd-offset="100"</p>
+                            </li>
+                        </ol>
+
+                        <p>Usage in template:</p>
+
+                        <ol>
+                            <li>In all footers in front-end pages</li>
+                            <li><code>/blog-details.html</code></li>
+                        </ol>
+                    </div>
+
+                    <div class="card" id="icon-toggles">
+                        <div class="card__title">
+                            <h2>Icon Toggles</h2>
+                        </div>
+
+                        <p>Icon toggles are used along with <a href="css.html#action-icons">Action Icons</a> to show active/inactive state of a certain action.</p>
+
+                        <div class="lightbox">
+                            <a href="img/icon-toggle/icon-toggle.gif">
+                                <img class="img-thumbnail img-thumbnail--ful" src="img/icon-toggle/icon-toggle.gif" alt="">
+                            </a>
+                        </div>
+
+                        <pre><code class="language-html">&#x3C;div class=&#x22;actions&#x22;&#x3E;
+    &#x3C;div class=&#x22;actions__toggle&#x22;&#x3E;
+        &#x3C;input type=&#x22;checkbox&#x22;&#x3E;
+        &#x3C;i class=&#x22;zmdi zmdi-favorite-outline&#x22;&#x3E;&#x3C;/i&#x3E;
+        &#x3C;i class=&#x22;zmdi zmdi-favorite&#x22;&#x3E;&#x3C;/i&#x3E;
+    &#x3C;/div&#x3E;
+&#x3C;/div&#x3E;</code></pre>
+
+                        <p>You can use any switchable icons from <a href="others.html#material-icons">Material Design Icons</a> page.</p>
+
+                        <p>Toggle Icons usage in template:</p>
+
+                        <ol>
+                            <li><code>/agent-detail-properties.html</code></li>
+                            <li><code>/agent-detail-reviews.html</code></li>
+                            <li><code>/agent-detail.html</code></li>
+                            <li><code>/agents.html</code></li>
+                            <li><code>/blog-details.html</code></li>
+                            <li><code>/listing-detail.html</code></li>
+                            <li><code>/listings-grid.html</code></li>
+                            <li><code>/listings-list.html</code></li>
+                            <li>...</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script src="js/jquery-2.1.4.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/prism.js"></script>
+        <script src="js/lightgallery.min.js"></script>
+        <script src="js/functions.js"></script>
+    </body>
+</html>

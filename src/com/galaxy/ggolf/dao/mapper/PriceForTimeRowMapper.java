@@ -17,6 +17,7 @@ public class PriceForTimeRowMapper implements RowMapper<PriceForTime> {
 	private static final String COLUMN_Type = "Type";
 	private static final String COLUMN_IsPrivilege = "IsPrivilege";
 	private static final String COLUMN_IsDeposit = "IsDeposit";
+	private static final String COLUMN_IsValid = "IsValid";
 	private static final String COLUMN_DateTime = "DateTime";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
@@ -32,11 +33,12 @@ public class PriceForTimeRowMapper implements RowMapper<PriceForTime> {
 		String Type = res.getString(COLUMN_Type);
 		String IsPrivilege = res.getString(COLUMN_IsPrivilege);
 		String IsDeposit = res.getString(COLUMN_IsDeposit);
+		String IsValid = res.getString(COLUMN_IsValid);
 		String DateTime = res.getString(COLUMN_DateTime);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		return new PriceForTime(ClubservePriceID,ClubserveID,ClubID,Week,Time,
-				DownPayment,OtherPrice,Type,IsPrivilege,IsDeposit,DateTime,Created_TS,Updated_TS);
+				DownPayment,OtherPrice,Type,IsPrivilege,IsDeposit,IsValid,DateTime,Created_TS,Updated_TS);
 	}
 
 }

@@ -1,30 +1,32 @@
 var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,cities){
 	var sc = $scope;
 	var ClubPageCtrl = sc.$parent;
-    sc.rows = 20;
-    sc.Rows = 0;
-    sc.TotalClub = 0;
 	sc.currentItem = null;
     sc.currentClub = new Object();
     sc.clubList = null;
     sc.edit = false;
-    sc.loadMore = false;
     sc.myInterval = 'none';
     sc.noWrapSlides = false;
     sc.pause = true;
     sc.active = 0;
+    sc.rows = 20;
+    sc.Rows = 0;
+    sc.TotalClub = 0;
+    sc.loadMore = false;
 
 	sc.loading = function(){
-		sc.rows += 20;
-		sc.getClubList();
+        if(sc.loadMore) {
+            sc.rows += 20;
+            sc.getClubList();
+        }
 	}
-	sc.$watch('Rows',function(e){
-		if(e < sc.TotalClub){
-			sc.loadMore = true;
-		}else if(e >= sc.TotalClub){
-			sc.loadMore = false;
-		}
-	})
+	// sc.$watch('Rows',function(e){
+	// 	if(e < sc.TotalClub){
+	// 		sc.loadMore = true;
+	// 	}else if(e >= sc.TotalClub){
+	// 		sc.loadMore = false;
+	// 	}
+	// })
 
 	sc.load=function(){
 		sc.getClubList();
@@ -32,12 +34,25 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 	}
 
 	sc.openModal = function(flag){
-	    if(flag){
-            $("#new-club").modal("hide");
-            $("#cut_image").modal("show");
-        }else{
-	        $("#cut_image").modal("hide");
-	        $("#new-club").modal("show");
+        switch(flag){
+            case 1:
+                $("#new-club").modal("hide");
+                $("#cut_image").modal("show");
+                break;
+            case 2:
+                $("#cut_image").modal("hide");
+                $("#new-club").modal("show");
+                break;
+            case 3:
+                $("#new-club").modal("hide");
+                $("#add_address").modal("show");
+                break;
+            case 4:
+                $("#add_address").modal("hide");
+                $("#new-club").modal("show");
+                break;
+            default:
+                break;
         }
     }
 
@@ -87,11 +102,12 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 		var promise = sc.httpParams(url,method,params);
 		promise.then(function(data){
 			sc.clubList = data.data;
-			sc.TotalClub = data.pageCount;
+			sc.TotalClub = data.count;
 			sc.Rows = sc.rows;
 		}),function(data){
 			sc.Load_Failed(data);
 		}
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalClub);
 	}
 
 
@@ -151,11 +167,11 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
         sc.currentClub.IsHot = '0';
         sc.currentClub.IsTop = '0';
         sc.address();
-        sc.openModal(false);
+        sc.openModal(2);
     }
 
     sc.openItem = function(e){
-        sc.currentClub = e;
+        sc.currentClub = angular.copy(e);
         console.log("IsHot:"+e.IsHot,"IsTop:"+e.IsTop);
         sc.address(e);
         $('#new-club').modal("show");
@@ -256,28 +272,104 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // sc.address = function(e){
-    //     if(!e){
-    //         sc.p = null;
-    //         sc.c = null;
-    //         sc.a = null;
-    //         sc.d = null;
-    //     }else{
-    //         if(e.Province){
-    //             sc.p = e.Province;
-    //         }
-    //         if(e.City){
-    //             sc.c = e.City;
-    //         }
-    //         if(e.Area){
-    //             sc.a = e.Area;
-    //         }
-    //         if(e.ClubAddress){
-    //             sc.d = e.ClubAddress;
-    //         }
-    //     }
-    //     return sc.d;
-    // }
+    sc.createPointLng = null;
+    sc.createPointLat = null;
+    sc.createPointAddress = null;
+
+    //初始化地图
+    var map = new AMap.Map('mapView',{
+        resizeEnable: true,
+        zoom: 9,
+        center: [113.12,23.02],//new AMap.LngLat(116.39,39.9)
+        scrollWheel : false,
+    });
+    map.plugin(['AMap.ToolBar'],function(){
+        map.addControl(new AMap.ToolBar());
+    });
+    var marker = null;
+
+    var Marker = function (lng,lat) {
+        marker = new AMap.Marker({
+            position: [lng,lat]
+        });
+        marker.setMap(map);
+    }
+    Marker(113.12,23.02);
+
+    var createPointInfowindowContent = $('<div>\
+                                            <div id="address"></div>\
+                                            <div id="lng"></div>\
+                                            <div id="lat"></div>\
+                                            <div class="p-t-10">\
+                                                <button id="readyPoint" class="btn btn-danger">确认标点</button>\
+                                            </div>\
+                                          </div>');
+
+    var createPointInfowindow = new AMap.InfoWindow({
+        content: createPointInfowindowContent[0],
+        offset: new AMap.Pixel(0, 0),
+        size:new AMap.Size(230,0)
+    })
+
+    createPointInfowindowContent.find('#readyPoint').on('click',function () {
+        map.clearMap();
+        Marker(sc.createPointLng,sc.createPointLat);
+
+    })
+
+    sc.MapSearch = function () {
+        AMap.service(["AMap.PlaceSearch"], function() {
+            var placeSearch = new AMap.PlaceSearch({ //构造地点查询类
+                pageSize: 5,
+                pageIndex: 1,
+                map: map,
+                panel: "panel"
+            });
+            //关键字查询
+            placeSearch.search(sc.addressKey);
+        });
+    }
+
+
+
+
+    map.on('click',function (e) {
+        sc.createPointLng=e.lnglat.getLng();
+        sc.createPointLat=e.lnglat.getLat();
+        sc.createPointAddress=null;
+        createPointInfowindow.open(map,new AMap.LngLat(sc.createPointLng,sc.createPointLat));
+        createPointInfowindowContent.find('#address').text('地址:'+'正在查询,请稍等。。。');
+        createPointInfowindowContent.find('#lng').text('经度:'+sc.createPointLng);
+        createPointInfowindowContent.find('#lat').text('经度:'+sc.createPointLat);
+
+        AMap.service(["AMap.Geocoder"], function() { //加载地理编码
+            geocoder = new AMap.Geocoder({
+                radius: 1000,
+                extensions: "all"
+            });
+            // Marker(createPointLng,createPointLat);
+            //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
+            geocoder.getAddress(new AMap.LngLat(sc.createPointLng,sc.createPointLat), function(status, result){
+                //根据服务请求状态处理返回结果
+                if(status=='error') {
+                    alert("服务请求出错啦！ ");
+                }
+                if(status=='no_data') {
+                    alert("无数据返回，请换个关键字试试～～");
+                }
+                else {
+                    console.log(result)
+                    sc.createPointAddress= result.regeocode.formattedAddress;
+
+                    createPointInfowindowContent.find('#address').text('地址:'+sc.createPointAddress);
+                }
+            });
+        });
+    });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 }

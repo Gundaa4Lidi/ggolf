@@ -1,4 +1,5 @@
 <div ng-controller="SystemMsgController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
 	<section id="main__content">
        <div class="action-header-alt">
            <div class="action-header__item action-header__item--search">
@@ -43,12 +44,9 @@
 
                                <div class="activity-log__attrs">
                                    <span>{{msg.Type}}</span>
-                                   <span>{{item.Date}}</span>
-                                   <span class="hidden-xs">{{msg.Created_TS.substring(11,19)}}</span>
-                                   <!--<span class="activity-log__added pull-right">
-                                       <a href="" ng-click="check(msg)">查看</a></span>-->
+                                   <span class="hidden-xs">{{CurrentDT(msg.Created_TS)}}</span>
                                    <ul class="detail-amenities__list pull-right">
-                                       <li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>
+                                       <!--<li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>-->
                                        <li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>
                                    </ul>
                                </div>

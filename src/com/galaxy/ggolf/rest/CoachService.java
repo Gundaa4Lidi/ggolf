@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,7 @@ import com.galaxy.ggolf.domain.CourseTime;
 import com.galaxy.ggolf.domain.CourseVideo;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.User;
+import com.galaxy.ggolf.dto.CoachCourseData;
 import com.galaxy.ggolf.dto.CoachData;
 import com.galaxy.ggolf.dto.UserData;
 import com.galaxy.ggolf.tools.CipherUtil;
@@ -72,7 +74,7 @@ public class CoachService extends BaseService {
 	}
 	
 	/**
-	 * 保存教练资料
+	 * 申请创建教练或修改教练资料
 	 * @param data
 	 * @param headers
 	 * @return
@@ -89,8 +91,10 @@ public class CoachService extends BaseService {
 					if(!this.coachDAO.update(coach.getCoachID(), sqlString)){
 						return getErrormessage("修改教练信息失败");
 					}
-				}else{
-					return getErrormessage("请完成教练申请之后操作");
+				}else if(c.getVerify().equals("0")){
+					return getErrormessage("申请中,请等待审核结果");
+				}else if(c.getVerify().equals("2")){
+					return getErrormessage("申请已被拒绝,请联系客服");
 				}
 			}else{
 				if(!this.coachDAO.create(coach)){
@@ -111,6 +115,12 @@ public class CoachService extends BaseService {
 		}
 		if(c.getIntro()!=null&&!c.getIntro().equalsIgnoreCase("null")){
 			sqlString += "Intro="+c.getIntro()+",";
+		}
+		if(c.getBirthday()!=null&&!c.getBirthday().equalsIgnoreCase("null")){
+			sqlString += "Birthday="+c.getBirthday()+",";
+		}
+		if(c.getSex()!=null&&!c.getSex().equalsIgnoreCase("null")){
+			sqlString += "Sex="+c.getSex()+",";
 		}
 		if(c.getACHV()!=null&&!c.getACHV().equalsIgnoreCase("null")){
 			sqlString += "ACHV="+c.getACHV()+",";
@@ -143,26 +153,46 @@ public class CoachService extends BaseService {
 			@FormParam("CoachID") String CoachID,
 			@Context HttpHeaders headers){
 		try {
-			if(!Verify.equals("2")&&!Verify.equals("1")){
+			if(Verify.equals("1")||Verify.equals("2")){
 				if(!this.coachDAO.updateVerify(CoachID, Verify)){
-					throw new GalaxyLabException("Error in update verify for coach");
+					return getErrormessage("审核失败");
 				}
 				Coach co = this.coachDAO.getCoachByCoachID(CoachID,null);
 				if(co!=null){
 					if(co.getVerify().equals("1")){
-						CoachScore cs = new CoachScore();
-						cs.setCoachID(co.getCoachID());
-						cs.setScore("0");
-						cs.setTeachNo("0");
-						if(!this.coachScoreDAO.create(cs)){
-							throw new GalaxyLabException("Error in create CoachScore");
+						this.userDAO.IsCoach(CoachID, "1");
+						CoachScore cs = this.coachScoreDAO.getByCoachID(CoachID);
+						if(cs==null){
+							cs = new CoachScore();
+							cs.setCoachID(co.getCoachID());
+							cs.setScore("0");
+							cs.setTeachNo("0");
+							if(!this.coachScoreDAO.create(cs)){
+								throw new GalaxyLabException("Error in create CoachScore");
+							}
 						}
 					}
-					
+					return getSuccessResponse();
 				}
 			}else{
 				return getErrormessage("审核失败");
 			}
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+		}
+		return getErrorResponse();
+	}
+	
+	@POST
+	@Path("/removeCoach")
+	public String removeCoach(
+			@FormParam("CoachID") String CoachID,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.coachDAO.delete(CoachID)){
+				return getErrormessage("删除教练失败,查无此人或正在申请中");
+			}
+			return getSuccessResponse();
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
 		}
@@ -197,7 +227,7 @@ public class CoachService extends BaseService {
 						c.setCoachCourses(coachCourses);
 					}
 				}
-				// TODO
+				// TODO 
 				return getResponse(c);
 			}
 			
@@ -219,7 +249,9 @@ public class CoachService extends BaseService {
 			@Context HttpHeaders headers){
 		try {
 			Collection<Coach> coachs = this.coachDAO.getCoachByClubID(ClubID);
-			return getResponse(coachs);
+			int count = this.coachDAO.getCountByClubID(ClubID);
+			CoachData data = new CoachData(count,coachs);
+			return getResponse(data);
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
 		}
@@ -228,25 +260,44 @@ public class CoachService extends BaseService {
 	
 	/**
 	 * 根据关键字,页码,条数,学院编号获取教练(不传任何参数获取所有教练,如果只根据学院编号查找,不建议使用)
-	 * @param keyword 
-	 * @param pageNum
-	 * @param rows
-	 * @param ClubID
+	 * @param keyword  关键字
+	 * @param pageNum  页码
+	 * @param rows     条数
+	 * @param ClubID   学院编号
+	 * @param IsVerify 是否获取已验证的教练  (1:是;其他为否)
 	 * @param headers
 	 * @return
 	 */
 	@GET
 	@Path("/getCoach")
-	public String getCoach(@FormParam("keyword") String keyword, @FormParam("pageNum") String pageNum,
-			@FormParam("rows") String rows, @FormParam("ClubID") String ClubID, @Context HttpHeaders headers) {
+	public String getCoach(@FormParam("days") String days,
+			@FormParam("keyword") String keyword,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows, 
+			@FormParam("ClubID") String ClubID, 
+			@FormParam("IsVerify") String IsVerify,
+			@Context HttpHeaders headers) {
 		try {
 			String sqlString = search(keyword,"0");
-			String limit = limit(pageNum, rows);
-			if (ClubID != null && !ClubID.equalsIgnoreCase("null") && !ClubID.equalsIgnoreCase("")) {
+			if(days!=null&&!days.equalsIgnoreCase("null")&&!days.equals("")){
+				int Days = Integer.parseInt(days);
+				if(Days > 0){
+					DateTime time = DateTime.now().minusDays(Days);
+					sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"' ";
+				}
+			}
+			if(ClubID != null && !ClubID.equalsIgnoreCase("null") && !ClubID.equalsIgnoreCase("")) {
 				sqlString += "and ClubID='" + ClubID + "' ";
 			}
-			Collection<Coach> coachs = this.coachDAO.getAll(limit, sqlString);
-			return getResponse(coachs);
+			if(IsVerify!=null&&!IsVerify.equalsIgnoreCase("null")&&!IsVerify.equals("")){
+				if(IsVerify.equals("1")){
+					sqlString += "and Verify='"+IsVerify+"' ";
+				}
+			}
+			Collection<Coach> coachs = this.coachDAO.getAll(rows, sqlString);
+			int count = this.coachDAO.getAllCount(sqlString);
+			CoachData data = new CoachData(count,coachs);
+			return getResponse(data);
 
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
@@ -259,9 +310,13 @@ public class CoachService extends BaseService {
 		String sqlString = "";
 		if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
 			if(type.equals("0")){//教练
-				sqlString = "and (CoachName like '%"
+				sqlString = "and (UserName like '%"
 						+ keyword
-						+ "%' or Age like '%"
+						+ "%' or CoachName like '%"
+						+ keyword
+						+ "%' or Birthday like '%"
+						+ keyword 
+						+ "%' or Sex like '%"
 						+ keyword 
 						+ "%' or ClubName like '%"
 						+ keyword 
@@ -277,11 +332,7 @@ public class CoachService extends BaseService {
 						+ keyword +"%') ";
 			}
 			if(type.equals("1")){//课程
-				sqlString = "and (CoachName like '%"
-						+ keyword
-						+ "%' or CoachPhone like '%"
-						+ keyword 
-						+ "%' or Title like '%"
+				sqlString = "and (Title like '%"
 						+ keyword 
 						+ "%' or Price like '%"
 						+ keyword 
@@ -296,17 +347,17 @@ public class CoachService extends BaseService {
 		return sqlString;
 	}
 	
-	public String limit(String pageNum,String rows){
-		String limit = "";
-		int page = 1;
-		if(pageNum!=null&&!pageNum.equals("")&&!pageNum.equalsIgnoreCase("null")){
-			page = Integer.parseInt(pageNum);
-		}
-		if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
-			limit += "limit "+(page-1)*Integer.parseInt(rows)+" , "+Integer.parseInt(rows);
-		}
-		return limit;
-	}
+//	public String limit(String pageNum,String rows){
+//		String limit = "";
+//		int page = 1;
+//		if(pageNum!=null&&!pageNum.equals("")&&!pageNum.equalsIgnoreCase("null")){
+//			page = Integer.parseInt(pageNum);
+//		}
+//		if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
+//			limit += "limit "+(page-1)*Integer.parseInt(rows)+" , "+Integer.parseInt(rows);
+//		}
+//		return limit;
+//	}
 	
 	/**
 	 * 学员给教练发表评论
@@ -393,7 +444,7 @@ public class CoachService extends BaseService {
 			if(!this.coachCourseDAO.CourseVerify(CourseID, Verify)){
 				throw new GalaxyLabException("Error in verify Course");
 			}
-			// TODO
+			// TODO 是否需要推送
 //			CoachCourse coachCourse = this.coachCourseDAO.getByCourseID(CourseID);
 //			if(coachCourse!=null&&coachCourse.getVerify().equals("1")){
 //				if(coachCourse.getIsVideo().equals("1")){
@@ -429,21 +480,23 @@ public class CoachService extends BaseService {
 				sqlString += "and CoachID='"+CoachID+"' ";
 				sqlString += search(keyword, "1");
 				Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, pageNum, rows);
+				int count = this.coachCourseDAO.getCourseCount(sqlString);
 				if(coachCourses.size() > 0){
-					Map<String,String> cMap = new HashMap<String,String>();
+//					Map<String,String> cMap = new HashMap<String,String>();
 					for(CoachCourse ccs : coachCourses){
-						if(cMap.get(ccs.getCoachID())==null){
+//						if(cMap.get(ccs.getCoachID())==null){
 							Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
 							if(coach != null){
 								ccs.setCoachName(coach.getCoachName());
-								ccs.setCoachHead(ccs.getCoachHead());
-								ccs.setCoachPhone(ccs.getCoachPhone());
-								cMap.put(ccs.getCoachID(), ccs.getCoachID());
+								ccs.setCoachHead(coach.getCoachHead());
+								ccs.setCoachPhone(coach.getCoachPhone());
+//								cMap.put(ccs.getCoachID(), ccs.getCoachID());
 							}
-						}
+//						}
 					}
-					return getResponse(coachCourses);
 				}
+				CoachCourseData courseData = new CoachCourseData(count, coachCourses);
+				return getResponse(courseData);
 			}
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
@@ -462,28 +515,32 @@ public class CoachService extends BaseService {
 	@GET
 	@Path("/getCourse")
 	public String getCourse(
+			@FormParam("days") String days,
 			@FormParam("keyword") String keyword,
 			@FormParam("pageNum") String pageNum,
 			@FormParam("rows") String rows,
 			@Context HttpHeaders headers){
 		try {
+			int Days = Integer.parseInt(days);
 			String sqlString = search(keyword, "1");
+			if(Days > 0){
+				DateTime time = DateTime.now().minusDays(Days);
+				sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"' ";
+			}
 			Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, pageNum, rows);
+			int count = this.coachCourseDAO.getCourseCount(sqlString);
 			if(coachCourses.size() > 0){
-				Map<String,String> cMap = new HashMap<String,String>();
 				for(CoachCourse ccs : coachCourses){
-					if(cMap.get(ccs.getCoachID())==null){
-						Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
-						if(coach != null){
-							ccs.setCoachName(coach.getCoachName());
-							ccs.setCoachHead(ccs.getCoachHead());
-							ccs.setCoachPhone(ccs.getCoachPhone());
-							cMap.put(ccs.getCoachID(), ccs.getCoachID());
-						}
+					Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
+					if(coach != null){
+						ccs.setCoachName(coach.getCoachName());
+						ccs.setCoachHead(coach.getCoachHead());
+						ccs.setCoachPhone(coach.getCoachPhone());
 					}
 				}
-				return getResponse(coachCourses);
 			}
+			CoachCourseData courseData = new CoachCourseData(count, coachCourses);
+			return getResponse(courseData);
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
 		}
@@ -593,9 +650,17 @@ public class CoachService extends BaseService {
 	public String createCourseVideo(String data,@Context HttpHeaders headers){
 		try {
 			CourseVideo courseVideo = super.fromGson(data, CourseVideo.class);
+			CoachCourse coachCourse = this.coachCourseDAO.getByCourseID(courseVideo.getCourseID());
+			if(coachCourse!=null){
+				if(!coachCourse.getIsVideo().equals("1")){
+					return getErrormessage("该课程不是视频直播教学.");
+				}
+			}else{
+				return getErrormessage("没有该课程存在,请重新申请课程.");
+			}
 			CourseVideo cv = this.courseVideoDAO.getByCourseID(courseVideo.getCourseID());
 			if(cv!=null){
-				return getErrormessage("该课程房间已存在");
+				return getErrormessage("该课程房间已存在!");
 			}
 			if(!this.courseVideoDAO.create(courseVideo)){
 				throw new GalaxyLabException("Error in create createCourseVideo");
@@ -630,9 +695,10 @@ public class CoachService extends BaseService {
 	}
 	/**
 	 * 修改直播间的房间密码
-	 * @param password
-	 * @param password1
-	 * @param CourseID
+	 * @param password 旧密码
+	 * @param password1 新密码
+	 * @param CourseID 课程编号
+	 * @param StartDateTime 新密码的上课时间
 	 * @param headers
 	 * @return
 	 */
@@ -641,6 +707,7 @@ public class CoachService extends BaseService {
 	public String updateRoomPwd(@FormParam("password") String password,
 			@FormParam("password1") String password1,
 			@FormParam("CourseID") String CourseID,
+			@FormParam("StartDateTime") String StartDateTime,
 			@Context HttpHeaders headers){
 		try {
 			CourseVideo cv = this.courseVideoDAO.getByCourseID(CourseID);
@@ -651,6 +718,7 @@ public class CoachService extends BaseService {
 					}
 				}
 			}
+			//TODO 改完密码推送给学员
 		} catch (Exception ex) {
 			logger.error("Error occured", ex);
 		}
@@ -695,9 +763,9 @@ public class CoachService extends BaseService {
 							students.add(user);
 						}
 					}
-					UserData userData = new UserData(count, students);
-					return getResponse(userData);
 				}
+				UserData userData = new UserData(count, students);
+				return getResponse(userData);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -729,9 +797,9 @@ public class CoachService extends BaseService {
 							coachs.add(coach);
 						}
 					}
-					CoachData data = new CoachData(count,coachs); 
-					return getResponse(data);
 				}
+				CoachData data = new CoachData(count,coachs); 
+				return getResponse(data);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -761,9 +829,9 @@ public class CoachService extends BaseService {
 						students.add(user);
 					}
 				}
-				UserData data = new UserData(count, students);
-				return getResponse(data);
 			}
+			UserData data = new UserData(count, students);
+			return getResponse(data);
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -806,9 +874,9 @@ public class CoachService extends BaseService {
 							students.add(user);
 						}
 					}
-					UserData data = new UserData(count, students);
-					return getResponse(data);
 				}
+				UserData data = new UserData(count, students);
+				return getResponse(data);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);

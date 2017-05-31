@@ -9,9 +9,9 @@ public class ClubFairway {
 	private String HoleNum;
 	private String FairwayName;
 	private String Updated_TS;
-	private String Par;
+	private Collection<String> Par;
 	private Collection<String> Photo;	//根据球洞数创建图片,没有图片插入n个空字符
-	public ClubFairway(String uID, String clubID, String holeNum, String fairwayName, String updated_TS, String par,
+	public ClubFairway(String uID, String clubID, String holeNum, String fairwayName, String updated_TS, Collection<String> par,
 			Collection<String> photo) {
 		super();
 		UID = uID;
@@ -52,10 +52,10 @@ public class ClubFairway {
 	public void setUpdated_TS(String updated_TS) {
 		Updated_TS = updated_TS;
 	}
-	public String getPar() {
+	public Collection<String> getPar() {
 		return Par;
 	}
-	public void setPar(String par) {
+	public void setPar(Collection<String> par) {
 		Par = par;
 	}
 	public Collection<String> getPhoto() {

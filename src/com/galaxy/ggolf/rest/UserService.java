@@ -583,7 +583,7 @@ public class UserService extends BaseService {
 			/*if(verifyApp(headers)){
 				user.setHead_portrait(ImageBase64.GetImageStr(user.getHead_portrait()));
 			}*/
-			User user1 = new User(user.getUserID(), user.getPhone(), user.getName(), user.getAge(), user.getSex(), user.getHead_portrait());
+			User user1 = new User(user.getUserID(), user.getPhone(), user.getName(), user.getAge(), user.getSex(), user.getHead_portrait(),user.getIsCoach());
 			return getResponse(user1);
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -916,38 +916,7 @@ public class UserService extends BaseService {
 		}
 		return getErrorResponse();
 	}
-	/**
-	 * 添加/取消收藏
-	 * @param data
-	 * @param headers
-	 * @return
-	 */
-	@POST
-	@Path("/collect")
-	public String collect(String data, @Context HttpHeaders headers){
-		try {
-			String result = "";
-			Collect col = fromGson(data, Collect.class);
-			Collect col1 = this.collectDAO.getCollectByUserID(col.getUserID(), col.getThemeID(), col.getType());
-			if(col1 != null){
-				if(col1.getStatus().equals("1")){
-					this.collectDAO.update(col1.getUID(), "0");
-					result = "取消收藏";
-				}else if(col1.getStatus().equals("0")){
-					this.collectDAO.update(col1.getUID(), "1");
-					result = "收藏成功";
-				}
-			}else{
-				this.collectDAO.create(col);
-				result = "收藏成功";
-			}
-			return getResponse(result);
-		} catch (Exception e) {
-			logger.error("Error occured",e);
-		}
-		return getErrorResponse();
-		
-	}
+	
 	
 	/**
 	 * 随机获取未添加关注的用户

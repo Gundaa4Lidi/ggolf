@@ -15,6 +15,27 @@ var Coach = {
     "TeachCollege":"",
     "TeachAddress":"",
     "Created_TS":"",
-    "Updated_TS":""
-
+    "Updated_TS":"",
+    "coachScore":{},
+    "coachComments":[],
+    "coachCourses":[]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

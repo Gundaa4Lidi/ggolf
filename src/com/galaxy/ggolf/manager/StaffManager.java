@@ -97,9 +97,14 @@ public class StaffManager {
 		}
 	}
 	
-	public Collection<Staff> getAll(){
-		Collection<Staff> staffs = staffDAO.getAllStaff();
+	public Collection<Staff> getAll(String sqlString,String rows,String pageNum){
+		Collection<Staff> staffs = staffDAO.getAllStaff(sqlString, rows, pageNum);
 		return staffs;
+	}
+	
+	public int getCount(String sqlString){
+		int count = staffDAO.getCount(sqlString);
+		return count;
 	}
 	
 	public boolean deleteStaff(String staffId) throws Exception{

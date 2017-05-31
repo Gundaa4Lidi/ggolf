@@ -17,6 +17,11 @@ public class UserDAO extends GenericDAO<User> {
 		super(new UserRowMapper());
 	}
 	
+	//获取头像
+	public Collection<User> getHead(String UserId){
+	String	sql="SELECT * FROM user WHERE UserID='"+UserId+"'";
+	  return super.executeQuery(sql);
+	}
 	
 	//创建用户
 	public boolean createUser(User user) {
@@ -43,15 +48,8 @@ public class UserDAO extends GenericDAO<User> {
 	}
 	
 	//关键字获取用户信息(分页,加载)
-	public Collection<User> getUsers(String pageNum,String size,String sqlString) {
-		int pages = 1;
-		String limit = "";
-		if(pageNum!=null){
-			pages = Integer.parseInt(pageNum);
-		}
-		if(size!=null && !size.equals("")){
-			limit ="limit " +((pages - 1) * Integer.parseInt(size)) + "," + Integer.parseInt(size);
-		}
+	public Collection<User> getUsers(String pageNum,String rows,String sqlString) {
+		String limit = super.limit(pageNum, rows);
 		String sql = "select * from user where DeletedFlag is null "+sqlString+" order by created_ts desc "+limit+" ";
 		return GetUserList(super.executeQuery(sql));
 	}
@@ -75,7 +73,7 @@ public class UserDAO extends GenericDAO<User> {
 	
 	//修改头像
 	public boolean updateHead(String head,String userID){
-		String sql = "update user set head_portrait='"+head+"' where UserID = '"+userID+"' and DeletedFlag is null";
+		String sql = "update user set head_portrait='"+head+"',Updated_TS = '"+Time()+"' where UserID = '"+userID+"' and DeletedFlag is null";
 		return super.executeUpdate(sql);
 	}
 
@@ -136,7 +134,7 @@ public class UserDAO extends GenericDAO<User> {
 	}
 	//修改密码
 	public boolean updatepassword(String userID,String password) throws Exception {
-		String sql = "update user set password ='"+password+"'  where UserID ='"
+		String sql = "update user set password ='"+password+"',Updated_TS = '"+Time()+"'  where UserID ='"
 				+ userID + "' ";
 		return super.executeUpdate(sql);
 	}
@@ -161,7 +159,7 @@ public class UserDAO extends GenericDAO<User> {
 	
 	//更换手机
 	public boolean updatePhone(String phone, String userID){
-		String sql = "update user set phone='"+phone+"' where UserID='"+userID+"'";
+		String sql = "update user set phone='"+phone+"',Updated_TS = '"+Time()+"' where UserID='"+userID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -202,7 +200,7 @@ public class UserDAO extends GenericDAO<User> {
 	
 	public User GetUser(User user){
 		user = new User(user.getUserID(), user.getPhone(), user.getName(), user.getAge(),
-				user.getSex(), user.getHead_portrait(), user.getLongitude(), user.getLatitude(),
+				user.getSex(), user.getHead_portrait(),user.getIsCoach(), user.getLongitude(), user.getLatitude(),
 				user.getDistance(), user.getWechat(), user.getCreated_TS());
 		return user;
 		
@@ -225,7 +223,7 @@ public class UserDAO extends GenericDAO<User> {
 		User u = new User();
 		if(users.size()>0){
 			for(User user : users){
-				u = new User(user.getUserID(), user.getPhone(), user.getName(), user.getAge(), user.getSex(), user.getHead_portrait());
+				u = new User(user.getUserID(), user.getPhone(), user.getName(), user.getAge(), user.getSex(), user.getHead_portrait(),user.getIsCoach());
 				userList.add(u);
 			}
 		}
@@ -245,14 +243,38 @@ public class UserDAO extends GenericDAO<User> {
 	}
 	
 	/**
+	 * 随机获取未关注过的用户数量
+	 * @param UserID
+	 * @return
+	 */
+	public int getRandomUserCount(String UserID){
+		String sql = "SELECT count(*) FROM `user` where UserID!='"+UserID+"'"
+				+ " and UserID NOT IN (select FenID from follow where DeletedFlag is null AND UserID='"+UserID+"' AND Relation!='黑名单')"
+				+ " ORDER BY RAND() LIMIT 20";
+		return super.count(sql);
+	}
+	
+	
+	/**
 	 * 查询电话簿是否有注册用户
 	 * @param phones
 	 * @param UserID
 	 * @return
 	 */
 	public Collection<User> haveRegister(String phones,String UserID){
-		String sql = "select * from user where UserID!='"+UserID+"' and Phone in("+phones+")";
+		String sql = "select * from user where DeletedFlag is null and UserID!='"+UserID+"' and Phone in("+phones+")";
 		return GetUserList(super.executeQuery(sql));
+	}
+	
+	/**
+	 * 修改用户是否为教练
+	 * @param UserID
+	 * @param IsCoach
+	 * @return
+	 */
+	public boolean IsCoach(String UserID,String IsCoach){
+		String sql = "update user set IsCoach='"+IsCoach+"',Updated_TS='"+Time()+"' where DeletedFlag is null and UserID='"+UserID+"'";
+		return super.executeUpdate(sql);
 	}
 //	//根据关系获取好友列表
 //	public Collection<User> getFollow(String UserID,String Relation,String Relation1){ 

@@ -103,11 +103,9 @@ public class ClubOrderService extends BaseService {
 						+ keyword +"%') ";
 			}
 			int count = this.orderDAO.getOrderCount(sqlString);
-			if(count>0){
-				Collection<ClubOrder> clubOrders = this.orderDAO.getClubOrder(sqlString, rows);
-				ClubOrderData clubOrderData = new ClubOrderData(count, clubOrders);
-				return getResponse(clubOrderData);
-			}
+			Collection<ClubOrder> clubOrders = this.orderDAO.getClubOrder(sqlString, rows);
+			ClubOrderData clubOrderData = new ClubOrderData(count, clubOrders);
+			return getResponse(clubOrderData);
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}

@@ -11,13 +11,14 @@ public class PriceForTime {
     private String Type;
     private String IsPrivilege;
     private String IsDeposit;
+    private String IsValid;
     private String DateTime;
     private String Created_TS;
     private String Updated_TS;
     
 	public PriceForTime(String clubservePriceID, String clubserveID, String clubID, String week, String time,
-			String downPayment, String otherPrice, String type, String isPrivilege, String isDeposit, String dateTime, String created_TS,
-			String updated_TS) {
+			String downPayment, String otherPrice, String type, String isPrivilege, String isDeposit,
+			String isValid,String dateTime, String created_TS,String updated_TS) {
 		ClubservePriceID = clubservePriceID;
 		ClubserveID = clubserveID;
 		ClubID = clubID;
@@ -28,6 +29,7 @@ public class PriceForTime {
 		Type = type;
 		IsPrivilege = isPrivilege;
 		IsDeposit = isDeposit;
+		IsValid = isValid;
 		DateTime = dateTime;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
@@ -93,6 +95,14 @@ public class PriceForTime {
 	public void setIsDeposit(String isDeposit) {
 		IsDeposit = isDeposit;
 	}
+	public String getIsValid() {
+		return IsValid;
+	}
+
+	public void setIsValid(String isValid) {
+		IsValid = isValid;
+	}
+
 	public String getDateTime() {
 		return DateTime;
 	}

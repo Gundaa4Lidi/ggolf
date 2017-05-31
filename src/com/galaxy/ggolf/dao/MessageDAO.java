@@ -66,10 +66,7 @@ public class MessageDAO extends GenericDAO<Message> {
 	
 	//根据关键字搜索
 	public Collection<Message> getSearch(String rows,String sqlString){
-		String limit = "";
-		if(rows!=null&&!rows.equalsIgnoreCase("null")){
-			limit = "limit 0 , "+Integer.parseInt(rows)+"";
-		}
+		String limit = super.limit(null, rows);
 		String sql = "select * from message where DeletedFlag is null "+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	}

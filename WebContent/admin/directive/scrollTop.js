@@ -2,7 +2,6 @@ var scrollTop = function ($window, $document, $compile) {
     return {
         restrict: 'A',
         link: function ($scope, elem, attr, ctrl) {
-            console.log(attr)
             $scope.side = attr.side;
             $scope.title = attr.title;
             var elShare = angular.element('<div class="side-tool">' +

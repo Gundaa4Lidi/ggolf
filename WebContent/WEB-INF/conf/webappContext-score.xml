@@ -5,13 +5,19 @@
 	
 	<bean id="scoreService" class="com.galaxy.ggolf.rest.ScoreService">
 	    <constructor-arg ref="scoreManager"/>
-	
+	    
 	</bean>
 	<bean id="scoreManager" class="com.galaxy.ggolf.manager.ScoreManager">
 	    <constructor-arg ref="scoreDAO"/>
-	</bean>
-	<bean id="scoreDAO" class="com.galaxy.ggolf.dao.ScoreDAO">
-	 
+	    <constructor-arg ref="followDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="trackDAO"/>
+	    <constructor-arg ref="timeDAO"/>
 	</bean>
 	
+	<bean id="scoreDAO" class="com.galaxy.ggolf.dao.ScoreDAO"></bean>
+	<bean id="followDAO" class="com.galaxy.ggolf.dao.FollowDAO"></bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO"></bean>
+	<bean id="trackDAO" class="com.galaxy.ggolf.dao.TrackDAO"></bean>
+	<bean id="timeDAO" class="com.galaxy.ggolf.dao.TimeDAO"></bean>
 </beans>

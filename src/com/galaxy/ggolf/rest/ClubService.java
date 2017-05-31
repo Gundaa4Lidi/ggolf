@@ -1,8 +1,11 @@
 package com.galaxy.ggolf.rest;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -21,6 +24,7 @@ import com.galaxy.ggolf.dao.ClubScoreDAO;
 import com.galaxy.ggolf.dao.ClubServeDAO;
 import com.galaxy.ggolf.dao.ClubTotalScoreDAO;
 import com.galaxy.ggolf.dao.ClubserveLimitTimeDAO;
+import com.galaxy.ggolf.dao.OtherDateDAO;
 import com.galaxy.ggolf.dao.PriceForTimeDAO;
 import com.galaxy.ggolf.domain.Club;
 import com.galaxy.ggolf.domain.ClubDetail;
@@ -30,9 +34,11 @@ import com.galaxy.ggolf.domain.ClubServe;
 import com.galaxy.ggolf.domain.ClubserveLimitTime;
 import com.galaxy.ggolf.domain.Comment;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.OtherDate;
 import com.galaxy.ggolf.domain.PriceForTime;
 import com.galaxy.ggolf.dto.ClubData;
 import com.galaxy.ggolf.dto.ClubServeData;
+import com.galaxy.ggolf.dto.GenericData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.ClubDetailManager;
 import com.galaxy.ggolf.manager.ClubManager;
@@ -51,13 +57,15 @@ public class ClubService extends BaseService {
 	private ClubserveLimitTimeDAO clubserveLimitTimeDAO;
 	private ClubScoreDAO clubScoreDAO;
 	private ClubTotalScoreDAO clubTotalScoreDAO;
+	private OtherDateDAO otherDateDAO;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public ClubService(ClubManager manager, ClubDetailManager clubDetailManager,
 			CommentManager commentManager,ClubServeDAO clubServeDAO,
 			PriceForTimeDAO priceForTimeDAO,ClubserveLimitTimeDAO clubserveLimitTimeDAO,
-			ClubScoreDAO clubScoreDAO,ClubTotalScoreDAO clubTotalScoreDAO) {
+			ClubScoreDAO clubScoreDAO,ClubTotalScoreDAO clubTotalScoreDAO,
+			OtherDateDAO otherDateDAO) {
 		this.manager = manager;
 		this.clubDetailManager = clubDetailManager;
 		this.commentManager = commentManager;
@@ -66,6 +74,7 @@ public class ClubService extends BaseService {
 		this.clubserveLimitTimeDAO = clubserveLimitTimeDAO;
 		this.clubScoreDAO = clubScoreDAO;
 		this.clubTotalScoreDAO = clubTotalScoreDAO;
+		this.otherDateDAO = otherDateDAO;
 	}
 	
 	/**
@@ -80,6 +89,9 @@ public class ClubService extends BaseService {
 		try {
 			Club club = super.fromGson(data,Club.class);
 			this.manager.saveClub(club);
+			ClubDetail clubDetail = new ClubDetail(club.getClubID(), club.getClubName(), club.getTotalHole(),
+					club.getTotalStemNum(), club.getClubPhoneNumber(), club.getClubPhoto());
+			this.clubDetailManager.saveClubDetail(clubDetail);
 			return getSuccessResponse();
 		} catch (GalaxyLabException ex) {
 			logger.error(ex.getMessage(), ex);
@@ -151,12 +163,9 @@ public class ClubService extends BaseService {
 			if(clubType != null && !clubType.equalsIgnoreCase("null")){
 				sqlString += "and ClubType= '"+clubType+"'";
 			}
-			if(pageNum==null){
-				pageNum = "1";
-			}
 			Collection<Club> data = this.manager.getSearchClub(sqlString, rows, pageNum);
 			int pageCount = this.manager.getSearchCount(sqlString);
-			ClubData clubData = new ClubData(data,pageCount);
+			ClubData clubData = new ClubData(pageCount,data);
 			return getResponse(clubData);
 			
 		} catch (Exception e) {
@@ -424,13 +433,55 @@ public class ClubService extends BaseService {
 	 * @return
 	 */
 	@POST
-	@Path("/updatePriceForClubServe")
-	public String updatePriceForClubServe(String data,
+	@Path("/dailyPriceSave")
+	public String dailyPriceSave(String data,
 			@Context HttpHeaders headers){
 		try {
 			PriceForTime pft = super.fromGson(data, PriceForTime.class);
-			if(!this.priceForTimeDAO.update(pft)){
-				throw new GalaxyLabException("Error in create pricefortime");
+			String sqlString = "and DateTime is null";
+			PriceForTime pft1 = this.priceForTimeDAO.getPriceByClubServeID(pft.getWeek(), pft.getTime(), pft.getClubserveID(), sqlString);
+			if(pft1!=null){
+				if(!this.priceForTimeDAO.update(pft)){
+					throw new GalaxyLabException("Error in update pricefortime");
+				}
+			}else{
+				if(!this.priceForTimeDAO.create(pft)){
+					throw new GalaxyLabException("Error in create pricefortime");
+				}
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 创建其他时段的价格
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/saveOtherPrice")
+	public String createOtherPrice(String data,
+			@Context HttpHeaders headers){
+		try {
+			PriceForTime pft = super.fromGson(data, PriceForTime.class);
+			if(pft!=null){
+				if(pft.getDateTime()!=null&&!pft.getDateTime().equals("")&&!pft.getDateTime().equalsIgnoreCase("null")){
+					String sqlString = "and DateTime='"+pft.getDateTime()+"'";
+					PriceForTime time = this.priceForTimeDAO.getPriceByClubServeID(pft.getWeek(), pft.getTime(), pft.getClubserveID(), sqlString);
+					if(time!=null){
+						if(!this.priceForTimeDAO.update(pft)){
+							throw new GalaxyLabException("Error in update pricefortime");
+						}
+					}else{
+						if(!this.priceForTimeDAO.create(pft)){
+							throw new GalaxyLabException("Error in create pricefortime");
+						}
+					}
+				}
 			}
 			return getSuccessResponse();
 		} catch (Exception e) {
@@ -478,13 +529,22 @@ public class ClubService extends BaseService {
 	public String getPricesByClubserveID(@FormParam("Week") String Week,
 			@FormParam("Time") String Time,
 			@FormParam("ClubserveID") String ClubserveID,
+			@FormParam("DateTime") String DateTime,
 			@Context HttpHeaders headers){
 		try {
-			if(Time!=null&&!Time.equals("")){
-				PriceForTime pft = this.priceForTimeDAO.getPriceByClubServeID(Week, Time, ClubserveID);
-				return getResponse(pft);
+			String sqlString = "";
+			if(DateTime!=null&&!DateTime.equals("")&&!DateTime.equalsIgnoreCase("null")){
+				sqlString = "and DateTime='"+DateTime+"' ";
 			}else{
-				Collection<PriceForTime> priceForTimes = this.priceForTimeDAO.getPricesByClubserveID(Week, ClubserveID);
+				sqlString = "and DateTime is null";
+			}
+			if(Time!=null&&!Time.equals("")){
+				PriceForTime pft = this.priceForTimeDAO.getPriceByClubServeID(Week, Time, ClubserveID,sqlString);
+				if(pft!=null){
+					return getResponse(pft);
+				}
+			}else{
+				Collection<PriceForTime> priceForTimes = this.priceForTimeDAO.getPricesByClubserveID(Week, ClubserveID,sqlString);
 				return getResponse(priceForTimes);
 			}
 		} catch (Exception e) {
@@ -492,6 +552,104 @@ public class ClubService extends BaseService {
 		}
 		return getErrorResponse();
 	}
+	
+	/**
+	 * 获取特殊时段的时间组
+	 * @param ClubserveID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getGroupDateByClubserve")
+	public String getGroupDateByClubserve(
+			@FormParam("ClubserveID") String ClubserveID,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "";
+			if(ClubserveID!=null&&!ClubserveID.equals("")&&!ClubserveID.equalsIgnoreCase("null")){
+				sqlString = "and ClubserveID='"+ClubserveID+"' group by DateTime order by DateTime desc";
+				Collection<PriceForTime> pft = this.priceForTimeDAO.getByString(sqlString,null,null);
+				Collection<String> dateTime = new ArrayList<String>();
+				if(pft.size()>0){
+					for(PriceForTime p : pft){
+						dateTime.add(p.getDateTime());
+					}
+					return getResponse(dateTime);
+				}
+			}
+			
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 查询可订球场
+	 * @param date
+	 * @param time
+	 * @param rows
+	 * @param pageNum
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/reserveList")
+	public String reserveList(
+			@FormParam("date") String date,
+			@FormParam("time") String time,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers){
+		try {
+			int row = 10;
+			if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
+				row = Integer.parseInt(rows);
+			}
+			Map<String,String> cMap = new HashMap<String,String>();
+			String sqlString = "and DateTime='"+date+"' "
+					+ "and Time='"+time+"' "
+					+ "and IsValid='1' "
+					+ "group by ClubID";
+			//先查询特殊时段有无球场可提供预订
+			Collection<PriceForTime> priceForTimes = this.priceForTimeDAO.getByString(sqlString,row+"",pageNum);
+			if(priceForTimes.size()>0){
+				for(PriceForTime pft : priceForTimes){
+					cMap.put(pft.getClubID(), pft.getClubID());
+				}
+			}
+			row -= priceForTimes.size();
+			String sqlString1 = "and Time='"+time+"' group by ClubID";
+			//在查询所有时段有无球场可提供预订,进行过滤
+			if(row > 0){
+				Collection<PriceForTime> priceForTimes1 = this.priceForTimeDAO.getByString(sqlString1,row+"",pageNum);
+				if(priceForTimes1.size()>0){
+					for(PriceForTime pft1 : priceForTimes1){
+						if(!cMap.containsKey(pft1.getClubID())){
+							cMap.put(pft1.getClubID(),pft1.getClubID());
+						}
+					}
+				}
+			}
+			Collection<Club> clubs = new ArrayList<Club>();
+			int count = cMap.size();
+			if(cMap.size()>0){
+				for(String key : cMap.keySet()){
+					Club club = this.manager.getClub(cMap.get(key));
+					if(club!=null){
+						clubs.add(club);
+					}
+				}
+			}
+			ClubData data = new ClubData(count, clubs);
+			return getResponse(data);
+			
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
 	
 	/**
 	 * 保存限时抢购
@@ -504,8 +662,9 @@ public class ClubService extends BaseService {
 	public String saveClubserveLimitTime(String data,@Context HttpHeaders headers){
 		try {
 			ClubserveLimitTime clt = super.fromGson(data, ClubserveLimitTime.class);
+			logger.info("限时------{}",clt);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			if(clt.getClubserveLimitTimeID()!=null){
+			if(clt.getClubserveLimitTimeID()!=null&&!clt.getClubserveLimitTimeID().equals("")&&!clt.getClubserveLimitTimeID().equalsIgnoreCase("null")){
 				if(!this.clubserveLimitTimeDAO.update(clt)){
 					throw new GalaxyLabException("Error in update ClubserveLimitTime");
 				}
@@ -686,5 +845,93 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 		
 	}
+	
+	/**
+	 * 创建供应商特殊时段日期
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/saveOtherDate")
+	public String saveOtherDate(String data,
+			@Context HttpHeaders headers){
+		try {
+			OtherDate od = super.fromGson(data, OtherDate.class);
+			if(this.otherDateDAO.check(od.getClubserveID(), od.getDateTime())!=null){
+				return getErrormessage("该日期已存在");
+			}else{
+				if(!this.otherDateDAO.create(od)){
+					throw new GalaxyLabException("Error in create otherdate");
+				}
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 删除特殊时段日期
+	 * @param ClubserveID
+	 * @param DateTime
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/removeOtherDate")
+	public String removeOtherDate(@FormParam("ClubserveID") String ClubserveID,
+			@FormParam("DateTime") String DateTime,
+			@Context HttpHeaders headers){
+		try {
+			if(!this.otherDateDAO.delete(ClubserveID,DateTime)){
+				throw new GalaxyLabException("Error in delete otherdate");
+			}
+			PriceForTime pft = this.priceForTimeDAO.checkByDateTime(ClubserveID, DateTime);
+			if(pft!=null){
+				if(!this.priceForTimeDAO.deleteDateTime(ClubserveID, DateTime)){
+					throw new GalaxyLabException("Error in delete priceForTime");
+				}
+			}
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	
+	/**
+	 * 查询供应商特殊时段日期
+	 * @param ClubserveID
+	 * @param rows
+	 * @param pageNum
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getOtherDate")
+	public String getOtherDate(@FormParam("ClubserveID") String ClubserveID,
+			@FormParam("keyword") String keyword,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "";
+			if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
+				sqlString = "and DateTime like'%"+ keyword + "%'"; 
+			}
+			Collection<OtherDate> otherDates = this.otherDateDAO.getByClubserveID(ClubserveID, sqlString, rows, pageNum);
+			int count = this.otherDateDAO.getCount(ClubserveID, sqlString);
+			GenericData<OtherDate> result = new GenericData<OtherDate>(count, otherDates);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+		
+	}
+	
 
 }

@@ -1,5 +1,6 @@
 package com.galaxy.ggolf.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.FollowRowMapper;
@@ -45,6 +46,8 @@ public class FollowDAO extends GenericDAO<Follow> {
 	
 	public Follow getFollow(String userID, String fenID){//查询是否存在,用于互相关注
 		String sql = "select * from follow where DeletedFlag is null and UserID='"+userID+"' and FenID='"+fenID+"'";
+		String fenid="22,21,3";
+		String sql1 = "select * from follow where DeletedFlag is null and FenID IN ('"+fenid+"') and User='"+userID+"'"; 
 		Collection<Follow> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (Follow) result.toArray()[0];
@@ -107,5 +110,9 @@ public class FollowDAO extends GenericDAO<Follow> {
 		String sql = "update follow set DeletedFlag='Y',Updated_TS='"+Time()+"' where UID='"+UID+"' and Relation='黑名单'";
 		return super.executeUpdate(sql);
 	}
-	
+	 //获取好友id
+    public Collection<Follow> getFrdId(String UserId){
+    	String sql="SELECT * FROM follow WHERE UserID='"+UserId+"'";
+    	return super.executeQuery(sql);
+    }
 }

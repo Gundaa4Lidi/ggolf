@@ -1,9 +1,10 @@
 <div ng-controller="UserController" data-ng-init="load()">
+	<div page-loader is-loading="true"></div>
 	<section id="main__content">
 	    <div class="action-header-alt">
 	        <div class="action-header__item action-header__item--search">
 	            <form>
-	                <input type="text" placeholder="Search for contacts..." ng-model="searchWord" ng-change="search()">
+	                <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="search()">
 	            </form>
 	        </div>
 	
@@ -12,11 +13,11 @@
 	        </div>
  -->	
 	        <div class="action-header__item action-header__item--sort hidden-xs">
-	            <span class="action-header__small">Sort by :</span>
+	            <!--<span class="action-header__small">Sort by :</span>-->
 	
-	            <select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" >
-	            	<option ng-repeat="item in selectOptions" selected="{{item}}">{{item.title}}</option>
-	            </select>
+	            <!--<select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" >-->
+	            	<!--<option ng-repeat="item in selectOptions" selected="{{item}}">{{item.title}}</option>-->
+	            <!--</select>-->
 	        </div>
 	    </div>
 	
@@ -66,7 +67,7 @@
 	                    <div class="list-group__header text-left">
 	                        <span>共{{TotalUser}}个用户</span>
 	                    </div>
-						<div class="list-group__wrap" ng-repeat="item in Users |filter:searchWord">
+						<div class="list-group__wrap" ng-repeat="item in Users">
 	                        <a class="list-group-item media" href="#view-contact" ng-click="checkUser(item)" data-toggle="modal">
 	                            <div class="pull-left">
 	                                <!-- <div class="avatar-char mdc-bg-amber-400">T</div> -->
@@ -101,7 +102,7 @@
 	                            <div class="dropdown">
 	                                <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
 	                                <ul class="dropdown-menu pull-right">
-	                                	<li><a href="#apply-open-coach" data-toggle="modal" ng-click="showDia">申请开通教练</a></li>
+	                                	<li ng-if="item.isCoach!='1'"><a href="#apply-open-coach" data-toggle="modal" ng-click="ApplyCoach(item)">申请开通教练</a></li>
 	                                   <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
 	                                </ul>
 	                            </div>
@@ -109,7 +110,7 @@
 	                        <div  class="list-group__date">
 	                             <div >
                        				<i class="fa fa-calendar" aria-hidden="true"></i>
-                           			<strong>{{item.Created_TS}}</strong>
+                           			<strong>{{CurrentDT(item.Created_TS)}}</strong>
                                	</div>
 	                        </div>
 	                        
@@ -117,7 +118,7 @@
 	                </div>
 	
 	                <div class="load-more">
-	                    <a href=""><i class="zmdi zmdi-refresh-alt"></i> 加载更多</a>
+						<a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
 	                </div>
 	            </div>
 	        </div>
@@ -127,87 +128,200 @@
 	<div class="modal fade" id="apply-open-coach" data-backdrop="static">
 	    <div class="modal-dialog">
 	        <div class="modal-content">
-	            <div class="modal-body">
-	            	
-	                <form class="card new-contact" style="margin-bottom: 0px;">
-						<div class="new-contact__img">
-							<img ng-src="{{applyCoach.HeadPhoto}}" alt="" err-src="../img/user_empty.png"> 
-							<!-- <i class="new-contact__upload zmdi zmdi-camera" ngf-select ngf-change="upload($files)"></i> -->
-							<i class="new-contact__upload zmdi zmdi-camera"  href="#update-to-head" data-toggle="modal" data-dismiss="modal" ></i>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+					<h4 class="modal-title">申请开通教练</h4>
+				</div>
+				<form class="new-contact ng-pristine ng-valid" style="margin-bottom: 0px;" name="coachApplyForm" ng-submit="submitCoachApply(coachApplyForm.$valid)" novalidate>
+
+					<div class="modal-body">
+						<div class="col-md-12 text-center">
+							<a href="" tooltips tooltip-side="top" tooltip-template="用户头像">
+								<img ng-src="{{applyCoach.CoachHead}}" err-src="../img/user_empty.png"
+									 class="img-circle border_3_s_c" width="80px" height="80px" alt="">
+							</a>
 						</div>
 
-						<div class="card__body">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>名字</label> 
-										<input type="text" ng-model="applyCoach.UserName" class="form-control">
-									</div>
-								</div>
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>性别</label> 
-										<select ng-model="applyCoach.Sex" class="form-control" required>
-											<option value="男" >男</option>
-											<option value="女">女</option>
-										</select>
-									</div>
-								</div>
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>年龄</label> 
-										<input type="text" ng-model="applyCoach.Age" class="form-control">
-									</div>
-									<md-input-container>
-							            <label>Enter date</label>
-							            <md-datepicker ng-model="applyCoach.Age"></md-datepicker>
-						          	</md-input-container>
-								</div>
 
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>密码</label> <input type="password"
-											ng-model="currentStaff.Password" class="form-control">
-									</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.CoachName.$invalid && !coachApplyForm.CoachName.$pristine }">
+									<label>真实姓名<span style="color: red">*</span></label>
+									<input type="text" name="CoachName" ng-model="applyCoach.CoachName"
+										   class="form-control" required>
+									<p ng-show="coachApplyForm.CoachName.$invalid && !coachApplyForm.CoachName.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.CoachName.$error.required">必填项</span>
+									</p>
 								</div>
-
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>确认密码</label> <input type="password"
-											ng-model="currentStaff.Password2" class="form-control">
-									</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.Sex.$invalid && !coachApplyForm.Sex.$pristine }">
+									<label>性别<span style="color: red">*</span></label>
+									<select ng-model="applyCoach.Sex" name="Sex" class="form-control" required>
+										<option value="" selected="selected">请选择</option>
+										<option value="男">男</option>
+										<option value="女">女</option>
+									</select>
+									<p ng-show="coachApplyForm.Sex.$invalid && !coachApplyForm.Sex.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.Sex.$error.required">必填项</span>
+									</p>
 								</div>
+							</div>
+						</div>
 
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>手机号码</label> <input type="text"
-											ng-model="currentStaff.Phone" class="form-control" maxlength='11'>
-									</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.Club.$invalid && !coachApplyForm.Club.$pristine }">
+									<lable>所属学院<span style="color: red">*</span></lable>
+									<select ng-model="Club" class="form-control" name="Club"
+											ng-options="club as club.ClubName for club in clubList" required>
+										<option value="" selected="selected">请选择学院</option>
+									</select>
+									<p ng-show="coachApplyForm.Club.$invalid && !coachApplyForm.Club.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.Club.$error.required">必填项</span>
+									</p>
 								</div>
-
-								<div class="col-sm-6">
-									<div class="form-group">
-										<label>性别</label> <select ng-model="applyCoach.Sex"
-											class="form-control" required>
-											<!-- <option value="店员">店员</option> -->
-											<option value="管理员">管理员</option>
-										</select>
-									</div>
+							</div>
+							<div class="col-sm-6">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.CoachPhone.$invalid && !coachApplyForm.CoachPhone.$pristine
+									 || coachApplyForm.CoachPhone.$error.pattern }">
+									<label>联系电话(11位手机号码)<span style="color: red">*</span></label>
+									<input type="text" name="CoachPhone" ng-model="applyCoach.CoachPhone"
+										   class="form-control" required ng-pattern="/^(1[34578]\d{9})$/">
+									<p ng-show="coachApplyForm.CoachPhone.$invalid && !coachApplyForm.CoachPhone.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.CoachPhone.$error.required">必填项</span>
+										<span ng-show="coachApplyForm.CoachPhone.$error.pattern">格式有误</span>
+									</p>
+									<p ng-show="coachApplyForm.CoachPhone.$invalid && coachApplyForm.CoachPhone.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.CoachPhone.$error.pattern">格式有误</span>
+									</p>
 								</div>
 							</div>
 
-							
 						</div>
-					</form>
-	                
-					
-	            </div>
-	
-	            <div class="modal-footer" style="padding: 0 30px 10px;">
-					<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" href="#" 
-					 data-toggle="modal"  ng-click="">保存</button>
-				</div>
+
+						<div class="row">
+							<div class="col-sm-6">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.Birthday.$invalid && !coachApplyForm.Birthday.$pristine ||
+										 		status.IsErrorDate}">
+									<label>出生日期
+										<span style="color: red">*</span>
+										<span ng-show="Age!==-1">(年龄:{{Age}}岁)</span>
+									</label>
+									<div class="input-group">
+										<input type="text" name="Birthday" readonly class="form-control"
+											   uib-datepicker-popup="{{format}}"
+											   ng-model="Birthday"
+											   ng-change="updateDate()"
+											   is-open="status.IsBtdOpen"
+											   datepicker-options="birthdayOptions"
+											   close-text="关闭"
+											   current-text="今天"
+											   ng-required="true"/>
+										<span class="input-group-addon" style="background-color: white">
+											<a href="" style="color: #828282;" ng-click="IsOpen(1)">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</a>
+										</span>
+									</div>
+									<p ng-show="coachApplyForm.Birthday.$invalid && !coachApplyForm.Birthday.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.Birthday.$error.required">必填项</span>
+									</p>
+									<p ng-show="status.IsErrorDate" class="help-block">输入有误</p>
+								</div>
+							</div>
+							<div class="col-sm-6" ng-show="coachApplyForm.Birthday.$valid && !status.IsErrorDate">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.Seniority.$invalid && !coachApplyForm.Seniority.$pristine ||
+										 		status.IsErrorDate1}">
+									<label>入行日期
+										<span style="color: red">*</span>
+										<span ng-show="Sen!==-1">(教龄:{{Sen}}年)</span>
+									</label>
+									<div class="input-group">
+										<input type="text" name="Seniority" readonly class="form-control"
+											   uib-datepicker-popup="{{format}}"
+											   ng-model="Seniority"
+											   is-open="status.IsDateOpen"
+											   datepicker-options="dateOptions"
+											   close-text="关闭"
+											   current-text="今天"
+											   ng-required="true"/>
+										<span class="input-group-addon" style="background-color: white">
+											<a href="" style="color: #828282;" ng-click="IsOpen(2)">
+												<i class="glyphicon glyphicon-calendar"></i>
+											</a>
+										</span>
+									</div>
+									<p ng-show="coachApplyForm.Birthday.$invalid && !coachApplyForm.Birthday.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.Birthday.$error.required">必填项</span>
+									</p>
+									<p ng-show="status.IsErrorDate1" class="help-block">小于出生日期</p>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.Intro.$invalid && !coachApplyForm.Intro.$pristine }">
+									<lable>简介<span style="color: red">*</span></lable>
+									<textarea type="text" name="Intro" cols="1" rows="3" class="form-control"
+											  ng-model="applyCoach.Intro" required></textarea>
+									<p ng-show="coachApplyForm.Intro.$invalid && !coachApplyForm.Intro.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.Intro.$error.required">必填项</span>
+									</p>
+								</div>
+							</div>
+							<div class="col-sm-12">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.ACHV.$invalid && !coachApplyForm.ACHV.$pristine }">
+									<lable>所获成就<span style="color: red">*</span></lable>
+									<textarea type="text" name="ACHV" cols="1" rows="3" class="form-control"
+											  ng-model="applyCoach.ACHV" required></textarea>
+									<p ng-show="coachApplyForm.ACHV.$invalid && !coachApplyForm.ACHV.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.ACHV.$error.required">必填项</span>
+									</p>
+								</div>
+							</div>
+							<div class="col-sm-12">
+								<div class="form-group"
+									 ng-class="{ 'has-error' : coachApplyForm.TeachACHV.$invalid && !coachApplyForm.TeachACHV.$pristine }">
+									<lable>教学成果<span style="color: red">*</span></lable>
+									<textarea type="text" name="TeachACHV" cols="1" rows="3" class="form-control"
+											  ng-model="applyCoach.TeachACHV" required></textarea>
+									<p ng-show="coachApplyForm.TeachACHV.$invalid && !coachApplyForm.TeachACHV.$pristine"
+									   class="help-block">
+										<span ng-show="coachApplyForm.TeachACHV.$error.required">必填项</span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="modal-footer" style="padding: 0 30px 10px;">
+						<button type="button" class="btn btn-link" data-dismiss="modal" ng-click="coachApplyForm.$setPristine()">取消</button>
+						<button type="submit" class="btn btn-primary"
+								ng-disabled="coachApplyForm.$invalid||status.IsErrorDate||status.IsErrorDate1"
+								ng-click="coachApplyForm.$setPristine()">确认提交申请
+						</button>
+					</div>
+				</form>
 	        </div>
 	    </div>
 	</div>
@@ -223,7 +337,7 @@
 							class="img-circle" width="150" height="150"  alt="">
 	                </div>
 	                
-					<table class="table table-border table-hover table_wrapp">
+					<table class="table table-border table-hover table_wrap">
 						<tr>
 							<th>用户名</th>
 							<td>{{currentItemD.UserName}}</td>
@@ -260,8 +374,6 @@
 							<th>自我评述</th>
 							<td>{{currentItemD.CustomTag}}</td>
 						</tr>
-						
-						
 					</table>
 	                <!-- <div class="m-t-25">
 	                    <h4>Mallinda Hollaway</h4>

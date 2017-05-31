@@ -1,14 +1,22 @@
-<div ng-controller="CommentController">
-	<section id="main__content">
-           <div class="action-header-alt">
-               <div class="action-header__item action-header__item--search">
-                   <form>
-                       <input type="text" placeholder="Search activity log...">
-                   </form>
-               </div>
-               <div class="action-header__item action-header__add">
-               </div>
-           </div>
+<div ng-controller="CommentController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content">
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="Search activity log..." ng-model="keyword"
+                           ng-change="getCommentList()">
+                </form>
+            </div>
+            <div class="action-header__item action-header__item--sort hidden-xs">
+                <span class="action-header__small">Sort by : </span>
+                <select ui-select2="filterDaySelect" ng-model="filterDay" class="form-control"
+                        ng-change="getCommentList()"
+                        ng-options="day.value as day.key for day in filterDays"></select>
+            </div>
+            <div class="action-header__item action-header__add">
+            </div>
+        </div>
 
         <div class="main__container">
             <header class="main__title">
@@ -16,7 +24,7 @@
             </header>
 
             <div class="activity-log">
-                <div class="activity-log__block" ng-repeat="item in MsgList">
+                <div class="activity-log__block" ng-repeat="item in CommentList">
                     <div class="activity-log__item activity-log__item--listing">
                         <div class="activity-log__date">
                             {{item.Date}}
@@ -27,21 +35,85 @@
 
                             <div class="activity-log__list media">
                                 <div class="pull-left">
-                                    <img ng-src="{{msg.SenderPhoto}}" class="img-circle" err-src="../img/user_empty.png" width="80" alt="">
+                                    <img ng-src="{{msg.UserHead}}" class="img-circle" err-src="../img/user_empty.png"
+                                         width="80" alt="">
                                 </div>
                                 <div class="media-body activity-log__text">
-                                    <a href="">{{msg.Title}}</a>
-                                    <small>{{msg.Details}}</small>
+                                    <span>{{msg.UserName}}</span>
+                                    <a href="" ng-if="msg.Action=='comment'">评论了
+                                        <span ng-if="msg.ParentType=='club'">球场 </span>
+                                        <span ng-if="msg.ParentType=='article'">文章 </span>
+                                        <span ng-if="msg.ParentType=='dynamic'">{{msg.ParentObj.SenderName}}的动态</span>
+                                        <span ng-if="msg.ParentType=='coach'">教练 {{msg.ParentObj.CoachName}}</span>
+                                    </a>
+                                    <a href="" ng-if="msg.Action=='reply'">回复了
+                                        <span>{{msg.ParentObj.UserName}}的评论</span>
+                                    </a>
+                                    <h3>{{msg.Memo}}</h3>
+                                    <div class="card" style="background: aliceblue">
+                                        <!--<img ng-src="{{msg.UserHead}}" err-src="../img/user_empty.png">-->
+                                        <div ng-if="msg.Action=='reply'">
+                                            <h3><span>{{msg.ParentObj.Memo}}</span></h3>
+                                        </div>
+                                        <div ng-if="msg.Action=='comment'">
+                                            <div ng-if="msg.ParentType=='club'">
+                                                <span>{{msg.ParentObj.ClubName}}</span>
+                                                <a href="{{msg.ParentObj.Logo}}" lightgallery>
+                                                    <img ng-src="{{msg.ParentObj.Logo}}" class="img-circle"
+                                                         err-src="../img/user_empty.png" height="90px" width="90px">
+                                                </a>
+                                            </div>
+                                            <div ng-if="msg.ParentType=='article'">
+                                                <span>{{msg.ParentObj.Title}}</span>
+                                                <a href="{{msg.ParentObj.Logo}}" lightgallery>
+                                                    <img ng-src="{{msg.ParentObj.Cover}}" class="img-circle"
+                                                         err-src="../img/user_empty.png" height="120px">
+                                                </a>
+                                            </div>
+                                            <div class="row" ng-if="msg.ParentType=='dynamic'">
+                                                <div class="col-sm-12">
+                                                    <h3><span>{{msg.ParentObj.Details}}</span></h3>
+                                                </div>
+                                                <div class="col-sm-9" ng-if="msg.ParentObj.PhotoList.length == 1">
+                                                    <a href="{{photo}}" lightgallery
+                                                       ng-repeat="photo in msg.ParentObj.PhotoList">
+                                                        <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt=""
+                                                             height="120px">
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-6" ng-if="msg.ParentObj.PhotoList.length == 4">
+                                                    <a href="{{photo}}" lightgallery
+                                                       ng-repeat="photo in msg.ParentObj.PhotoList">
+                                                        <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt=""
+                                                             height="65px" width="65px">
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-9"
+                                                     ng-if="msg.ParentObj.PhotoList.length > 1 && msg.ParentObj.PhotoList.length != 4">
+                                                    <a href="{{photo}}" lightgallery
+                                                       ng-repeat="photo in msg.ParentObj.PhotoList">
+                                                        <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt=""
+                                                             height="65px" width="65px">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div ng-if="msg.ParentType=='coach'">
+                                                <a href="{{msg.ParentObj.CoachHead}}" lightgallery>
+                                                    <img ng-src="{{msg.ParentObj.CoachHead}}" class="img-circle"
+                                                         err-src="../img/user_empty.png" height="90px" width="90px">
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="activity-log__attrs">
-                                    <span>{{msg.Type}}</span>
-                                    <span>{{item.Date}}</span>
-                                    <span class="hidden-xs">{{msg.Created_TS.substring(11,19)}}</span>
-                                    <ul class="detail-amenities__list pull-right">
-                                        <li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>
-                                        <li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>
-                                    </ul>
+                                    <span class="hidden-xs">{{CurrentDT(msg.Created_TS)}}</span>
+                                    <!--<ul class="detail-amenities__list pull-right">-->
+                                    <!--<li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>-->
+                                    <!--<li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>-->
+                                    <!--</ul>-->
                                 </div>
                             </div>
                         </div>
@@ -50,9 +122,11 @@
                 </div>
                 <div class="activity-log__block">
                     <div class="load-more load-more-msg">
-                        <a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
+                        <a href="" ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i>
+                            {{loadMore===true?'加载更多':'没有更多了'}}</a>
                     </div>
                 </div>
-
-   </section>
+            </div>
+        </div>
+    </section>
 </div>

@@ -1,4 +1,5 @@
 <div ng-controller="SystemDataController" ng-init="load()">
+    <div page-loader is-loading="true"></div>
     <section id="main__content">
         <div class="action-header-alt">
             <a href="" class="top-nav__back" style="top:10px;" ng-click="back()" title="返回"></a>
@@ -26,85 +27,85 @@
 
                     <div class="questions-answers__attrs">
                         <a href=""><i class="zmdi zmdi-account"></i>{{SystemMsgData.SenderName}}</a>
-                        <span><i class="zmdi zmdi-calendar"></i> {{SystemMsgData.Created_TS.substring(0,19)}}</span>
+                        <span><i class="zmdi zmdi-calendar"></i> {{CurrentDT(SystemMsgData.Created_TS)}}</span>
 
-                        <div class="actions questions-answers__actions">
-                            <div class="actions__toggle">
-                                <input type="checkbox" checked>
-                                <i class="zmdi zmdi-star-border"></i>
-                                <i class="zmdi zmdi-star"></i>
-                            </div>
+                        <!--<div class="actions questions-answers__actions">-->
+                            <!--<div class="actions__toggle">-->
+                                <!--<input type="checkbox" checked>-->
+                                <!--<i class="zmdi zmdi-star-border"></i>-->
+                                <!--<i class="zmdi zmdi-star"></i>-->
+                            <!--</div>-->
 
-                            <a href="#flag-question" data-toggle="modal">
-                                <i class="zmdi zmdi-flag"></i>
-                            </a>
-                        </div>
+                            <!--<a href="#flag-question" data-toggle="modal">-->
+                                <!--<i class="zmdi zmdi-flag"></i>-->
+                            <!--</a>-->
+                        <!--</div>-->
                     </div>
                 </div>
             </div>
-            <div class="questions-answers__main media">
-                <div class="pull-left">
-                    <img ng-src="{{commentHead}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">
-                </div>
-                <div class="media-body">
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <textarea rows="3" cols="1" class="form-control" ng-model="writeComment" ng-click="Write()" placeholder="写下你的评论......" style="font-size: 13px;background: beige;"></textarea>
-                    </div>
-                    <div class="pull-right" ng-show="write">
-                        <button class="btn" ng-click="cancelComment()">取消</button>
-                        <button class="btn btn-primary" ng-click="sendComment()">发送</button>
-                    </div>
-                </div>
-            </div>
+            <!--<div class="questions-answers__main media">-->
+                <!--<div class="pull-left">-->
+                    <!--<img ng-src="{{commentHead}}" class="img-circle" err-src="../img/user_empty.png" height="60" alt="">-->
+                <!--</div>-->
+                <!--<div class="media-body">-->
+                    <!--<div class="form-group" style="margin-bottom: 10px;">-->
+                        <!--<textarea rows="3" cols="1" class="form-control" ng-model="writeComment" ng-click="Write()" placeholder="写下你的评论......" style="font-size: 13px;background: beige;"></textarea>-->
+                    <!--</div>-->
+                    <!--<div class="pull-right" ng-show="write">-->
+                        <!--<button class="btn" ng-click="cancelComment()">取消</button>-->
+                        <!--<button class="btn btn-primary" ng-click="sendComment()">发送</button>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
             <!-- 评论列表 -->
-            <div class="card list-group blog-comment">
+            <!--<div class="card list-group blog-comment">-->
 
-                <div class="list-group__header clearfix">
-                    <span class="pull-left">累计评论 2</span>
+                <!--<div class="list-group__header clearfix">-->
+                    <!--<span class="pull-left">累计评论 2</span>-->
 
-                    <!--<a href="" data-rmd-action="scroll-to" data-rmd-target="#blog-comment" data-rmd-offset="23" class="pull-right">发表点评</a>-->
-                </div>
+                    <!--&lt;!&ndash;<a href="" data-rmd-action="scroll-to" data-rmd-target="#blog-comment" data-rmd-offset="23" class="pull-right">发表点评</a>&ndash;&gt;-->
+                <!--</div>-->
 
-                <div class="list-group-item media">
-                    <div class="pull-left">
-                        <img src="../img/demo/people/4.jpg" ng-src="{{}}" class="list-group__img img-circle" width="50" height="50" alt="">
-                        <div class="blog-comment__up"><span>+5</span></div>
-                    </div>
-                    <div class="media-body list-group__text">
-                        <strong>137****0166</strong>
-                        <small>2016-05-19</small>
-                        <p class="m-t-15"></p>
+                <!--<div class="list-group-item media">-->
+                    <!--<div class="pull-left">-->
+                        <!--<img src="../img/demo/people/4.jpg" ng-src="{{}}" class="list-group__img img-circle" width="50" height="50" alt="">-->
+                        <!--<div class="blog-comment__up"><span>+5</span></div>-->
+                    <!--</div>-->
+                    <!--<div class="media-body list-group__text">-->
+                        <!--<strong>137****0166</strong>-->
+                        <!--<small>2016-05-19</small>-->
+                        <!--<p class="m-t-15"></p>-->
 
-                        <div class="actions actions--blog-comment dropdown">
-                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
-                            <ul class="dropdown-menu dropdown-menu--icon pull-right">
-                                <li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                        <!--<div class="actions actions&#45;&#45;blog-comment dropdown">-->
+                            <!--<a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>-->
+                            <!--<ul class="dropdown-menu dropdown-menu&#45;&#45;icon pull-right">-->
+                                <!--<li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
-                <div class="list-group-item media">
-                    <div class="pull-left">
-                        <img src="../img/demo/people/5.jpg" class="list-group__img img-circle" width="50" height="50" alt="">
-                        <div class="blog-comment__up"><span>+12</span></div>
-                    </div>
-                    <div class="media-body list-group__text">
-                        <strong>137****5555</strong>
-                        <small>2016-05-19</small>
-                        <p class="m-t-15">mollis interdum. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                            condimentum nibh, ut fermentum massa justo sit amet risus. Nulla vitae elit libero, a pharetra augue.</p>
+                <!--<div class="list-group-item media">-->
+                    <!--<div class="pull-left">-->
+                        <!--<img src="../img/demo/people/5.jpg" class="list-group__img img-circle" width="50" height="50" alt="">-->
+                        <!--<div class="blog-comment__up"><span>+12</span></div>-->
+                    <!--</div>-->
+                    <!--<div class="media-body list-group__text">-->
+                        <!--<strong>137****5555</strong>-->
+                        <!--<small>2016-05-19</small>-->
+                        <!--<p class="m-t-15">mollis interdum. Fusce dapibus, tellus ac cursus commodo, tortor mauris-->
+                            <!--condimentum nibh, ut fermentum massa justo sit amet risus. Nulla vitae elit libero, a pharetra augue.</p>-->
 
-                        <div class="actions actions--blog-comment dropdown">
-                            <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
-                            <ul class="dropdown-menu dropdown-menu--icon pull-right">
-                                <li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                        <!--<div class="actions actions&#45;&#45;blog-comment dropdown">-->
+                            <!--<a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>-->
+                            <!--<ul class="dropdown-menu dropdown-menu&#45;&#45;icon pull-right">-->
+                                <!--<li><a href=""><i class="zmdi zmdi-thumb-up"></i> +1</a></li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
-            </div>
+            <!--</div>-->
         </div>
     </section>
 

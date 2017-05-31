@@ -1,0 +1,119 @@
+<div ng-controller="CourseApplyController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content" >
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="搜索相关申请信息" ng-model="keyword" ng-change="load()">
+                </form>
+            </div>
+
+            <!--<div class="action-header__item action-header__add">-->
+            <!--<a href="" class="btn btn-danger btn-sm" ng-click="addFee()">新增配置</a>-->
+            <!--</div>-->
+        </div>
+
+        <div class="main__container" style="max-width: 1600px;">
+            <header class="main__title">
+                <h1 style="font-family: '黑体'">教练申请管理</h1>
+            </header>
+            <div class="row" >
+                <div class="col-md-2">
+                    <select ng-model="filterDay" class="form-control" ng-change="load()" style="background: white"
+                            ng-options="day.value as day.key for day in filterDays"></select>
+                </div>
+            </div>
+            <hr>
+
+            <div class="card">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="10%">教练头像</th>
+                        <th width="12%">课程标题</th>
+                        <th width="10%">教练名称</th>
+                        <th width="10%">联系电话</th>
+                        <th width= "8%">课程价格</th><!-- 加上课时 -->
+                        <th width="12%">教学模式</th>
+                        <th width= "8%">学员上限</th>
+                        <th width="10%">审核状态</th>
+                        <th width="10%">申请日期</th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="course in courseApplyList">
+                        <td width="10%">
+                            <img ng-src="{{course.CoachHead}}" err-src="../img/user_empty.png"
+                                 class="img-circle border_3_s_c" width="80px" height="80px" alt="">
+                        </td>
+                        <td width="12%">{{course.Title}}</td>
+                        <td width="10%">{{course.CoachName}}</td>
+                        <td width="10%">{{course.CoachPhone}}</td>
+                        <td width= "8%">
+                            <span style="color: orange;font-size: 16px;" ><i class="fa fa-jpy" aria-hidden="true"></i>{{course.Price}}</span>
+                            <span style="color: orange;font-size: 12px;" ng-show="course.IsBatch=='0'">/小时</span>
+                            <span style="color: orange;font-size: 12px;" ng-show="course.IsBatch=='1'">{{course.ClassHour}}课时</span>
+                        </td>
+                        <td width="12%">
+                            <p class="mdc-text-green" ng-show="course.IsBatch=='1'">套课教学</p>
+                            <p class="mdc-text-blue-50" ng-show="course.IsVideo=='1'">直播教学</p>
+                            <p class="mdc-text-deep-orange-400" ng-show="course.IsBatch=='0'&& course.IsVideo=='0'">预约教学</p>
+                        </td>
+                        <td width= "8%">{{course.MaxPeople}}人</td>
+                        <td width="10%">
+                            <p class="mdc-text-light-green-A700" ng-show="course.Verify=='1'">审核成功</p>
+                            <p class="mdc-text-deep-orange-A700" ng-show="course.Verify=='0'">申请中</p>
+                            <p class="mdc-text-red" ng-show="course.Verify=='2'">审核拒绝</p>
+                        </td>
+                        <td width="10%">{{CurrentDT(course.Created_TS)}}</td>
+                        <td width="10%" align="center">
+                            <button type="button" class="btn btn-success btn-xs" ng-click="checkCourse(course)">查看</button>
+                            <button type="button" ng-show="course.Verify==0" class="btn btn-info btn-xs" ng-click="isVerify(course)">审核</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="course_detail" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentCourse.CoachHead}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <table class="table table-bordered table-hover table_wrap">
+                        <tr><th width="25%">课程标题</th><td>{{currentCourse.Title}}</td></tr>
+                        <tr><th width="25%">姓名</th><td>{{currentCourse.CoachName}}</td></tr>
+                        <tr><th width="25%">联系电话</th><td>{{currentCourse.CoachPhone}}</td></tr>
+                        <tr><th width="25%">课程价格</th>
+                            <td>
+                                <span><i class="fa fa-jpy" aria-hidden="true"></i>{{currentCourse.Price}}</span>
+                                <span ng-show="currentCourse.IsBatch=='0'">/小时</span>
+                                <span ng-show="currentCourse.IsBatch=='1'">{{currentCourse.ClassHour}}课时</span>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">教学模式</th>
+                            <td>
+                                <p class="mdc-text-green" ng-show="currentCourse.IsBatch=='1'">套课教学</p>
+                                <p class="mdc-text-blue-50" ng-show="currentCourse.IsVideo=='1'">直播教学</p>
+                                <p class="mdc-text-deep-orange-400" ng-show="currentCourse.IsBatch=='0'&& currentCourse.IsVideo=='0'">预约教学</p>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">学员上限</th><td><p>{{currentCourse.MaxPeople}}人</p></td></tr>
+                        <tr><th width="25%">课程描述</th><td>{{currentCourse.ContainExplain}}</td></tr>
+                    </table>
+                    <!--<input type="checkbox"><label>已阅览</label>-->
+                </div>
+
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

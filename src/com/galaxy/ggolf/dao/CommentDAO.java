@@ -67,7 +67,7 @@ public class CommentDAO extends GenericDAO<Comment> {
 	 * @return
 	 */
 	public Collection<Comment> getCommentBySearch(String sqlString,String rows){
-		String sql = "select count(*) from comment where DeletedFlag is null "+ sqlString +" order by Created_TS desc "
+		String sql = "select * from comment where DeletedFlag is null "+ sqlString +" order by Created_TS desc "
 				+ "limit 0 , "+Integer.parseInt(rows)+"";
 		return super.executeQuery(sql);
 	}

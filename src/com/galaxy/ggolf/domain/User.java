@@ -8,6 +8,7 @@ public class User {
 	private String sex;  //性别
 	private String password;  //密码
 	private String head_portrait;  //头像
+	private String isCoach;
 	private String longitude;  //经度
 	private String latitude;  //纬度
 	private String distance; //距离
@@ -20,7 +21,7 @@ public class User {
 	}
 	
 	public User(String userID, String phone, String name, String age, String sex, String password, String head_portrait,
-			String longitude, String latitude, String wechat, String created_TS, String updated_TS) {
+			String isCoach,String longitude, String latitude, String wechat, String created_TS, String updated_TS) {
 		super();
 		this.userID = userID;
 		this.phone = phone;
@@ -29,6 +30,7 @@ public class User {
 		this.sex = sex;
 		this.password = password;
 		this.head_portrait = head_portrait;
+		this.isCoach = isCoach;
 		this.longitude = longitude;
 		this.latitude = latitude;
 		this.wechat = wechat;
@@ -36,7 +38,7 @@ public class User {
 		this.Updated_TS = updated_TS;
 	}
 
-	public User(String userID, String phone, String name, String age, String sex, String head_portrait,
+	public User(String userID, String phone, String name, String age, String sex, String head_portrait,String isCoach,
 			String longitude, String latitude, String distance, String wechat, String created_TS) {
 		this.userID = userID;
 		this.phone = phone;
@@ -44,11 +46,22 @@ public class User {
 		this.age = age;
 		this.sex = sex;
 		this.head_portrait = head_portrait;
+		this.isCoach = isCoach;
 		this.longitude = longitude;
 		this.latitude = latitude;
 		this.distance = distance;
 		this.wechat = wechat;
 		this.Created_TS = created_TS;
+	}
+
+	public User(String userID, String phone, String name, String age, String sex, String head_portrait,String isCoach) {
+		this.userID = userID;
+		this.phone = phone;
+		this.name = name;
+		this.age = age;
+		this.sex = sex;
+		this.head_portrait = head_portrait;
+		this.isCoach = isCoach;
 	}
 
 	public User(String userID, String phone, String name, String age, String sex, String head_portrait) {
@@ -126,6 +139,14 @@ public class User {
 
 	public void setHead_portrait(String head_portrait) {
 		this.head_portrait = head_portrait;
+	}
+
+	public String getIsCoach() {
+		return isCoach;
+	}
+
+	public void setIsCoach(String isCoach) {
+		this.isCoach = isCoach;
 	}
 
 	public String getLongitude() {

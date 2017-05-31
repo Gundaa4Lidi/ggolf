@@ -123,13 +123,14 @@ public class FileService  extends BaseService{
 	 * @return
 	 */
 	@POST
-	@Path("/upload{filePath}")
+	@Path("/uploadImg/{filePath}/{w}/{h}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public String uploadFile(@PathParam("filePath") String filePath,
+			@PathParam("w") String w,
+			@PathParam("h") String h,
 			List<Attachment> attachments,
 			@Context HttpServletRequest request,
 			@Context HttpHeaders headers) {
-		createDirIfNotExist(CommonConfig.FILE_UPLOAD_PATH);
 		String filePath1 = "";
 		if(filePath!=null&&!filePath.equals("")){
 			//
@@ -144,8 +145,12 @@ public class FileService  extends BaseService{
 				filePath1 = f;
 			}else{
 				filePath1 = filePath+"\\";
+				filePath = filePath+"_";
 			}
+		}else{
+			filePath="";
 		}
+		createDirIfNotExist(CommonConfig.FILE_UPLOAD_PATH+filePath1);
 		for (Attachment attachment : attachments) {
 			DataHandler handler = attachment.getDataHandler();
 			try {
@@ -153,8 +158,8 @@ public class FileService  extends BaseService{
 				MultivaluedMap<String, String> map = attachment.getHeaders();
 				String fileName = updateFileName(map);
 				logger.debug("fileName: ------{}", fileName);
-				OutputStream out = new FileOutputStream(new File(
-						CommonConfig.FILE_UPLOAD_PATH + fileName));
+				File file = new File(CommonConfig.FILE_UPLOAD_PATH + filePath1 + fileName);
+				OutputStream out = new FileOutputStream(file);
 
 				int read = 0;
 				byte[] bytes = new byte[1024];
@@ -166,9 +171,20 @@ public class FileService  extends BaseService{
 				out.close();
 //				SimpleDateFormat sdf = new SimpleDateFormat(CommonConfig.DateFormatNum);
 				String date = DateTime.now().getMillis()+"";
-				String result = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + filePath1 + fileName+"?t="+date;
+				String result = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + filePath + fileName+"?t="+date;
 				logger.info("file:------{}",result);
-				return getResponse(result);
+				Map<String,String> fileMap = new HashMap<String,String>();
+				fileMap.put("File", result);
+				if(w!=null&&h!=null){
+					int height = Integer.parseInt(h);
+					int width = Integer.parseInt(w);
+					if(width>0 && height>0){
+						String thumbName = FileUtil.thumbnailImage(file, width, height, CommonConfig.DEFAULT_PREVFIX, false);
+						String thumbFile = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + filePath + thumbName+"?t="+date;
+						fileMap.put("thumbImgFile", thumbFile);
+					}
+				}
+				return getResponse(fileMap);
 			} catch (Exception e) {
 				logger.error("Error", e);
 			}
@@ -190,8 +206,8 @@ public class FileService  extends BaseService{
 				MultivaluedMap<String, String> map = attachment.getHeaders();
 				String fileName = updateFileName(map);
 				logger.debug("fileName: ------{}", fileName);
-				OutputStream out = new FileOutputStream(new File(
-						CommonConfig.FILE_UPLOAD_PATH + fileName));
+				File file = new File(CommonConfig.FILE_UPLOAD_PATH + fileName);
+				OutputStream out = new FileOutputStream(file);
 
 				int read = 0;
 				byte[] bytes = new byte[1024];

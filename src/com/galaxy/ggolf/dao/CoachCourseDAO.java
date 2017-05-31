@@ -13,9 +13,6 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 	
 	public boolean create(CoachCourse cc){
 		String sql = "insert into coachcourse(CoachID,"
-				+ "CoachName,"
-				+ "CoachHead,"
-				+ "CoachPhone,"
 				+ "Title,"
 				+ "Price,"
 				+ "Verify,"
@@ -26,8 +23,8 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 				+ "ClassHour,"
 				+ "ContainExplain,"
 				+ "IsVideo,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		return super.executeUpdate(sql,cc.getCoachID(),cc.getCoachName(),cc.getCoachPhone(),cc.getTitle(),cc.getPrice(),
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?)";
+		return super.executeUpdate(sql,cc.getCoachID(),cc.getTitle(),cc.getPrice(),
 				"0",cc.getValid(),"0",cc.getMaxPeople(),cc.getIsBatch(),cc.getClassHour(),cc.getContainExplain(),
 				cc.getIsVideo(),Time());
 	}
@@ -41,8 +38,13 @@ public class CoachCourseDAO extends GenericDAO<CoachCourse> {
 	public Collection<CoachCourse> getCourse(String sqlString,String pageNum,String rows){
 		String limit = super.limit(pageNum, rows);
 		String sql = "select * from coachcourse where DeletedFlag is null "
-				+ ""+sqlString+" order by Created_TS "+limit+"";
+				+ ""+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
+	}
+	
+	public int getCourseCount(String sqlString){
+		String sql = "select count(*) from coachcourse where DeletedFlag is null "+sqlString+"";
+		return super.count(sql);
 	}
 	
 	public CoachCourse getByCourseID(String CourseID){

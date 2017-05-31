@@ -1,4 +1,5 @@
 <div ng-controller="ClubController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
     <section>
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
@@ -59,7 +60,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <a href="#" class="top-nav__back" ng-click="openModal(false)"></a>
+                    <a href="#" class="top-nav__back" ng-click="openModal(2)"></a>
                     <h4 class="modal-title">剪切图片</h4>
                 </div>
                 <div class="modal-body">
@@ -79,7 +80,66 @@
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 0 30px 10px;">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-link" ng-click="openModal(2)">取消</button>
+                    <button type="button" class="btn btn-primary" ng-click="logoSave(logoCroppedImage)">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End modal -->
+
+    <!-- AMap modal -->
+    <div class="modal fade" id="add_address" data-backdrop="static"
+         data-keyboard="false">
+        <div class="modal-dialog" style="width: 900px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="top-nav__back" ng-click="openModal(4)"></a>
+                    <h4 class="modal-title">位置定位</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <input class="form-control" ng-model="addressKey" ng-change="MapSearch()" placeholder="地区关键字">
+                            <!--<input select-address p="p" c="c" a="a" d="d" ng-model="addressKey" ng-change="MapSearch()" placeholder="地区关键字" type="text" class="form-control">-->
+                        </div>
+                    </div>
+                    <!-- 位置地图 -->
+                    <style>
+                        .container{
+                            background-color: silver;
+                            width:100%;
+                            position:relative;
+                            display: inline-block;
+                        }
+                        .dummy{
+                            margin-top: 50%;
+                        }
+                        .content{
+                            position:absolute;
+                            left:0;
+                            right:0;
+                            top:0;
+                            bottom: 0;
+                        }
+                        #panel {
+                            position: absolute;
+                            background-color: white;
+                            max-height: 90%;
+                            overflow-y: auto;
+                            top: 10px;
+                            right: 10px;
+                            width: 280px;
+                        }
+                    </style>
+                    <div class="container">
+                        <div class='dummy'></div>
+                        <div class='content' id="mapView"></div>
+                        <div id="panel"></div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="padding: 0 30px 10px;">
+                    <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="openModal(4)">取消</button>
                     <button type="button" class="btn btn-primary" ng-click="logoSave(logoCroppedImage)">确定</button>
                 </div>
             </div>
@@ -98,7 +158,7 @@
                     </div>
                     <div class="card__body" >
                         <div class="col-md-12 text-center">
-                            <a href="" ng-click="openModal(true)" tooltips tooltip-side="top" tooltip-template="球场Logo">
+                            <a href="" ng-click="openModal(1)" tooltips tooltip-side="top" tooltip-template="球场Logo">
                                 <img ng-src="{{currentClub.Logo}}" err-src="../img/user_empty.png" class="img-circle border_3_s_c" width="80px" height="80px" alt="">
                             </a>
                         </div>
@@ -127,9 +187,22 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine }">
-                                    <label>详细地址<span style="color: red">*</span></label>
-                                    <input select-address p="p" c="c" a="a" d="d" name="ClubAddress" ng-model="Address" placeholder="请选择所在地" type="text" class="form-control" required>
-                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">必填项</p>
+                                    <label>详细地址
+                                        <span style="color: red">*</span>
+                                        <!--<span><button class="btn btn-sm btn-info" ng-click="openModal(3)">选择地点</button></span>-->
+                                    </label>
+                                    <div class="input-group">
+                                        <input ng-model="Address" placeholder="请选择所在地" type="text" class="form-control" required/>
+                                        <span class="input-group-addon" style="background-color: white">
+											<a href="" style="color: #828282;" ng-click="openModal(3)">
+												<i class="fa fa-map-marker" aria-hidden="true"></i>
+											</a>
+										</span>
+                                    </div>
+                                    <!--<input select-address p="p" c="c" a="a" d="d" name="ClubAddress" ng-model="Address" placeholder="请选择所在地" type="text" class="form-control" required>-->
+                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">
+                                        <span ng-show="clubForm.ClubAddress.$error.required">必填项</span>
+                                    </p>
                                 </div>
 
                             </div>
@@ -141,10 +214,11 @@
                                     <label>总杆数<span style="color: red">*</span></label>
                                     <input type="text" name="TotalStemNum" ng-maxlength="3" ng-model="currentClub.TotalStemNum"
                                            class="form-control" required ng-pattern="/^[1-9]\d*$/">
-                                    <p ng-show="(clubForm.TotalStemNum.$error.maxlength && !clubForm.TotalStemNum.$error.pattern) ||
-                                    (clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine && !clubForm.TotalStemNum.$error.pattern)"
-                                       class="help-block">{{clubForm.TotalHole.$error.maxlength?'超出长度':'必填项'}}</p>
-                                    <p ng-show="clubForm.TotalStemNum.$error.pattern " class="help-block">输入正确的数值</p>
+                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">
+                                        <span ng-show="clubForm.TotalStemNum.$error.required">必填项</span>
+                                        <span ng-show="clubForm.TotalStemNum.$error.maxlength">超出长度</span>
+                                        <span ng-show="clubForm.TotalStemNum.$error.pattern">数值有误</span>
+                                    </p>
                                 </div>
                             </div>
 
@@ -153,12 +227,13 @@
                                     clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine ||
                                     clubForm.TotalHole.$error.pattern || clubForm.TotalHole.$error.maxlength}">
                                     <label>总洞数<span style="color: red">*</span></label>
-                                    <input type="text" ng-maxlength="3" name="TotalHole" ng-model="currentClub.TotalHole"
+                                    <input type="text" ng-maxlength="4" name="TotalHole" ng-model="currentClub.TotalHole"
                                            class="form-control" required ng-pattern="/^[1-9]\d*$/">
-                                    <p ng-show="(clubForm.TotalHole.$error.maxlength && !clubForm.TotalHole.$error.pattern) ||
-                                    (clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine && !clubForm.TotalHole.$error.pattern)"
-                                       class="help-block">{{clubForm.TotalHole.$error.maxlength?'超出长度':'必填项'}}</p>
-                                    <p ng-show="clubForm.TotalHole.$error.pattern " class="help-block">输入正确的数值</p>
+                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">
+                                        <span ng-show="clubForm.TotalHole.$error.required">必填项</span>
+                                        <span ng-show="clubForm.TotalHole.$error.maxlength">超出长度</span>
+                                        <span ng-show="clubForm.TotalHole.$error.pattern">数值有误</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -166,7 +241,9 @@
                                     <label>联系电话<span style="color: red">*</span></label>
                                     <input type="text" name="ClubPhoneNumber" ng-model="currentClub.ClubPhoneNumber"
                                            class="form-control" required ng-pattern="">
-                                    <p ng-show="clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine" class="help-block">
+                                        <span ng-show="clubForm.ClubPhoneNumber.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -176,8 +253,10 @@
                                     <label>价格<span style="color: red">*</span></label>
                                     <input type="text" name="Price" ng-model="currentClub.Price"
                                            class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
-                                    <p ng-show="clubForm.Price.$error.pattern || (clubForm.Price.$invalid && !clubForm.Price.$pristine)"
-                                       class="help-block">{{clubForm.Price.$error.pattern?'输入正确的数值':'必填项'}}</p>
+                                    <p ng-show="clubForm.Price.$invalid && !clubForm.Price.$pristine" class="help-block">
+                                        <span ng-show="clubForm.Price.$error.required">必填项</span>
+                                        <span ng-show="clubForm.Price.$error.pattern">数值有误</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-md-4">

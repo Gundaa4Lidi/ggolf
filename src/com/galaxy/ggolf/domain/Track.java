@@ -5,7 +5,7 @@ import java.util.Collection;
 public class Track {
   private String UserId;//用户id
   private String TrackId;//足迹id
-  private String Grade; //杆数
+  private String UGrade; //杆数
   private String Created_TS;//发布时间
   private Collection<String> photoList;//图片
   private String Content; //足迹内容
@@ -20,13 +20,13 @@ public class Track {
   public Track(){
 	  
   }
-public Track(String userId, String trackId, String grade, String created_TS, Collection<String> photoList,
+public Track(String userId, String trackId, String uGrade, String created_TS, Collection<String> photoList,
 		String content, String clubName, String playerName, String siteOnePAR, String siteTwoPAR, String scoresOne,
 		String scoresTwo, String puttersOne, String puttersTwo) {
 	super();
 	UserId = userId;
 	TrackId = trackId;
-	Grade = grade;
+	UGrade = uGrade;
 	Created_TS = created_TS;
 	this.photoList = photoList;
 	Content = content;
@@ -51,11 +51,11 @@ public String getTrackId() {
 public void setTrackId(String trackId) {
 	TrackId = trackId;
 }
-public String getGrade() {
-	return Grade;
+public String getUGrade() {
+	return UGrade;
 }
-public void setGrade(String grade) {
-	Grade = grade;
+public void setUGrade(String uGrade) {
+	UGrade = uGrade;
 }
 public String getCreated_TS() {
 	return Created_TS;
@@ -123,5 +123,4 @@ public String getPuttersTwo() {
 public void setPuttersTwo(String puttersTwo) {
 	PuttersTwo = puttersTwo;
 }
-
 }

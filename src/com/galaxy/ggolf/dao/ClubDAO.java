@@ -26,14 +26,7 @@ public class ClubDAO extends GenericDAO<Club> {
 	}
 	
 	public Collection<Club> getSearch(String pageNum, String size, String sqlString){
-		int pages = 1;
-		String limit = "";
-		if(pageNum!=null&&!pageNum.equals("null")){
-			pages = Integer.parseInt(pageNum);
-		}
-		if(size!=null && !size.equals("null")){
-			limit ="limit " +((pages - 1) * Integer.parseInt(size)) + "," + Integer.parseInt(size);
-		}
+		String limit = super.limit(pageNum, size);
 		String sql = "select * from club WHERE DeletedFlag is NULL "+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 				
@@ -65,9 +58,9 @@ public class ClubDAO extends GenericDAO<Club> {
 	 * @return
 	 */
 	public Collection<Club> getSearchClub(String sqlString, String rows, String pageNum){
+		String limit = super.limit(pageNum, rows);
 		String sql = "select * from club where DeletedFlag is null "+sqlString+""
-				+ "order by Created_TS desc limit "
-				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " ," + Integer.parseInt(rows) + " ";
+				+ "order by Created_TS desc "+limit+" ";
 		return super.executeQuery(sql);
 	}
 	

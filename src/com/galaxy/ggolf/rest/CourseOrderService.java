@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.dao.CoachCourseDAO;
+import com.galaxy.ggolf.dao.CoachScoreDAO;
 import com.galaxy.ggolf.dao.CourseOrderDAO;
 import com.galaxy.ggolf.domain.CoachCourse;
 import com.galaxy.ggolf.domain.CourseOrder;
@@ -29,25 +30,28 @@ public class CourseOrderService extends BaseService {
 	
 	private final CourseOrderDAO courseOrderDAO;
 	private final CoachCourseDAO coachCourseDAO;
+	private final CoachScoreDAO coachScoreDAO;
 	
 	public CourseOrderService(CourseOrderDAO courseOrderDAO,
-			 CoachCourseDAO coachCourseDAO) {
+			 CoachCourseDAO coachCourseDAO,
+			 CoachScoreDAO coachScoreDAO) {
 		this.courseOrderDAO = courseOrderDAO;
 		this.coachCourseDAO = coachCourseDAO;
+		this.coachScoreDAO = coachScoreDAO;
 	}
 	
-	@POST
-	@Path("/test")
-	public String test(String data,
-			@FormParam("test") String test,
-			@Context HttpHeaders headers){
-		try {
-			
-		} catch (Exception e) {
-			logger.error("Error occured",e);
-		}
-		return getErrorResponse();
-	}
+//	@POST
+//	@Path("/test")
+//	public String test(String data,
+//			@FormParam("test") String test,
+//			@Context HttpHeaders headers){
+//		try {
+//			
+//		} catch (Exception e) {
+//			logger.error("Error occured",e);
+//		}
+//		return getErrorResponse();
+//	}
 	
 	/**
 	 * 创建课程订单
@@ -67,7 +71,7 @@ public class CourseOrderService extends BaseService {
 				if(coachCourse!=null){
 					sqlString = "and CourseID='"+coachCourse.getCourseID()+"' and StartDateTime='"+co.getStartDateTime()+"' and State='3' ";
 					Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
-					if(orders.size()>=Integer.parseInt(coachCourse.getMaxPeople())){
+					if(orders.size()>Integer.parseInt(coachCourse.getMaxPeople())){
 						return getErrormessage("当前时段已满人数");
 					}
 				}

@@ -26,17 +26,19 @@ var UserMsgController = function($scope,$rootScope,$http,appConfig,$q,$window,Up
         this.searchChange();
     }
 
-    sc.$watch('Rows',function(newValue){
-        if(newValue < sc.TotalMessage){
-            sc.loadMore = true;
-        }else if(newValue >= sc.TotalMessage){
-            sc.loadMore = false;
-        }
-    })
+    // sc.$watch('Rows',function(newValue){
+    //     if(newValue < sc.TotalMessage){
+    //         sc.loadMore = true;
+    //     }else if(newValue >= sc.TotalMessage){
+    //         sc.loadMore = false;
+    //     }
+    // })
 
     sc.loading = function(){
-        sc.rows += 15;
-        sc.searchChange();
+        if(sc.loadMore) {
+            sc.rows += 15;
+            sc.searchChange();
+        }
     }
 
     sc.scrollTo = function(){
@@ -64,10 +66,12 @@ var UserMsgController = function($scope,$rootScope,$http,appConfig,$q,$window,Up
         }),(function(data){
             sc.Load_Failed(data);
         })
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
     }
 
     sc.addMsg = function(){
         sc.currentMsg = new Object();
+        sc.currentMsg.PhotoList = [];
     }
 
     sc.check = function(e){
@@ -111,6 +115,10 @@ var UserMsgController = function($scope,$rootScope,$http,appConfig,$q,$window,Up
         });
     }
 
+    sc.deleteImg = function(index){
+        sc.currentMsg.PhotoList.splice(index,1);
+    }
+
     sc.saveMsg = function(){
         if(!sc.currentMsg.Title){
             swal("请填写消息标题!","","warning");
@@ -136,4 +144,25 @@ var UserMsgController = function($scope,$rootScope,$http,appConfig,$q,$window,Up
         }
 
     }
+
+    sc.upload = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                Upload.upload({
+                    url: '/GGolfz/rest/file/upload',
+                    file: file,
+                }).progress(function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                }).success(function (data) {
+                    console.log(data)
+                    sc.currentMsg.PhotoList.push(data);
+                }).error(function (data) {
+                    // console.log(data)
+                    alert('上传失败');
+                })
+            }
+        }
+    };
 }

@@ -1,4 +1,5 @@
 <div ng-controller="UserMsgController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
     <section id="main__content">
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
@@ -37,16 +38,36 @@
                                     <img ng-src="{{msg.SenderPhoto}}" class="img-circle" err-src="../img/user_empty.png" width="80" alt="">
                                 </div>
                                 <div class="media-body activity-log__text">
-                                    <a href="">{{msg.Title}}</a>
-                                    <small>{{msg.Details}}</small>
+                                    <a href="">{{msg.SenderName}}</a>
+                                    <small style="font-size: 16px">{{msg.Details}}</small>
+                                    <div class="row">
+                                        <!--<div class="col-sm-9">-->
+                                            <!--<a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">-->
+                                                <!--<img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="65px" width="65px">-->
+                                            <!--</a>-->
+                                        <!--</div>-->
+                                        <div class="col-sm-9" ng-if="msg.PhotoList.length == 1">
+                                            <a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">
+                                                <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="120px">
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-6" ng-if="msg.PhotoList.length == 4">
+                                            <a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">
+                                                <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="65px" width="65px">
+                                            </a>
+                                        </div>
+                                        <div class="col-sm-9" ng-if="msg.PhotoList.length > 1 && msg.PhotoList.length != 4">
+                                            <a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">
+                                                <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="65px" width="65px">
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="activity-log__attrs">
                                     <span>{{msg.Type}}</span>
-                                    <span>{{item.Date}}</span>
-                                    <span class="hidden-xs">{{msg.Created_TS.substring(11,19)}}</span>
-                                    <!--<span class="activity-log__added pull-right">
-                                        <a href="" ng-click="check(msg)">查看</a></span>-->
+                                    <!--<span>{{item.Date}}</span>-->
+                                    <span class="hidden-xs">{{CurrentDT(msg.Created_TS)}}</span>
                                     <ul class="detail-amenities__list pull-right">
                                         <li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>
                                         <li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>
@@ -90,6 +111,25 @@
                                     <label>消息内容</label>
                                     <textarea rows="5" cols="" class="form-control" ng-model="currentMsg.Details"></textarea>
                                 </div>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <div uib-carousel active="active" interval="myInterval" no-pause="pause" no-wrap="noWrapSlides">
+                                    <div uib-slide ng-repeat="slide in currentMsg.PhotoList track by $index" index="$index">
+                                        <a href="">
+                                            <img ng-src="{{slide}}" err-src="../img/select_cover.jpg"  height="200px">
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <a href="" ng-dblclick="deleteImg($index)" ng-repeat="image in currentMsg.PhotoList"
+                                   tooltips tooltip-side="top" tooltip-template="双击删除" >
+                                    <img ng-src="{{image}}" err-src="../img/user_empty.png" width="50px" height="50px">
+                                </a>
+                                <a href="" ngf-select ngf-change="upload($files)" ng-show="currentMsg.PhotoList.length<9||!currentMsg.PhotoList"
+                                   tooltips tooltip-side="top" tooltip-template="添加图片">
+                                    <img src="../img/plus.png" width="50px" height="50px" alt="">
+                                </a>
                             </div>
                         </div>
                     </div>

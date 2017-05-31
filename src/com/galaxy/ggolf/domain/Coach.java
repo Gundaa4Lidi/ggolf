@@ -4,10 +4,14 @@ import java.util.Collection;
 
 public class Coach {
 	private String UID;
+	private String UserName;
 	private String CoachID;
 	private String CoachName;
 	private String CoachHead;
-	private String Age;
+	private String CoachPhone;
+//	private String IDCard;
+	private String Birthday;
+	private String Sex;
 	private String ClubID;
 	private String ClubName;
 	private String Seniority;
@@ -24,14 +28,18 @@ public class Coach {
 	private Collection<CoachComment> coachComments;
 	private Collection<CoachCourse> coachCourses;
 	
-	public Coach(String uID, String coachID, String coachName, String coachHead, String age, String clubID,
-			String clubName, String seniority, String intro, String aCHV, String teachACHV, String verify,
-			String teachLocation, String teachCollege, String teachAddress, String created_TS, String updated_TS) {
+	public Coach(String uID, String userName, String coachID, String coachName, String coachHead, String coachPhone,
+			String birthday, String sex, String clubID,String clubName, String seniority, String intro, String aCHV,
+			String teachACHV, String verify,String teachLocation, String teachCollege, String teachAddress,
+			String created_TS, String updated_TS) {
 		UID = uID;
+		UserName = userName;
 		CoachID = coachID;
 		CoachName = coachName;
 		CoachHead = coachHead;
-		Age = age;
+		CoachPhone = coachPhone;
+		Birthday = birthday;
+		Sex = sex;
 		ClubID = clubID;
 		ClubName = clubName;
 		Seniority = seniority;
@@ -51,6 +59,12 @@ public class Coach {
 	public void setUID(String uID) {
 		UID = uID;
 	}
+	public String getUserName() {
+		return UserName;
+	}
+	public void setUserName(String userName) {
+		UserName = userName;
+	}
 	public String getCoachID() {
 		return CoachID;
 	}
@@ -69,11 +83,29 @@ public class Coach {
 	public void setCoachHead(String coachHead) {
 		CoachHead = coachHead;
 	}
-	public String getAge() {
-		return Age;
+	public String getCoachPhone() {
+		return CoachPhone;
 	}
-	public void setAge(String age) {
-		Age = age;
+	public void setCoachPhone(String coachPhone) {
+		CoachPhone = coachPhone;
+	}
+	//	public String getIDCard() {
+//		return IDCard;
+//	}
+//	public void setIDCard(String iDCard) {
+//		IDCard = iDCard;
+//	}
+	public String getBirthday() {
+		return Birthday;
+	}
+	public void setBirthday(String birthday) {
+		Birthday = birthday;
+	}
+	public String getSex() {
+		return Sex;
+	}
+	public void setSex(String sex) {
+		Sex = sex;
 	}
 	public String getClubID() {
 		return ClubID;

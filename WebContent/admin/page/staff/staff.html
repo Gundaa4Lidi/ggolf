@@ -1,10 +1,11 @@
 <div ng-controller="StaffController" data-ng-init="load()">
+	<div page-loader is-loading="true"></div>
 	<section id="main__content">
 		<div class="action-header-alt">
 			<div class="action-header__item action-header__item--search">
 				<form>
 					<input type="text" placeholder="Search for contacts..."
-						ng-model="searchText">
+						ng-model="keyword" ng-change="getStaffs()">
 				</form>
 			</div>
 
@@ -79,13 +80,13 @@
 								</div>
 							</div>
 							<div class="list-group__date">
-								<i class="fa fa-calendar" aria-hidden="true"></i> <strong>{{staff.Created_TS}}</strong>
+								<i class="fa fa-calendar" aria-hidden="true"></i> <strong>{{CurrentDT(staff.Created_TS)}}</strong>
 								<!-- <strong>{{item.Created_TS}}</strong> -->
 							</div>
 						</div>
 					</div>
 					<div class="load-more">
-						<a href=""><i class="zmdi zmdi-refresh-alt"></i>加载更多</a> 
+						<a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
 					</div>
 				</div>
 
@@ -102,7 +103,7 @@
 						<img ng-src="{{currentStaff.Head}}" err-src="../img/user_empty.png" 
 							class="img-circle" width="150" height="150"  alt="">
 					</div>
-					<table class="table table-bordered table-hover table_wrapp">
+					<table class="table table-bordered table-hover table_wrap">
 						<tr><th width="25%">姓名</th><td>{{currentStaff.StaffName}}</td></tr>
 						<tr><th width="25%">账号</th><td>{{currentStaff.StaffID}}</td></tr>
 						<tr><th width="25%">手机号码</th><td>{{currentStaff.Phone}}</td></tr>
@@ -212,7 +213,7 @@
 									<div class="form-group">
 										<label>职位</label> <select ng-model="currentStaff.Position"
 											class="form-control" required>
-											<!-- <option value="店员">店员</option> -->
+											 <option value="店员">店员</option>
 											<option value="管理员">管理员</option>
 										</select>
 									</div>
@@ -220,10 +221,15 @@
 							</div>
 
 							<div class="form-group">
-								<label>工作地点</label> <select class="form-control"
-									ng-model="currentStaff.WorkPlace"
-									ng-options="work.workPlace as work.workPlace for work in Works"
-									required></select>
+								<label>工作地点</label>
+								<!--<select class="form-control"-->
+									<!--ng-model="currentStaff.WorkPlace"-->
+									<!--ng-options="work.workPlace as work.workPlace for work in Works"-->
+									<!--required></select>-->
+								<select ng-model="currentStaff.WorkPlace" class="form-control"
+										ng-options="club.ClubName as club.ClubName for club in clubList" required>
+									<option value="" selected="selected">请选择工作地点</option>
+								</select>
 							</div>
 						</div>
 					</form>

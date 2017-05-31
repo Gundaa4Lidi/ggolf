@@ -24,6 +24,7 @@ import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Staff;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.Common_configManager;
+import com.galaxy.ggolf.tools.FileUtil;
 
 
 //@Consumes("multipart/form-data")
@@ -47,6 +48,7 @@ public class ConfigService extends BaseService {
 			logger.debug("value---------",config.getDescribe());
 			String head = config.getVALUE();
 			if(head.indexOf("data:image/png;base64")!=-1){
+				FileUtil.createDirIfNotExist(CommonConfig.DEFAULT_UPLOAD_PATH);
 				String base64Img = head.split(",")[1];
 				BufferedImage image = null;
 				byte[] imgByte;
@@ -55,10 +57,14 @@ public class ConfigService extends BaseService {
 				ByteArrayInputStream bis = new ByteArrayInputStream(imgByte);
 				image = ImageIO.read(bis);
 				bis.close();
-				String picnameString = DateTime.now().getMillis()+".png";
-				File outputfile = new File(CommonConfig.FILE_UPLOAD_PATH+picnameString);
+				String date = DateTime.now().getMillis()+"";
+				String picnameString = "defaultHead.png";
+				File outputfile = new File(CommonConfig.DEFAULT_UPLOAD_PATH+picnameString);
+				FileUtil.deleteFile(outputfile);
 				ImageIO.write(image, "png", outputfile);
-				String url = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + picnameString;
+				String url = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "default_" + picnameString+ "?t=" + date;
+				
+				http://192.168.1.107:8085/GGolfz/rest/file/download/user_UH_UH@22.png?t=20170405_151523
 				config.setVALUE(url);
 			}
 			this.manager.saveConfig(config);

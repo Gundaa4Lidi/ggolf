@@ -1,24 +1,70 @@
-var StaffController = function($http, $scope, $rootScope, $window, $timeout,Upload) {
+var StaffController = function($http, $scope, appConfig, $window, $timeout,Upload) {
 	var sc = $scope;
 	sc.Staffs = null;
 	sc.TotalStaff = 0;
 	sc.currentStaff = new Object();
+	sc.clubList = null;
+    sc.rows = 20;
+    sc.Rows = 0;
+    sc.loadMore = false;
+
+    sc.loading = function(){
+        sc.rows += 20;
+        sc.getStaffs();
+    }
+    // sc.$watch('Rows',function(e){
+    //     if(e < sc.TotalCoach){
+    //         sc.loadMore = true;
+    //     }else if(e >= sc.TotalCoach){
+    //         sc.loadMore = false;
+    //     }
+    // })
+
+
 
 	sc.load = function() {
-		$http.get('/GGolfz/rest/Staff/GetAll').then(function(response) {
-			console.log(response.data.length)
-			sc.Staffs = response.data;
-			sc.TotalStaff = sc.Staffs.length;
-		})
+		sc.getStaffs();
 	}
 
-	sc.Works =[
-		{workPlace:"艾泽拉斯",id:"1"},
-		{workPlace:"爱琴海",id:"2"}
-	];
+	sc.getStaffs = function () {
+		var url = appConfig.url + 'Staff/GetAll';
+		var method = 'GET';
+		var params = {
+			keyword : sc.keyword,
+			rows : sc.rows,
+		}
+		var promise = sc.httpParams(url,method,params);
+		promise.then(function (data) {
+			sc.Staffs = data.data;
+			sc.TotalStaff = data.count;
+			sc.Rows = sc.rows;
+        }),function (data) {
+			sc.Load_Failed(data);
+        }
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalStaff);
+    }
+
+    sc.getClubList = function(){
+        var url = appConfig.url + 'Club/getClubByKeyword';
+        var method = 'GET';
+        var params = {
+            clubType : '练习场'
+        };
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function(data){
+            sc.clubList = data.data;
+        }),function(data){
+            sc.Load_Failed(data);
+        }
+    }
+
+	// sc.Works =[
+	// 	{workPlace:"艾泽拉斯",id:"1"},
+	// 	{workPlace:"爱琴海",id:"2"}
+	// ];
+
 	
 	$scope.$on('update_head',function(event,data){
-		console.log(data)
 		if(data){
 			sc.load();
 		}

@@ -26,4 +26,6 @@
     <import resource="webappContext-coach.xml"/>
     <import resource="webappContext-autoEvent.xml"/>
     <import resource="webappContext-courseOrder.xml"/>
+    <import resource="webappContext-comment.xml"/>
+    <import resource="webappContext-collect.xml"/>
 </beans> 

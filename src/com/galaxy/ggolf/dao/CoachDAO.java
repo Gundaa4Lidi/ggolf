@@ -18,9 +18,12 @@ public class CoachDAO extends GenericDAO<Coach> {
 	 */
 	public boolean create(Coach coach){
 		String sql = "insert into coach(CoachID,"
+				+ "UserName,"
 				+ "CoachName,"
 				+ "CoachHead,"
-				+ "Age,"
+				+ "CoachPhone,"
+				+ "Birthday,"
+				+ "Sex,"
 				+ "ClubID,"
 				+ "ClubName,"
 				+ "Seniority,"
@@ -28,9 +31,11 @@ public class CoachDAO extends GenericDAO<Coach> {
 				+ "ACHV,"
 				+ "TeachACHV,"
 				+ "Verify,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?)";
-		return super.sqlUpdate(sql,coach.getCoachID(),coach.getCoachName(),coach.getCoachHead(),coach.getAge(),coach.getClubID(),
-				coach.getClubName(),coach.getSeniority(),coach.getIntro(),coach.getACHV(),coach.getTeachACHV(),"0",Time());
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		return super.sqlUpdate(sql,coach.getCoachID(),coach.getUserName(),coach.getCoachName(),
+				coach.getCoachHead(),coach.getCoachPhone(),coach.getBirthday(),coach.getSex(),
+				coach.getClubID(),coach.getClubName(),coach.getSeniority(),coach.getIntro(),
+				coach.getACHV(),coach.getTeachACHV(),"0",Time());
 	}
 	
 	/**
@@ -39,19 +44,39 @@ public class CoachDAO extends GenericDAO<Coach> {
 	 * @param sqlString
 	 * @return
 	 */
-	public Collection<Coach> getAll(String limit,String sqlString){
+	public Collection<Coach> getAll(String rows,String sqlString){
+		String limit = super.limit(null, rows);
 		String sql = "select * from coach where DeletedFlag is null "+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	}
 	
+	/**
+	 * 获取教练的数量
+	 * @param sqlString
+	 * @return
+	 */
+	public int getAllCount(String sqlString){
+		String sql = "select count(*) from coach where DeletedFlag is null "+sqlString+"";
+		return super.count(sql);
+	}
 	/**
 	 * 根据学院编号获取教练
 	 * @param ClubID
 	 * @return
 	 */
 	public Collection<Coach> getCoachByClubID(String ClubID){
-		String sql = "select * from coach where DeletedFlag is null and ClubID='"+ClubID+"' order by Created_TS desc";
+		String sql = "select * from coach where DeletedFlag is null and ClubID='"+ClubID+"' and Verify='1' order by Created_TS desc";
 		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 根据学院编号获取教练数量
+	 * @param ClubID
+	 * @return
+	 */
+	public int getCountByClubID(String ClubID){
+		String sql = "select count(*) from coach where DeletedFlag is null and ClubID='"+ClubID+"' and Verify='1'";
+		return super.count(sql);
 	}
 	
 	/**
@@ -73,7 +98,7 @@ public class CoachDAO extends GenericDAO<Coach> {
 	public Coach getCoachByCoachID(String CoachID,String Verify){
 		String sqlString = "";
 		if(Verify!=null){
-			sqlString += "Verify='"+Verify+"'";
+			sqlString += "and Verify='"+Verify+"' ";
 		}
 		String sql = "select * from coach where DeletedFlag is null and CoachID="+CoachID+" "+sqlString+"";
 		Collection<Coach> result = super.executeQuery(sql);
@@ -91,6 +116,16 @@ public class CoachDAO extends GenericDAO<Coach> {
 	 */
 	public boolean updateVerify(String coachID,String verify){
 		String sql = "update coach set Verify='"+verify+"', Updated_TS='"+Time()+"' where CoachID='"+coachID+"' and DeletedFlag is null";
+		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 删除审核过的申请信息
+	 * @param coachID
+	 * @return
+	 */
+	public boolean delete(String coachID){
+		String sql = "update coach set DeletedFlag='Y', Updated_TS='"+Time()+"' where CoachID='"+coachID+"' and DeletedFlag is null and Verify!='0'";
 		return super.executeUpdate(sql);
 	}
 	

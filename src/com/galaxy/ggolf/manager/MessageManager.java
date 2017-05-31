@@ -172,8 +172,8 @@ public class MessageManager {
 					+ keyword 
 					+ "%') ";
 		}
-		DateTime time = DateTime.now().minusDays(days);
 		if(days > 0){
+			DateTime time = DateTime.now().minusDays(days);
 			sqlString += "and Created_TS > '"+time.toString("yyyy-MM-dd")+"'";
 		}
 		Collection<Message> ct = this.messageDAO.getDTGroup(sqlString,rows);
@@ -197,9 +197,9 @@ public class MessageManager {
 //								CommentData cd = new CommentData(count, com);
 //								ms.setCommentData(cd);//添加评论
 //							}
-							Collection<User> likeUsers = this.userDAO.getLikeList(ms.getMsgID(), ms.getType());
+							Collection<User> likeUsers = this.userDAO.getLikeList(ms.getMsgID(), CommonConfig.THEME_TYPE_D);
 							if(likeUsers!=null&&likeUsers.size() > 0){
-								int likeCount = this.likeDAO.getCountByThemeID(ms.getType(), ms.getType());
+								int likeCount = this.likeDAO.getCountByThemeID(ms.getMsgID(), CommonConfig.THEME_TYPE_D);
 								LikeData ld = new LikeData(likeCount, likeUsers);
 								ms.setLikeData(ld);//添加点赞
 							}

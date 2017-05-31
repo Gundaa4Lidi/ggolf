@@ -1,25 +1,35 @@
 <div ng-controller="ArticleController" data-ng-init="load()">
+	<div page-loader is-loading="true"></div>
 	<section id="main__content">
      <div class="action-header-alt">
          <div class="action-header__item action-header__item--search">
              <form>
-                 <input type="text" placeholder="Search for notes...">
+                 <input type="text" placeholder="搜索文章" ng-model="keyword" ng-change="getSearch()">
              </form>
          </div>
 
          <div class="action-header__item action-header__add">
-             <a href="#new-note" data-toggle="modal" class="btn btn-danger btn-sm" ng-click="addArticle()" ng-show="open_add&&currentType.TypeID">新增文章</a>
+             <!--<a href="#new-note" data-toggle="modal" class="btn btn-danger btn-sm" ng-click="addArticle()"-->
+				<!--ng-if="open_add&&currentType.TypeID&&currentType.TypeKey=='文章'">新增文章</a>-->
+			 <!--<a href="#new-photo" data-toggle="modal" class="btn btn-info btn-sm" ng-click="addArticle()"-->
+				<!--ng-if="open_add&&currentType.TypeID&&currentType.TypeKey=='图片'">新增图片</a>-->
+			 <a href="#" class="btn btn-sm btn-info"
+				ng-click="addArticle()" ng-show="open_add&&currentType.TypeID">
+				 <span ng-show="currentType.TypeKey=='文章'">新增文章</span>
+				 <span ng-show="currentType.TypeKey=='图片'">新增图片</span>
+				 <span ng-show="currentType.TypeKey=='视频'">新增视频</span>
+			 </a>
+			 <a href="#" class="btn btn-sm btn-warning" ng-click="searchClean()">全部文章</a>
+
          </div>
 
-         <!--<div class="action-header__item action-header__item&#45;&#45;sort hidden-xs">-->
-             <!--<span class="action-header__small">Sort by :</span>-->
-			<!--<select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" style="width:auto; position:relative;">-->
-            	<!--<option>Newest to Oldest</option>-->
-                 <!--<option>Oldest to Newest</option>-->
-                 <!--<option>Frequently Opened</option>-->
-            <!--</select>-->
-            <!---->
-         <!--</div>-->
+
+         <div class="action-header__item action-header__item--sort hidden-xs">
+             <span class="action-header__small">Sort by :</span>
+			 <select ui-select2="relSelectOpt" ng-model="isRelease" class="form-control" ng-change="getSearch()"
+					 ng-options="res.id as res.key for res in IsRelease"></select>
+
+         </div>
      </div>
    	<div class="height-as-pagecontent">
      <div class="row">
@@ -59,20 +69,21 @@
    				<nav ui-nav class="navbar" style="overflow: auto;height: 97%;">
                     <ul class="nav article-menu " >
                         <li ng-repeat="ac in Categories">
-                            <a href class="auto" active-nav ng-click="check(ac)">
-                                <i class="glyphicon glyphicon-calendar icon text-info-dker"></i>
+                            <a href class="auto" active-nav ng-click="check(ac,$index)">
+								<i class="fa fa-folder" aria-hidden="true"></i>
                                 <span class="font-bold" >{{ac.CategoryName}}</span>
                             </a>
                             <ul class="nav article-menu article_type">
                             	<li ng-repeat="at in ac.articleType">
-                            		<a href="" ng-click="check2(at)" active-nav>
-                            			<i class="fa fa-sitemap" aria-hidden="true"></i>
-                                        <span>{{at.TypeName}}</span>
+                            		<a href="" ng-click="check2(at,$parent.$index,$index)" active-nav>
+                            			<i class="fa fa-sitemap" aria-hidden="true" style="padding-left: 20px;"></i>
+                                        <span style="padding-left: 13px;">{{at.TypeName}}</span>
                                     </a>
                                     <ul class="nav article-menu article_subject">
                                     	<li ng-repeat="as in at.articleSubject">
                                     		<a href="" ng-click="checkSub(as)" active-nav>
-                                    			<span>{{as.SubjectName}}</span>
+												<i class="fa fa-file" aria-hidden="true" style="padding-left: 40px;"></i>
+                                    			<span style="padding-left: 36px;">{{as.SubjectName}}</span>
                                     		</a>
                                     		<div class="actions list-category__actions" ng-show="as.SubjectID == currentSubject.SubjectID" >
                                     			<div class="dropdown">
@@ -167,20 +178,35 @@
 											</ul>
 										</div>
 									</div>
-									<div class="list-group__date">
-										<i class="fa fa-calendar" aria-hidden="true"></i>
-										<strong>{{art.Created_TS}}</strong>
-										<!-- <strong>{{item.Created_TS}}</strong> -->
+									<!--<div class="list-group__date">-->
+										<!--<span tooltips tooltip-side="top" tooltip-template="类别名称" >{{art.TypeName}}</span>-->
+										<!--<span tooltips tooltip-side="top" tooltip-template="内容类型" >{{art.TypeKey}}</span>-->
+										<!--<span tooltips tooltip-side="top" tooltip-template="专题名称" ng-show="currentSubject.SubjectID">{{art.SubjectName}}</span>-->
+										<!--<i class="fa fa-calendar" aria-hidden="true"></i>-->
+										<!--<strong>{{CurrentDT(art.Created_TS)}}</strong>-->
+										<!--&lt;!&ndash;<strong>{{item.Created_TS}}</strong>&ndash;&gt;-->
+
+									<!--</div>-->
+									<div class="article-group__attrs">
+										<span><i class="fa fa-calendar" aria-hidden="true"></i>{{CurrentDT(art.Created_TS)}}</span>
+										<ul class="detail-amenities__list pull-right">
+											<li class="mdc-bg-light-blue-500" ng-show="art.TypeName">{{art.TypeName}}</li>
+											<li class="mdc-bg-deep-orange" ng-show="art.TypeKey">{{art.TypeKey}}</li>
+											<li class="mdc-bg-deep-purple" ng-show="art.SubjectName">{{art.SubjectName}}</li>
+										</ul>
 									</div>
 								</div>
 
 							</div>
 						</div>
 					</div>
+					<!--<div class="text-center">-->
+						<!--<tm-pagination conf="pageOptions"></tm-pagination>-->
+					<!--</div>-->
 				</div>
-				<!-- <div class="load-more">
-                    <a href=""><i class="zmdi zmdi-refresh-alt"></i>加载更多文章</a>
-                </div> -->
+				<div class="load-more">
+					<a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
+				</div>
 		     </div>
      	</div>
      	</div>
@@ -197,9 +223,9 @@
              <form class="card" style="margin-bottom: 0px;">
 				<div class="col-sm-12 col-md-12 text-center">
 			        <a href="#img-check" data-toggle="modal" data-dismiss="modal" class="thumbnail">
-			            <img ng-src="{{currentArticle.Cover}}" alt="" err-src="../img/select_cover.jpg"> 
+			            <img ng-src="{{currentArticle.Cover}}" alt="" err-src="../img/select_cover.jpg">
 			        </a>
-			        <i class="new-contact__upload zmdi zmdi-camera" ng-disabled="currentArticle.ReleaseOrNot==='Y'" ngf-select ngf-change="upload($files)" ></i>
+			        <i class="new-contact__upload zmdi zmdi-camera"  ng-disabled="currentArticle.ReleaseOrNot==='Y'" ngf-select ngf-change="upload($files)" ></i>
 			    </div>
 				<div class="card__body">
 					<div class="row">
@@ -210,9 +236,39 @@
 							</div>
 						</div>
 
+						<div ng-show="(currentType.TypeKey=='视频'||currentArticle.Video)&&currentArticle.ReleaseOrNot!='Y'">
+							<div class="col-sm-12 form-group">
+								<a href="" class="a_btn" ngf-select ngf-change="uploadVideo($files)">上传视频</a>
+							</div>
+							<!--<div class="col-sm-12 form-group" ng-show="videoProgress > 0">-->
+								<!--<uib-progressbar  class="progress-striped " ng-class="{active : barType!='success'}" max="videoSize" value="videoProgress" type="{{barType}}">-->
+									<!--<i>-->
+										<!--{{videoProgress}}MB / {{videoSize}}MB-->
+										<!--<span ng-if="barType=='success'">上传完成</span>-->
+									<!--</i>-->
+
+								<!--</uib-progressbar>-->
+							<!--</div>-->
+
+							<div class="col-sm-12">
+								<div ng-show="currentArticle.Video" froala-view="myVideo"></div>
+							</div>
+							<div class="col-sm-12">
+								<div class="form-group">
+									<label>视频链接</label>
+									<input ng-disabled="currentArticle.ReleaseOrNot==='Y'" ng-model="currentArticle.Video" class="form-control" >
+								</div>
+							</div>
+
+						</div>
+
 						<div class="col-sm-12">
 							<div class="form-group">
-								<label>文章简介</label> 
+								<label>
+									<span ng-if="currentType.TypeKey=='文章'">文章简介</span>
+									<span ng-if="currentType.TypeKey=='图片'">图片简介</span>
+									<span ng-if="currentType.TypeKey=='视频'">视频简介</span>
+								</label>
 								<textarea ng-disabled="currentArticle.ReleaseOrNot==='Y'" rows="" cols="" class="form-control" ng-model="currentArticle.Content"></textarea>
 							</div>
 						</div>
@@ -255,47 +311,6 @@
      </div>
  </div>
 
-
-<!-- update-to-head modal -->
-<div class="modal fade" id="update-to-cover" data-backdrop="static"
-	data-keyboard="false">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<a href="#update-to-staff" class="top-nav__back" data-toggle="modal" data-dismiss="modal"></a>
-				<h4 class="modal-title">剪切图片</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<input type="file" id="fileInput" />
-				</div>
-				<div class="row">
-					<div class="col col-md-12 form-group">
-						<div class="cropArea">
-							<img-crop image="coverImage" result-image="coverCroppedImage" 
-							area-type="square"  area-details="cropDetails"></img-crop>
-						</div>
-					</div>
-					<div class="col col-md-12 form-group"> 
-						<div class="cropArea_CoverCroped ">
-							<img ng-src="{{coverCroppedImage}}">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer" style="padding: 0 30px 10px;">
-				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal" href="#update-to-staff" 
-				 data-toggle="modal"  ng-click="imgSave(staffCroppedImage)">保存</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- End modal -->
-
-
-
- 
  <div class="modal fade" id="edit_type">
     <div class="modal-dialog" style="width:350px;">
         <div class="modal-content">
@@ -318,7 +333,7 @@
             </div>
             <div class="modal-footer" style="padding: 0 30px 10px;">
 				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveType(currentType.TypeName)">提交</button>
+				<button type="button" class="btn btn-primary" ng-click="saveType()">提交</button>
 			</div>
         </div>
     </div>
@@ -348,7 +363,7 @@
             </div>
             <div class="modal-footer" style="padding: 0 30px 10px;">
 				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveSub(currentSubject.SubjectName)">提交</button>
+				<button type="button" class="btn btn-primary" ng-click="saveSub(currentSubject.SubjectName)">提交</button>
 			</div>
         </div>
     </div>
@@ -370,12 +385,11 @@
             </div>
             <div class="modal-footer" style="padding: 0 30px 10px;">
 				<button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="saveCategory(currentCategory.CategoryName)">提交</button>
+				<button type="button" class="btn btn-primary" ng-click="saveCategory(currentCategory.CategoryName)">提交</button>
 			</div>
         </div>
     </div>
 </div>
-
 
   <div class="modal fade note-view" id="recycle_bin" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
      <div class="modal-dialog modal-lg">
@@ -434,9 +448,19 @@
 									</ul>
 								</div>
 							</div>
-							<div class="list-group__date">
-								<i class="fa fa-calendar" aria-hidden="true"></i> <strong>{{art.Created_TS}}</strong>
-								<!-- <strong>{{item.Created_TS}}</strong> -->
+							<!--<div class="list-group__date">-->
+								<!--<span>{{currentType.TypeName}}</span>-->
+								<!--<span>{{art.TypeKey}}</span>-->
+								<!--<i class="fa fa-calendar" aria-hidden="true"></i> <strong>{{CurrentDT(art.Updated_TS)}}</strong>-->
+								<!--&lt;!&ndash; <strong>{{item.Created_TS}}</strong> &ndash;&gt;-->
+							<!--</div>-->
+							<div class="article-group__attrs">
+								<span><i class="fa fa-calendar" aria-hidden="true"></i>{{CurrentDT(art.Created_TS)}}</span>
+								<ul class="detail-amenities__list pull-right">
+									<li class="mdc-bg-light-blue-500" ng-show="art.TypeName">{{art.TypeName}}</li>
+									<li class="mdc-bg-deep-orange" ng-show="art.TypeKey">{{art.TypeKey}}</li>
+									<li class="mdc-bg-deep-purple" ng-show="art.SubjectName">{{art.SubjectName}}</li>
+								</ul>
 							</div>
 						</div>
 					</div>

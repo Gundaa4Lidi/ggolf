@@ -11,6 +11,8 @@ var ClubOrderController = function ($scope,appConfig) {
     sc.filterDay = sc.filterDays[0].value;
     sc.TotalOrder = 0;
     sc.rows = 60;
+    sc.Rows = 0;
+    sc.loadMore = false;
     sc.currentOrder = new Object();
     sc.stateType = {
         ConfirmBall : "2",
@@ -19,12 +21,12 @@ var ClubOrderController = function ($scope,appConfig) {
     }
 
 
-    var data = [
-        {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-        {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"确认球位", CreateTime :"2017-04-20", Type :"球场现付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-        {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-    ]
-    sc.orderList = data;
+    // var data = [
+    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
+    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"确认球位", CreateTime :"2017-04-20", Type :"球场现付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
+    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
+    // ]
+    // sc.orderList = data;
 
     sc.loading = function(){
         sc.rows += 60;
@@ -46,11 +48,12 @@ var ClubOrderController = function ($scope,appConfig) {
             if(data.status != 'Error'){
                 sc.TotalOrder = data.count;
                 sc.orderList = data.clubOrders;
+                sc.Rows = sc.rows;
             }
         }),function (data) {
             sc.Load_Failed(data);
         }
-
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalOrder);
     }
 
     sc.checkOrder = function(e){

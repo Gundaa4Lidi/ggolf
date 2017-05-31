@@ -327,7 +327,8 @@ public abstract class GenericDAO<T> {
 			page = Integer.parseInt(pageNum);
 		}
 		if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
-			limit += "limit "+(page-1)*Integer.parseInt(rows)+" , "+Integer.parseInt(rows);
+			int row = Integer.parseInt(rows);
+			limit = "limit "+(page-1)*row+","+row+" ";
 		}
 		return limit;
 	}

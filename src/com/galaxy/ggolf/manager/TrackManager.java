@@ -31,4 +31,8 @@ public class TrackManager {
 	public boolean deleteTrack(String UserId,String TrackId){
 		return trackDAO.deleteTrack(UserId, TrackId);
 	}
+	
+	public Collection<Track>getTrackDetail(String UserId,String TrackId){
+	    return trackDAO.getTrackDetail(UserId, TrackId);
+	}
 }

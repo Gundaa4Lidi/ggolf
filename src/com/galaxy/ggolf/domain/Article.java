@@ -1,5 +1,9 @@
 package com.galaxy.ggolf.domain;
 
+import java.util.Collection;
+
+import com.galaxy.ggolf.dto.PhotoList;
+
 public class Article {
     private String ArticleID;
     private String CategoryID;
@@ -12,13 +16,17 @@ public class Article {
     private String Released_TS;
     private String TypeID;
     private String TypeName;
+    private String TypeKey;
     private String SubjectID;
+    private String SubjectName;
     private String ReleaseOrNot;
+    private String Video;
     private String Created_TS;
     private String Updated_TS;
 	public Article(String articleID, String categoryID, String title, String cover, String content, String rootIN,
-			String releaseName, String releaseID, String released_TS, String typeID, String typeName, String subjectID,
-			String releaseOrNot, String created_TS, String updated_TS) {
+			String releaseName, String releaseID, String released_TS, String typeID, String typeName, String typeKey,
+			String subjectID, String subjectName, String releaseOrNot, String video, String created_TS,
+			String updated_TS) {
 		ArticleID = articleID;
 		CategoryID = categoryID;
 		Title = title;
@@ -30,8 +38,11 @@ public class Article {
 		Released_TS = released_TS;
 		TypeID = typeID;
 		TypeName = typeName;
+		TypeKey = typeKey;
 		SubjectID = subjectID;
+		SubjectName = subjectName;
 		ReleaseOrNot = releaseOrNot;
+		Video = video;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 	}
@@ -101,17 +112,35 @@ public class Article {
 	public void setTypeName(String typeName) {
 		TypeName = typeName;
 	}
+	public String getTypeKey() {
+		return TypeKey;
+	}
+	public void setTypeKey(String typeKey) {
+		TypeKey = typeKey;
+	}
 	public String getSubjectID() {
 		return SubjectID;
 	}
 	public void setSubjectID(String subjectID) {
 		SubjectID = subjectID;
 	}
+	public String getSubjectName() {
+		return SubjectName;
+	}
+	public void setSubjectName(String subjectName) {
+		SubjectName = subjectName;
+	}
 	public String getReleaseOrNot() {
 		return ReleaseOrNot;
 	}
 	public void setReleaseOrNot(String releaseOrNot) {
 		ReleaseOrNot = releaseOrNot;
+	}
+	public String getVideo() {
+		return Video;
+	}
+	public void setVideo(String video) {
+		Video = video;
 	}
 	public String getCreated_TS() {
 		return Created_TS;
@@ -125,5 +154,7 @@ public class Article {
 	public void setUpdated_TS(String updated_TS) {
 		Updated_TS = updated_TS;
 	}
+	
+    
     
 }

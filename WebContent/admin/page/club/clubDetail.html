@@ -1,4 +1,5 @@
 <div ng-controller="ClubDetailController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
     <section id="main__content">
         <div class="action-header-alt">
             <div class="col col-md-3">
@@ -11,9 +12,9 @@
                 <button type="button" class="btn btn" style="float: right;" ng-click="edit=!edit">{{edit?'取消':'编辑'}}</button>
             </div>
         </div>
-
-
+        <!--<div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>-->
         <div class="main__container" >
+
             <header class="main__title">
                 <h1 style="font-family: '黑体'">球场明细</h1>
             </header>
@@ -30,8 +31,8 @@
                         <div class="tab-content">
                             <!-- 球场图片 -->
                             <div class="tab-pane fade in active light-gallery" id="detail-media-images">
-                                <a href="{{photo}}" lightgallery ng-repeat="photo in currentClub.PhotoList">
-                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="550px">
+                                <a  lightgallery ng-repeat="photo in currentClub.PhotoList" href="{{photo}}">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="球场封面" height="550px">
                                 </a>
                             </div>
 
@@ -43,11 +44,29 @@
                             </div>
 
                             <!-- 球场所在地 -->
-                            <div class="tab-pane fade" id="detail-media-map">
-                                <a href="../img/examples/rsz_agiarylocation.jpg">
-                                    <img src="../img/examples/rsz_agiarylocation.jpg" alt="球场所在地">
-                                </a>
+                            <style>
+                                .container{
+                                    background-color: silver;
+                                    width:100%;
+                                    position:relative;
+                                    display: inline-block;
+                                }
+                                .dummy{
+                                    margin-top: 50%;
+                                }
+                                .content{
+                                    position:absolute;
+                                    left:0;
+                                    right:0;
+                                    top:0;
+                                    bottom: 0;
+                                }
+                            </style>
+                            <div class="tab-pane fade container" id="detail-media-map">
+                                <div class='dummy'></div>
+                                <div class='content' id="mapView"></div>
                             </div>
+
                         </div>
 
                         <!-- Gallery Icons -->
@@ -64,28 +83,42 @@
                                 <div class="form-group">
                                     <label class="club_label">球场名称<span style="color: red">*</span></label>
                                     <input type="text" name="ClubName" ng-disabled="!edit" ng-model="currentClub.ClubName" class="form-control" required>
-                                    <p ng-show="clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine" class="help-block">
+                                        <span ng-show="clubForm.ClubName.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.Mode.$invalid && !clubForm.Mode.$pristine }">
                                 <div class="form-group">
                                     <label class="club_label">球场模式<span style="color: red">*</span></label>
                                     <input type="text" name="Mode" ng-model="currentClub.Mode" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.Mode.$invalid && !clubForm.Mode.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.Mode.$invalid && !clubForm.Mode.$pristine" class="help-block">
+                                        <span ng-show="clubForm.Mode.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
-                            <div class="col-sm-2" ng-class="{ 'has-error' : clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine }">
-                                <div class="form-group">
-                                    <label class="club_label">球洞数<span style="color: red">*</span></label>
-                                    <input type="text" name="TotalHole" ng-model="currentClub.TotalHole" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">必填项</p>
+                            <div class="col-sm-2" ng-class="{ 'has-error' : clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine}">
+                                <div class="form-group" >
+                                    <label>总洞数<span style="color: red">*</span></label>
+                                    <input type="text" ng-maxlength="4" name="TotalHole" ng-model="currentClub.TotalHole" ng-disabled="!edit"
+                                           class="form-control" required ng-pattern="/^[1-9]\d*$/">
+                                    <p ng-show="clubForm.TotalHole.$invalid && !clubForm.TotalHole.$pristine" class="help-block">
+                                        <span ng-show="clubForm.TotalHole.$error.required">必填项</span>
+                                        <span ng-show="clubForm.TotalHole.$error.maxlength">超出长度</span>
+                                        <span ng-show="clubForm.TotalHole.$error.pattern">数值有误</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-2" ng-class="{ 'has-error' : clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">总杆数<span style="color: red">*</span></label>
-                                    <input type="text" name="TotalStemNum" ng-model="currentClub.TotalStemNum" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">必填项</p>
+                                    <label>总杆数<span style="color: red">*</span></label>
+                                    <input type="text" name="TotalStemNum" ng-maxlength="3" ng-model="currentClub.TotalStemNum" ng-disabled="!edit"
+                                           class="form-control" required ng-pattern="/^[1-9]\d*$/">
+                                    <p ng-show="clubForm.TotalStemNum.$invalid && !clubForm.TotalStemNum.$pristine" class="help-block">
+                                        <span ng-show="clubForm.TotalStemNum.$error.required">必填项</span>
+                                        <span ng-show="clubForm.TotalStemNum.$error.maxlength">超出长度</span>
+                                        <span ng-show="clubForm.TotalStemNum.$error.pattern">数值有误</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -93,21 +126,24 @@
                             <div class="col-sm-4">
                                 <label>建立时间<span style="color: red">*</span></label>
                                 <div class="input-group" ng-class="{ 'has-error' : clubForm.CreateTime.$invalid && !clubForm.CreateTime.$pristine }">
-                                    <input type="text" name="CreateTime" readonly class="form-control" uib-datepicker-popup="{{format}}" ng-model="currentClub.CreateTime" ng-disabled="!edit"
+                                    <input type="text" name="CreateTime" readonly class="form-control" uib-datepicker-popup="{{format}}" ng-model="CreateTime" ng-disabled="!edit"
                                            is-open="status.dateOpen" datepicker-options="dateOptions" close-text="关闭" current-text="今天" ng-required="true"/>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-default" ng-disabled="!edit" ng-click="IsOpen(1)">
                                             <i class="glyphicon glyphicon-calendar"></i>
                                         </button>
                                     </span>
-                                    <!--<p ng-show="clubForm.CreateTime.$invalid && !clubForm.CreateTime.$pristine" class="help-block">必填项</p>-->
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.PhoneNum.$invalid && !clubForm.PhoneNum.$pristine }">
                                     <label class="club_label">联系电话<span style="color: red">*</span></label>
-                                    <input type="text" name="PhoneNum" ng-model="currentClub.PhoneNum" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.PhoneNum.$invalid && !clubForm.PhoneNum.$pristine" class="help-block">必填项</p>
+                                    <input type="text" name="PhoneNum" ng-model="currentClub.PhoneNum" ng-disabled="!edit" class="form-control"
+                                           required ng-pattern="/(^(\d{3,4}-)?\d{7,8})$|(1[34578]\d{9})$/">
+                                    <p ng-show="clubForm.PhoneNum.$invalid && !clubForm.PhoneNum.$pristine" class="help-block">
+                                        <span ng-show="clubForm.PhoneNum.$error.required">必填项</span>
+                                        <span ng-show="clubForm.PhoneNum.$error.pattern">格式有误</span>
+                                    </p>
                                 </div>
                             </div>
 
@@ -115,7 +151,9 @@
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Stylist.$invalid && !clubForm.Stylist.$pristine }">
                                     <label class="club_label">设计师<span style="color: red">*</span></label>
                                     <input type="text" name="Stylist" ng-model="currentClub.Stylist" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.Stylist.$invalid && !clubForm.Stylist.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.Stylist.$invalid && !clubForm.Stylist.$pristine" class="help-block">
+                                        <span ng-show="clubForm.Stylist.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -124,21 +162,27 @@
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Square.$invalid && !clubForm.Square.$pristine }">
                                     <label class="club_label">球场面积<span style="color: red">*</span></label>
                                     <input type="text" name="Square" ng-model="currentClub.Square" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.Square.$invalid && !clubForm.Square.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.Square.$invalid && !clubForm.Square.$pristine" class="help-block">
+                                        <span ng-show="clubForm.Square.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Length.$invalid && !clubForm.Length.$pristine }">
                                     <label class="club_label">球场长度<span style="color: red">*</span></label>
                                     <input type="text" name="Length" ng-model="currentClub.Length" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.Length.$invalid && !clubForm.Length.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.Length.$invalid && !clubForm.Length.$pristine" class="help-block">
+                                        <span ng-show="clubForm.Length.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.PuttingSeed.$invalid && !clubForm.PuttingSeed.$pristine }">
                                     <label class="club_label">果岭草种<span style="color: red">*</span></label>
                                     <input type="text" name="PuttingSeed" ng-model="currentClub.PuttingSeed" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.PuttingSeed.$invalid && !clubForm.PuttingSeed.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.PuttingSeed.$invalid && !clubForm.PuttingSeed.$pristine" class="help-block">
+                                        <span ng-show="clubForm.PuttingSeed.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +191,9 @@
                                 <div class="form-group">
                                     <label class="club_label">球道草种<span style="color: red">*</span></label>
                                     <input type="text" name="FairwaySeed" ng-model="currentClub.FairwaySeed" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.FairwaySeed.$invalid && !clubForm.FairwaySeed.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.FairwaySeed.$invalid && !clubForm.FairwaySeed.$pristine" class="help-block">
+                                        <span ng-show="clubForm.FairwaySeed.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +203,9 @@
                                     <label class="club_label">详细地址<span style="color: red">*</span></label>
                                     <input select-address p="p" c="c" a="a" d="d" ng-disabled="!edit" name="ClubAddress"
                                            ng-model="currentClub.Address" placeholder="请选择所在地" type="text" class="form-control" required>
-                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">必填项</p>
+                                    <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">
+                                        <span ng-show="clubForm.ClubAddress.$error.required">必填项</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -200,220 +248,182 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col col-md-12">
-                            <uib-accordion close-others="oneAtATime">
-                                <div uib-accordion-group class="panel-default" ng-click="cnIndex($index)" ng-repeat="uib in clubServes">
-                                    <uib-accordion-heading >
-                                        {{uib.Name}}
-                                        <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': status.isOpen, 'glyphicon-chevron-right': !status.isOpen}"></i>
-                                    </uib-accordion-heading>
-                                    <div class="row">
-                                        <div class="col-sm4 pull-right" ng-show="edit">
-                                            <div class="form-group">
-                                                <button class="btn btn-danger pull-right" ng-click="removeClubServe(uib)">删除</button>
-                                                <button class="btn btn-info pull-right" ng-click="editServe(uib)">修改</button>
+                        <div class="col col-md-12 panel-group" id="accordion">
+                            <div class="panel panel-default" ng-repeat="uib in clubServes">
+                                <div class="panel-heading" data-toggle="collapse" data-parent="#accordion" href="#contain{{$index}}" ng-click="cnIndex($index,uib);">
+                                    <h4 class="panel-title text-center">
+                                        <a href="">{{uib.Name}}</a>
+                                    </h4>
+                                </div>
+                                <div id="contain{{$index}}" class="panel-collapse collapse">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-sm-4 pull-right" ng-show="edit">
+                                                <div class="form-group">
+                                                    <button class="btn btn-danger pull-right" ng-click="removeClubServe(uib)">删除</button>
+                                                    <button class="btn btn-info pull-right" ng-click="editServe(uib)">修改</button>
+                                                </div>
                                             </div>
                                         </div>
+                                        <uib-tabset active="active" justified="true">
+                                            <uib-tab index="$index" class="p-t-10" ng-repeat="weekday in weekdays track by $index" ng-click="wnIndex($index)" heading="{{weekday=='other'?'特殊时段':weekday}}">
+                                                <div class="p-t-10">
+                                                    <!--<div class="col-sm-12">-->
+                                                    <!--<div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>-->
+                                                    <!--</div>-->
+                                                    <div>
+                                                        <div class="col-sm-4" ng-show="weekday==='other'">
+                                                            <div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>
+                                                            <div ng-show="!loading">
+                                                                <div class="row">
+                                                                    <div class="col-sm-5">
+                                                                        <a href="" class="red_btn" ng-click="addDT(uib)">
+                                                                            新增日期
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row p-t-10">
+                                                                    <div class="col-sm-12 form-group">
+                                                                        <!--<input type="text" ng-change="odSearch()" placeholder="搜索日期" ng-model="odKeyword" class="form-control">-->
+                                                                        <div class="input-group">
+                                                                            <input type="text" ng-model="odKeyword" class="form-control"
+                                                                                   placeholder="搜索日期">
+                                                                            <span class="input-group-btn">
+                                                                                <button type="button" class="btn btn-info" ng-click="odSearch(odKeyword)">
+                                                                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                                                                </button>
+                                                                                <button type="button" ng-show="odKeyword!=''"
+                                                                                        class="btn btn-warning" ng-click="odSearch('');odKeyword=''">清空</button>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" style="overflow: auto;height: 97%;">
+                                                                    <div class="col-sm-12 form-group time_btn">
+                                                                        <a href="" ng-class="{active:dateIndex === $index}" ng-repeat="date in dateList"
+                                                                           ng-click="priceTimeForm.$setPristine();dtIndex($index,date.DateTime)">{{date.DateTime}}</a>
+                                                                    </div>
+                                                                    <div class="load-more" ng-show="TotalOtherDate > 20">
+                                                                        <a href="" ng-click="loading()"><i ng-if="loadMore" class="zmdi zmdi-refresh-alt"></i> {{loadMore?'加载更多':'没有更多了'}}</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col col-sm-4">
+                                                            <div class="form-group time_btn">
+                                                                <label>上午</label>
+                                                                <a href="" ng-class="{active:mTimeIndex === $index}" ng-repeat="mTime in morningTimes"
+                                                                   ng-click="priceTimeForm.$setPristine();checkTime(mTime,weekday,uib,$index,'m')">{{mTime}}</a>
+                                                            </div>
+                                                            <div class="form-group time_btn">
+                                                                <label>下午</label>
+                                                                <a href="" ng-class="{active:aTimeIndex === $index}" ng-repeat="aTime in afternoonTimes"
+                                                                   ng-click="priceTimeForm.$setPristine();checkTime(aTime,weekday,uib,$index,'a')">{{aTime}}</a>
+                                                            </div>
+                                                            <div class="form-group time_btn">
+                                                                <label>晚上</label>
+                                                                <a href="" ng-class="{active:nTimeIndex === $index}" ng-repeat="nTime in nightTimes"
+                                                                   ng-click="priceTimeForm.$setPristine();checkTime(nTime,weekday,uib,$index,'n')">{{nTime}}</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col col-sm-4">
+                                                            <form class="ng-pristine ng-valid" style="margin-bottom: 0px;"
+                                                                  name="priceTimeForm" ng-submit="priceSubmit(priceTimeForm.$valid,weekday);priceTimeForm.$setPristine();" novalidate>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine }">
+                                                                        <div class="form-group">
+                                                                            <label class="club_label">时间段</label>
+                                                                            <input type="text" name="Time" ng-model="currentTime.Time" readonly class="form-control" required>
+                                                                            <p ng-show="priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine" class="help-block">
+                                                                                <span ng-show="priceTimeForm.Time.$error.required">必填项</span>
+                                                                                <span ng-show="priceTimeForm.Time.$error.pattern">数值有误</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine
+                                                             || priceTimeForm.DownPayment.$error.pattern }">
+                                                                        <div class="form-group">
+                                                                            <label class="club_label">首付
+                                                                                <span style="color: red">*</span>&nbsp;&nbsp;
+                                                                                <!--(<span><input id="IsDeposit" ng-model="IsDeposit" type="checkbox"/> 需要押金 </span>)-->
+                                                                            </label>
+                                                                            <input type="text" name="DownPayment" ng-disabled="!edit" ng-model="currentTime.DownPayment" class="form-control"
+                                                                                   required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
+                                                                            <p ng-show="priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine" class="help-block">
+                                                                                <span ng-show="priceTimeForm.DownPayment.$error.required">必填项</span>
+                                                                                <span ng-show="priceTimeForm.DownPayment.$error.pattern">数值有误</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine
+                                                            || priceTimeForm.OtherPrice.$error.pattern}">
+                                                                        <div class="form-group">
+                                                                            <label class="club_label">其他费用<span style="color: red">*</span></label>
+                                                                            <input type="text" name="OtherPrice" ng-disabled="!edit" ng-model="currentTime.OtherPrice" class="form-control"
+                                                                                   required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
+                                                                            <p ng-show="priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine" class="help-block">
+                                                                                <span ng-show="priceTimeForm.OtherPrice.$error.required">必填项</span>
+                                                                                <span ng-show="priceTimeForm.OtherPrice.$error.pattern">数值有误</span>
+                                                                            </p>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine }">
+                                                                        <div class="form-group">
+                                                                            <label class="club_label">支付方式<span style="color: red">*</span></label>
+                                                                            <select ng-model="currentTime.Type" ng-disabled="!edit" name="Type" class="form-control"
+                                                                                    ng-options="pay.value as pay.key for pay in Payment" required></select>
+                                                                            <p ng-show="priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine" class="help-block">
+                                                                                <span ng-show="priceTimeForm.Type.$error.required">必填项</span>
+                                                                                <span ng-show="priceTimeForm.Type.$error.pattern">数值有误</span>
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-6">
+                                                                        <label>是否优惠时段</label>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="1">是
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="0">否
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-6" ng-show="weekday==='other'">
+                                                                        <label>是否有效时段</label>
+                                                                        <div class="row">
+                                                                            <div class="col-md-4">
+                                                                                <input type="radio" name="IsValid" ng-model="currentTime.IsValid" value="1">是
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                <input type="radio" name="IsValid" ng-model="currentTime.IsValid" value="0">否
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row" ng-show="priceTimeForm.$dirty">
+                                                                    <div class="col-sm-12">
+                                                                        <button type="submit" class="btn btn-primary  pull-right" ng-disabled="priceTimeForm.$invalid||(weekday==='other'&&DTime==null)">提交</button>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </uib-tab>
+                                        </uib-tabset>
                                     </div>
-
-                                    <uib-tabset active="activeJustified" justified="true">
-                                        <uib-tab index="$index" ng-repeat="weekday in weekdays track by $index" ng-click="wnIndex($index)" heading="{{weekday}}">
-                                            <div class="row">
-                                                <div class="col col-sm-4">
-                                                    <div class="form-group time_btn">
-                                                        <label>上午</label>
-                                                        <a href="" ng-class="{active:mTimeIndex === $index}" ng-repeat="mTime in morningTimes"
-                                                           ng-click="priceTimeForm.$setPristine();checkTime(mTime,weekday,uib,$index,'m')">{{mTime}}</a>
-                                                    </div>
-                                                    <div class="form-group time_btn">
-                                                        <label>下午</label>
-                                                        <a href="" ng-class="{active:aTimeIndex === $index}" ng-repeat="aTime in afternoonTimes"
-                                                           ng-click="priceTimeForm.$setPristine();checkTime(aTime,weekday,uib,$index,'a')">{{aTime}}</a>
-                                                    </div>
-                                                    <div class="form-group time_btn">
-                                                        <label>晚上</label>
-                                                        <a href="" ng-class="{active:nTimeIndex === $index}" ng-repeat="nTime in nightTimes"
-                                                           ng-click="priceTimeForm.$setPristine();checkTime(nTime,weekday,uib,$index,'n')">{{nTime}}</a>
-                                                    </div>
-                                                </div>
-                                                <div class="col col-sm-8">
-                                                    <form class="ng-pristine ng-valid" style="margin-bottom: 0px;"
-                                                          name="priceTimeForm" ng-submit="priceSubmit(priceTimeForm.$valid)" novalidate>
-                                                        <div class="row">
-                                                            <div class="col-sm-6" ng-class="{ 'has-error' : priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">时间段</label>
-                                                                    <input type="text" name="Time" ng-model="currentTime.Time" readonly class="form-control" required>
-                                                                    <p ng-show="priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine" class="help-block">必填项</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6" ng-class="{ 'has-error' : priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine
-                                                             || priceTimeForm.DownPayment.$error.pattern }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">首付
-                                                                        <span style="color: red">*</span>&nbsp;&nbsp;(
-                                                                        <span><input id="IsDeposit" ng-model="IsDeposit" type="checkbox"/> 需要押金 </span>)
-                                                                    </label>
-                                                                    <input type="text" name="DownPayment" ng-disabled="!edit" ng-model="currentTime.DownPayment" class="form-control"
-                                                                           required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
-                                                                    <p ng-show="priceTimeForm.DownPayment.$error.pattern || (priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine)"
-                                                                       class="help-block">{{priceTimeForm.DownPayment.$error.pattern?'输入正确的数值':'必填项'}}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6" ng-class="{ 'has-error' : priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine
-                                                            || priceTimeForm.OtherPrice.$error.pattern}">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">其他费用<span style="color: red">*</span></label>
-                                                                    <input type="text" name="OtherPrice" ng-disabled="!edit" ng-model="currentTime.OtherPrice" class="form-control"
-                                                                           required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
-                                                                    <p ng-show="priceTimeForm.OtherPrice.$error.pattern || (priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine)"
-                                                                       class="help-block">{{priceTimeForm.OtherPrice.$error.pattern?'输入正确的数值':'必填项'}}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6" ng-class="{ 'has-error' : priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">支付方式<span style="color: red">*</span></label>
-                                                                    <select ng-model="currentTime.Type" ng-disabled="!edit" name="Type" class="form-control"
-                                                                            ng-options="pay.value as pay.key for pay in Payment" required></select>
-                                                                    <p ng-show="priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine" class="help-block">必填项</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-6">
-                                                                <label>是否优惠时段</label>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="1">是
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="0">不是
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" ng-show="priceTimeForm.$dirty">
-                                                            <div class="col-sm-6">
-                                                                <button type="submit" class="btn btn-primary  pull-right" ng-disabled="priceTimeForm.$invalid">提交</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </uib-tab>
-                                        <uib-tab index="7" heading="其他">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="row">
-                                                        <p class="input-group">
-                                                            <input type="text" readonly class="form-control" uib-datepicker-popup="{{format}}" ng-model="DateTime" ng-disabled="!edit"
-                                                                   is-open="status.dateTimeOpen" datepicker-options="options" close-text="关闭" ng-change="checkDT()" current-text="今天" ng-required="true"/>
-                                                            <span class="input-group-btn">
-                                                                <button type="button" class="btn btn-default" ng-disabled="!edit" ng-click="IsOpen(2)">
-                                                                    <i class="glyphicon glyphicon-calendar"></i>
-                                                                </button>
-                                                            </span>
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="form-group time_btn">
-                                                        <label>上午</label>
-                                                        <a href="" ng-class="{active:mTimeIndex === $index}" ng-repeat="mTime in morningTimes"
-                                                           ng-click="">{{mTime}}</a>
-                                                    </div>
-                                                    <div class="form-group time_btn">
-                                                        <label>下午</label>
-                                                        <a href="" ng-class="{active:aTimeIndex === $index}" ng-repeat="aTime in afternoonTimes"
-                                                           ng-click="">{{aTime}}</a>
-                                                    </div>
-                                                    <div class="form-group time_btn">
-                                                        <label>晚上</label>
-                                                        <a href="" ng-class="{active:nTimeIndex === $index}" ng-repeat="nTime in nightTimes"
-                                                           ng-click="">{{nTime}}</a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <form class="ng-pristine ng-valid" style="margin-bottom: 0px;"
-                                                          name="priceTimeForm" ng-submit="priceSubmit(priceTimeForm.$valid)" novalidate>
-                                                        <div class="row">
-                                                            <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">时间段</label>
-                                                                    <input type="text" name="Time" ng-model="currentTime.Time" readonly class="form-control" required>
-                                                                    <p ng-show="priceTimeForm.Time.$invalid && !priceTimeForm.Time.$pristine" class="help-block">必填项</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine
-                                                             || priceTimeForm.DownPayment.$error.pattern }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">首付
-                                                                        <span style="color: red">*</span>&nbsp;&nbsp;
-                                                                        <!--(<span><input id="IsDeposit" ng-model="IsDeposit" type="checkbox"/> 需要押金 </span>)-->
-                                                                    </label>
-                                                                    <input type="text" name="DownPayment" ng-disabled="!edit" ng-model="currentTime.DownPayment" class="form-control"
-                                                                           required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
-                                                                    <p ng-show="priceTimeForm.DownPayment.$error.pattern || (priceTimeForm.DownPayment.$invalid && !priceTimeForm.DownPayment.$pristine)"
-                                                                       class="help-block">{{priceTimeForm.DownPayment.$error.pattern?'输入正确的数值':'必填项'}}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine
-                                                            || priceTimeForm.OtherPrice.$error.pattern}">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">其他费用<span style="color: red">*</span></label>
-                                                                    <input type="text" name="OtherPrice" ng-disabled="!edit" ng-model="currentTime.OtherPrice" class="form-control"
-                                                                           required ng-pattern="/^([0-9]\d*(\.\d*[0-9])?)|(0\.\d*[1-9])$/">
-                                                                    <p ng-show="priceTimeForm.OtherPrice.$error.pattern || (priceTimeForm.OtherPrice.$invalid && !priceTimeForm.OtherPrice.$pristine)"
-                                                                       class="help-block">{{priceTimeForm.OtherPrice.$error.pattern?'输入正确的数值':'必填项'}}</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-12" ng-class="{ 'has-error' : priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine }">
-                                                                <div class="form-group">
-                                                                    <label class="club_label">支付方式<span style="color: red">*</span></label>
-                                                                    <select ng-model="currentTime.Type" ng-disabled="!edit" name="Type" class="form-control"
-                                                                            ng-options="pay.value as pay.key for pay in Payment" required></select>
-                                                                    <p ng-show="priceTimeForm.Type.$invalid && !priceTimeForm.Type.$pristine" class="help-block">必填项</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-sm-12">
-                                                                <label>是否优惠时段</label>
-                                                                <div class="row">
-                                                                    <div class="col-md-4">
-                                                                        <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="1">是
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="0">不是
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row" ng-show="priceTimeForm.$dirty">
-                                                            <div class="col-sm-6">
-                                                                <button type="submit" class="btn btn-primary  pull-right" ng-disabled="priceTimeForm.$invalid">提交</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </uib-tab>
-                                    </uib-tabset>
-
                                 </div>
-                            </uib-accordion>
+                            </div>
                         </div>
                         <div class="col col-md-12 text-center">
                             <ul uib-pagination boundary-links="true" total-items="totalItems" max-size="pageConfig.maxSize"
@@ -424,84 +434,58 @@
                 </div>
             </div>
             <div class="card">
-
                 <div class="card__header">
                     <h1><span class="black">球道详情</span></h1>
-                   <br/><br/>
-             <div class="site">
-                        <div class="col-sm-4" style="width:100px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.SiteNameOne.$invalid && !clubForm.SiteNameOne.$pristine }">
-                                   <label class="club_label">场地名<span style="color: red">*</span></label>
-                                    <input type="text" name="SiteNameOne" style="width:70px" ng-model="currentClub.SiteNameOne" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.SiteNameOne.$invalid && !clubForm.SiteNameOne.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" style="width:250px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.OutCourseOne.$invalid && !clubForm.OutCourseOne.$pristine }">
-                                   <label class="club_label">前九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="OutCourseOne" style="width:220px" ng-model="currentClub.OutCourseOne" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.OutCourseOne.$invalid && !clubForm.OutCourseOne.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div> 
-                            <div class="col-sm-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.InCourseOne.$invalid && !clubForm.InCourseOne.$pristine }">
-                                   <label class="club_label">后九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="InCourseOne" style="width:220px" ng-model="currentClub.InCourseOne" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.InCourseOne.$invalid && !clubForm.InCourseOne.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div><br/><br/><br/><br/><br/>
-                           <div class="col-sm-4" style="width:100px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.SiteNameTwo.$invalid && !clubForm.SiteNameTwo.$pristine }">
-                                   <label class="club_label">场地名<span style="color: red">*</span></label>
-                                    <input type="text" name="SiteNameTwo" style="width:70px" ng-model="currentClub.SiteNameTwo" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.SiteNameTwo.$invalid && !clubForm.SiteNameTwo.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" style="width:250px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.OutCourseTwo.$invalid && !clubForm.OutCourseTwo.$pristine }">
-                                   <label class="club_label">前九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="OutCourseTwo" style="width:220px" ng-model="currentClub.OutCourseTwo" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.OutCourseTwo.$invalid && !clubForm.OutCourseTwo.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div> 
-                            <div class="col-sm-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.InCourseTwo.$invalid && !clubForm.InCourseTwo.$pristine }">
-                                   <label class="club_label">后九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="InCourseTwo" style="width:220px" ng-model="currentClub.InCourseTwo" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.InCourseTwo.$invalid && !clubForm.InCourseTwo.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div>
-                             </div><br/><br/><br/><br/><br/>
-                           <div class="col-sm-4" style="width:100px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.SiteNameThree.$invalid && !clubForm.SiteNameThree.$pristine }">
-                                   <label class="club_label">场地名<span style="color: red">*</span></label>
-                                    <input type="text" name="SiteNameThree" style="width:70px" ng-model="currentClub.SiteNameThree" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.SiteNameThree.$invalid && !clubForm.SiteNameThree.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div>
-                            <div class="col-sm-4" style="width:250px">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.OutCourseThree.$invalid && !clubForm.OutCourseThree.$pristine }">
-                                   <label class="club_label">前九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="OutCourseThree" style="width:220px" ng-model="currentClub.OutCourseThree" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.OutCourseThree.$invalid && !clubForm.OutCourseThree.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div> 
-                            <div class="col-sm-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.InCourseThree.$invalid && !clubForm.InCourseThree.$pristine }">
-                                   <label class="club_label">后九洞标准杆数，1-9用"，"隔开<span style="color: red">*</span></label>
-                                    <input type="text" name="InCourseThree" style="width:220px" ng-model="currentClub.InCourseThree" ng-disabled="!edit" class="form-control" required>
-                                    <p ng-show="clubForm.InCourseThree.$invalid && !clubForm.InCourseThree.$pristine" class="help-block">必填项</p>
-                                </div>
-                            </div>
-                    </div>
-                    
                 </div>
-               
+                <div class="card__body">
+                    <!--<div ng-show="true" class="table-loading" activity-view no-relative="true" is-active="true"></div>-->
+	                <div class="row">
+	                	<div class="col col-md-2">
+	                		<div class="form-group">
+	                            <a href="" class="a_btn" ng-click="addFairway()" >+ 添加球道</a>
+	                        </div> 
+	                	</div>
+	                </div>
+                    <div class="row" ng-repeat="fw in fairwayList">
+                        <div class="form-group">
+                            <label class="club_label">{{fw.FairwayName}}</label>
+                            <a href="" class="fw_btn mdc-bg-green" tooltips tooltip-side="top" tooltip-template="标准杆:{{p}}" ng-mouseover="changePar(p)" ng-repeat="p in fw.Par track by $index">{{$index+1}}</a>
+                        </div>
+                    </div>
+                
+                </div>
             </div>
+
 
         </div>
     </section>
+    <div class="modal fade" id="addDateTime" data-backdrop="static"
+         data-keyboard="false">
+        <div class="modal-dialog" style="width:380px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">新增特殊日期</h4>
+                </div>
+                <form class="new-contact ng-pristine ng-valid" name="dateForm" ng-submit="submitDateForm(dateForm.$valid)" novalidate>
+                    <div class="modal-body">
+                        <div style="display:inline-block; min-height:290px;">
+                            <div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options" ng-change="checkDT(dt)"></div>
+                        </div>
+                        <div class="form-group" ng-class="{ 'has-error' : dateForm.DateTime.$invalid && !dateForm.DateTime.$pristine }">
+                            <label>特殊日期</label>
+                            <input type="text" readonly class="form-control" name="DateTime" uib-datepicker-popup="{{format}}" ng-model="DateTime" required>
+                            <p ng-show="dateForm.DateTime.$invalid && !dateForm.DateTime.$pristine" class="help-block">必填项</p>
+                        </div>
 
+                    </div>
+                    <div class="modal-footer" style="padding: 0 30px 10px;">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="dateForm.$invalid" ng-click="dateForm.$setPristine();">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="addClubServe" data-backdrop="static"
          data-keyboard="false" style="font-family: '黑体'; color: #000;">
         <div class="modal-dialog" style="width:400px;">
@@ -518,8 +502,15 @@
                         </div>
                         <div class="form-group" ng-class="{ 'has-error' : serveForm.MaxDay.$invalid && !serveForm.MaxDay.$pristine }">
                             <label>日数上限</label>
-                            <input type="text" name="MaxDay" class="form-control" ng-model="clubServe.MaxDay" required>
-                            <p ng-show="serveForm.MaxDay.$invalid && !serveForm.MaxDay.$pristine" class="help-block">必填项</p>
+                            <div class="input-group">
+                                <input type="text" name="MaxDay" ng-model="clubServe.MaxDay" placeholder="例如:30"
+                                       class="form-control" required ng-pattern="/^([1-9]\d*)$/">
+                                <span class="input-group-addon">天</span>
+                            </div>
+                            <p ng-show="serveForm.MaxDay.$invalid && !serveForm.MaxDay.$pristine" class="help-block">
+                                <span ng-show="serveForm.MaxDay.$error.required">必填项</span>
+                                <span ng-show="serveForm.MaxDay.$error.pattern">数值有误</span>
+                            </p>
                         </div>
                         <div class="form-group" ng-class="{ 'has-error' : serveForm.ServiceExplain.$invalid && !serveForm.ServiceExplain.$pristine }">
                             <label>服务包含</label>
@@ -545,4 +536,141 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="addFw" data-backdrop="static"
+		data-keyboard="false">
+		<div class="modal-dialog" style="width: 280px;">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">增改球道信息</h4>
+				</div>
+                <form class="card new-contact ng-pristine ng-valid" name="fairwayFrom"
+                      ng-submit="submitFairwayForm(fairwayFrom.$valid)" novalidate>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : fairwayFrom.FairwayName.$invalid && !fairwayFrom.FairwayName.$pristine }">
+                                    <label>球道名</label>
+                                    <input type="text" name="FairwayName" ng-model="currentFairway.FairwayName" class="form-control"required/>
+                                    <p ng-show="fairwayFrom.FairwayName.$invalid && !fairwayFrom.FairwayName.$pristine" class="help-block">必填项</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole1.$invalid && !fairwayFrom.hole1.$pristine }">
+                                    <label>球洞1</label>
+                                    <input class="form-control" type="text" name="hole1" ng-maxlength="1"
+                                           ng-model="currentFairway.hole1" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole1.$invalid && !fairwayFrom.hole1.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole1.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole1.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole1.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole2.$invalid && !fairwayFrom.hole2.$pristine }">
+                                    <label>球洞2</label>
+                                    <input class="form-control" type="text" name="hole2" ng-maxlength="1" ng-model="currentFairway.hole2" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole2.$invalid && !fairwayFrom.hole2.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole2.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole2.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole2.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole3.$invalid && !fairwayFrom.hole3.$pristine }">
+                                    <label>球洞3</label>
+                                    <input class="form-control" type="text" name="hole3" ng-maxlength="1" ng-model="currentFairway.hole3" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole3.$invalid && !fairwayFrom.hole3.$pristine " class="help-block">
+                                        <span ng-show="fairwayFrom.hole3.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole3.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole3.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole4.$invalid && !fairwayFrom.hole4.$pristine }">
+                                    <label>球洞4</label>
+                                    <input class="form-control" type="text" name="hole4" ng-maxlength="1" ng-model="currentFairway.hole4" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole4.$invalid && !fairwayFrom.hole4.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole4.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole4.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole4.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole5.$invalid && !fairwayFrom.hole5.$pristine }">
+                                    <label>球洞5</label>
+                                    <input class="form-control" type="text" name="hole5" ng-maxlength="1" ng-model="currentFairway.hole5" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole5.$invalid && !fairwayFrom.hole5.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole5.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole5.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole5.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole6.$invalid && !fairwayFrom.hole6.$pristine }">
+                                    <label>球洞6</label>
+                                    <input class="form-control" type="text" name="hole6" ng-maxlength="1" ng-model="currentFairway.hole6" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole6.$invalid && !fairwayFrom.hole6.$pristine " class="help-block">
+                                        <span ng-show="fairwayFrom.hole6.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole6.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole6.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole7.$invalid && !fairwayFrom.hole7.$pristine }">
+                                    <label>球洞7</label>
+                                    <input class="form-control" type="text" name="hole7" ng-maxlength="1" ng-model="currentFairway.hole7" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole7.$invalid && !fairwayFrom.hole7.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole7.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole7.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole7.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole8.$invalid && !fairwayFrom.hole8.$pristine }">
+                                    <label>球洞8</label>
+                                    <input class="form-control" type="text" name="hole8" ng-maxlength="1" ng-model="currentFairway.hole8" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole8.$invalid && !fairwayFrom.hole8.$pristine" class="help-block">
+                                        <span ng-show="fairwayFrom.hole8.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole8.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole8.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group" ng-class="{ 'has-error' : fairwayFrom.hole9.$invalid && !fairwayFrom.hole9.$pristine }">
+                                    <label>球洞9</label>
+                                    <input class="form-control" type="text" name="hole9" ng-maxlength="1" ng-model="currentFairway.hole9" required ng-pattern="/^[3-5]\d*$/">
+                                    <p ng-show="fairwayFrom.hole9.$invalid && !fairwayFrom.hole9.$pristine " class="help-block">
+                                        <span ng-show="fairwayFrom.hole9.$error.required">必填项</span>
+                                        <span ng-show="fairwayFrom.hole9.$error.pattern">数值有误</span>
+                                        <span ng-show="fairwayFrom.hole9.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="fairwayFrom.$invalid"
+                                ng-click="fairwayFrom.$setPristine()">保存
+                        </button>
+                    </div>
+                </form>
+			</div>
+		</div>
+	</div>
 </div>

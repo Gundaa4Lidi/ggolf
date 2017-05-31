@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+    <bean id="collectService" class="com.galaxy.ggolf.rest.CollectService">
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="articleSubjectDAO"/>
+	    <constructor-arg ref="collectDAO"/>
+	</bean>
+    
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+    <bean id="articleDAO" class="com.galaxy.ggolf.dao.ArticleDAO">
+	</bean>
+	<bean id="articleSubjectDAO" class="com.galaxy.ggolf.dao.ArticleSubjectDAO">
+	</bean>
+	<bean id="collectDAO" class="com.galaxy.ggolf.dao.CollectDAO">
+	</bean>
+</beans>

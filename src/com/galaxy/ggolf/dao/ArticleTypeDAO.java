@@ -19,7 +19,7 @@ public class ArticleTypeDAO extends GenericDAO<ArticleType> {
 	}
 	
 	public boolean update(ArticleType at){
-		String sql = "update article_type set TypeName='"+at.getTypeName()+"' where TypeID='"+at.getTypeID()+"' and DeletedFlag is null";
+		String sql = "update article_type set TypeName='"+at.getTypeName()+"',TypeKey='"+at.getTypeKey()+"' where TypeID='"+at.getTypeID()+"' and DeletedFlag is null";
 		return super.executeUpdate(sql);
 	}
 	public Collection<ArticleType> getByCategoryID(String CategoryID){

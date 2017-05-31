@@ -8,11 +8,17 @@
 		<constructor-arg ref="messageDAO" />
 		<constructor-arg ref="courseTimeDAO"/>
 		<constructor-arg ref="clubOrderDAO"/>
+		<constructor-arg ref="coachScoreDAO"/>
+		<constructor-arg ref="courseOrderDAO"/>
 	</bean>
 	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
 	</bean>
 	<bean id="courseTimeDAO" class="com.galaxy.ggolf.dao.CourseTimeDAO">
 	</bean>
 	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
+	</bean>
+	<bean id="coachScoreDAO" class="com.galaxy.ggolf.dao.CoachScoreDAO">
+	</bean>
+	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
 	</bean>
 </beans>

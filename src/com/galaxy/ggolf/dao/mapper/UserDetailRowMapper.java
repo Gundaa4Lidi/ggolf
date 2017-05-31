@@ -39,7 +39,7 @@ public class UserDetailRowMapper implements RowMapper<UserDetail> {
 		String Score = res.getString(COLUMN_Score);
 		String City = res.getString(COLUMN_City);
 		String PhotoList = res.getString(COLUMN_PhotoList);
-		Collection<String> Photos = new ListUtil().StringToList(PhotoList);
+		Collection<String> Photos = new ListUtil().StringToList(PhotoList,";");
 		/*if(PhotoList != null)
 		if(PhotoList.indexOf(";")!=-1){
 			String[] string = PhotoList.split(";");

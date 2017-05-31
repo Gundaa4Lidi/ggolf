@@ -49,9 +49,9 @@ public class ClubServeDAO extends GenericDAO<ClubServe> {
 	 * @return
 	 */
 	public Collection<ClubServe> getClubServeByClubID(String sqlString,String pageNum,String rows,String ClubID){
+		String limit = super.limit(pageNum, rows);
 		String sql = "select * from clubserve where DeletedFlag is null and ClubID='"+ClubID+"' "+sqlString+""
-				+ "order by Created_TS desc limit "
-				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " , " + Integer.parseInt(rows) + " ";
+				+ "order by Created_TS desc "+limit+" ";
 		return super.executeQuery(sql);
 	}
 	

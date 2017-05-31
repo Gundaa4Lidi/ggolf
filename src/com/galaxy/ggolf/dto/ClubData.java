@@ -6,31 +6,27 @@ import com.galaxy.ggolf.domain.Club;
 
 public class ClubData {
 	
+	private int count;
 	private Collection<Club> data;
 	
-	private int pageCount;
-
-	public ClubData(Collection<Club> data, int pageCount) {
-		super();
+	public ClubData(int count, Collection<Club> data) {
+		this.count = count;
 		this.data = data;
-		this.pageCount = pageCount;
 	}
-
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
 	public Collection<Club> getData() {
 		return data;
 	}
-
 	public void setData(Collection<Club> data) {
 		this.data = data;
 	}
+	
 
-	public int getPageCount() {
-		return pageCount;
-	}
-
-	public void setPageCount(int pageCount) {
-		this.pageCount = pageCount;
-	}
 	
 	
 }

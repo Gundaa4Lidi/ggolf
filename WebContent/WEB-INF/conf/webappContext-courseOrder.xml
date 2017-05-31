@@ -5,8 +5,14 @@
 	
     <bean id="courseOrderService" class="com.galaxy.ggolf.rest.CourseOrderService">
 	    <constructor-arg ref="courseOrderDAO"/>
+	    <constructor-arg ref="coachCourseDAO"/>
+	    <constructor-arg ref="coachScoreDAO"/>
 	</bean>
    
 	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
+	</bean>
+	<bean id="coachCourseDAO" class="com.galaxy.ggolf.dao.CoachCourseDAO">
+	</bean>
+	<bean id="coachScoreDAO" class="com.galaxy.ggolf.dao.CoachScoreDAO">
 	</bean>
 </beans>

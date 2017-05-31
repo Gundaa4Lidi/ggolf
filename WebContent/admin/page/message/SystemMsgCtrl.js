@@ -25,18 +25,19 @@ var SystemMsgController = function($scope,$rootScope,$http,$q,appConfig,$window,
 	sc.load = function(){
         sc.searchChange();
 	}
-    sc.$watch('Rows',function(newValue){
-        console.log(newValue,"????");
-        if(newValue < sc.TotalMessage){
-            sc.loadMore = true;
-        }else if(newValue >= sc.TotalMessage){
-            sc.loadMore = false;
-        }
-    });
+    // sc.$watch('Rows',function(newValue){
+    //     if(newValue < sc.TotalMessage){
+    //         sc.loadMore = true;
+    //     }else if(newValue >= sc.TotalMessage){
+    //         sc.loadMore = false;
+    //     }
+    // });
 
 	sc.loading = function(){
-	    sc.rows += 15;
-	    sc.searchChange();
+        if(sc.loadMore) {
+            sc.rows += 15;
+            sc.searchChange();
+        }
     }
 
     // sc.scrollTo = function(){
@@ -64,6 +65,7 @@ var SystemMsgController = function($scope,$rootScope,$http,$q,appConfig,$window,
         }),(function(data){
             sc.Load_Failed(data);
         })
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
 	}
 
 	sc.addMsg = function(){

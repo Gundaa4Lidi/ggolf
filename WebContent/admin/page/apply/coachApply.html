@@ -1,0 +1,153 @@
+<div ng-controller="CoachApplyController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content" >
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="搜索相关申请信息" ng-model="keyword" ng-change="load()">
+                </form>
+            </div>
+
+            <!--<div class="action-header__item action-header__add">-->
+            <!--<a href="" class="btn btn-danger btn-sm" ng-click="addFee()">新增配置</a>-->
+            <!--</div>-->
+        </div>
+
+        <div class="main__container" style="max-width: 1600px;">
+            <header class="main__title">
+                <h1 style="font-family: '黑体'">教练申请管理</h1>
+            </header>
+            <div class="row" >
+                <div class="col-md-2">
+                    <select ng-model="filterDay" class="form-control" ng-change="load()" style="background: white"
+                            ng-options="day.value as day.key for day in filterDays"></select>
+                </div>
+                <!--<div class="col-md-2">-->
+                    <!--<select class="form-control" ng-model="payment_method" style="background: white">-->
+                        <!--<option value="" selected="selected">支付方式</option>-->
+                        <!--<option value="全额支付">全额支付</option>-->
+                        <!--<option value="球场现付">球场现付</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-md-2">-->
+                    <!--<select class="form-control" ng-model="order_status" style="background: white">-->
+                        <!--<option value="" selected="selected">订单状态</option>-->
+                        <!--<option value="提交订单">提交订单</option>-->
+                        <!--<option value="确认球位">确认球位</option>-->
+                        <!--<option value="在线预订">在线预订</option>-->
+                        <!--<option value="预订完成">预订完成</option>-->
+                        <!--<option value="取消订单">取消订单</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="col-md-2">-->
+                    <!--<button class="btn btn-warning" ng-click="payment_method=''; order_status = '';filterDay='0'">清空筛选</button>-->
+                <!--</div>-->
+            </div>
+            <hr>
+
+            <div class="card">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="10%">用户头像</th>
+                        <th width="10%">用户名</th>
+                        <th width="7%">真实姓名</th>
+                        <th width="10%">联系电话</th>
+                        <th width="5%">性别</th>
+                        <th width="10%">出生日期</th>
+                        <th width="10%">所属学院</th>
+                        <th width="10%">入行日期</th>
+                        <th width="8%">审核状态</th>
+                        <th width="10%">申请日期</th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="coach in coachApplyList">
+                        <td width="10%">
+                            <img ng-src="{{coach.CoachHead}}" err-src="../img/user_empty.png"
+                                 class="img-circle border_3_s_c" width="80px" height="80px" alt="">
+                        </td>
+                        <td width="10%">{{coach.UserName}}</td>
+                        <td width="7%">{{coach.CoachName}}</td>
+                        <td width="10%">{{coach.CoachPhone}}</td>
+                        <td width="5%">{{coach.Sex}}</td>
+                        <td width="10%">
+                            <p>{{coach.Birthday}}</p>
+                            <p style="color: #00B0FF">年龄:{{GetAge(coach.Birthday)}}岁</p>
+                        </td>
+                        <td width="10%">{{coach.ClubName}}</td>
+                        <td width="10%">
+                            <p>{{coach.Seniority}}</p>
+                            <p style="color: #00B0FF">教龄:{{GetAge(coach.Seniority)}}年</p>
+                        </td>
+                        <td width="8%">
+                            <p ng-if="coach.Verify==0" style="color: orange">申请中</p>
+                            <p ng-if="coach.Verify==1" style="color: green;">审核通过</p>
+                            <p ng-if="coach.Verify==2" style="color: red;">审核拒绝</p>
+                        </td>
+                        <td width="10%">{{CurrentDT(coach.Created_TS)}}</td>
+                        <td width="10%">
+                            <button type="button" class="btn btn-success btn-xs"
+                                    href="#" ng-click="checkCoach(coach)">查看</button>
+                            <button type="button" ng-show="coach.Verify==0" class="btn btn-info btn-xs" ng-click="isVerify(coach)">审核</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="coach_detail" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentCoach.CoachHead}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <table class="table table-bordered table-hover table_wrap">
+                        <tr><th width="25%">用户名</th><td>{{currentCoach.UserName}}</td></tr>
+                        <tr><th width="25%">姓名</th><td>{{currentCoach.CoachName}}</td></tr>
+                        <tr><th width="25%">联系电话</th><td>{{currentCoach.CoachPhone}}</td></tr>
+                        <tr><th width="25%">出生日期</th>
+                            <td>
+                                <p>{{currentCoach.Birthday}}</p>
+                                <p style="color: #00B0FF">年龄:{{GetAge(currentCoach.Birthday)}}岁</p>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">性别</th><td>{{currentCoach.Sex}}</td></tr>
+                        <tr><th width="25%">所属俱乐部</th><td>{{currentCoach.ClubName}}</td></tr>
+                        <tr><th width="25%">入行日期</th>
+                            <td>
+                                <p>{{currentCoach.Seniority}}</p>
+                                <p style="color: #00B0FF">教龄:{{GetAge(currentCoach.Seniority)}}年</p>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">简介</th><td>{{currentCoach.Intro}}</td></tr>
+                        <tr><th width="25%">所获成就</th><td>{{currentCoach.ACHV}}</td></tr>
+                        <tr><th width="25%">教学成果</th><td>{{currentCoach.TeachACHV}}</td></tr>
+                    </table>
+                    <!--<div class="switch switch-large">-->
+                        <!--<input type="checkbox" checked />-->
+                    <!--</div>-->
+                    <div class="switch" data-on="primary" data-off="info">
+                        <!--<input bs-switch ng-model="isSelected" type="checkbox" switch-active="{{ isActive }}"-->
+                               <!--switch-readonly="{{ isReadonly }}" switch-size="{{ size }}"-->
+                               <!--switch-animate="{{ animate }}" switch-label="{{ label }}" switch-icon="{{ icon }}"-->
+                               <!--switch-on-text="{{ onLabel }}" switch-off-text="{{ offLabel }}"-->
+                               <!--switch-on-color="{{ on }}" switch-off-color="{{ off }}" switch-radio-off="{{ radioOff }}"-->
+                               <!--switch-label-width="{{ labelWidth }}" switch-handle-width="{{ handleWidth }}"-->
+                               <!--switch-inverse="{{ inverse }}" switch-change="onChange()" ng-true-value="'yep'"-->
+                               <!--ng-false-value="'nope'">-->
+                    </div>
+                </div>
+
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

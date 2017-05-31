@@ -20,6 +20,7 @@ public class CourseOrder {
 	private String StartDateTime;
 	private String Tel;
 	private String IsBatch;
+	private String IsTaught;
 	private String ServiceExplain;
 	private String Created_TS;
 	private String Updated_TS;
@@ -27,7 +28,7 @@ public class CourseOrder {
 	
 	public CourseOrder(String courseOrderID, String coachID, String coachName, String courseID, String courseTitle,
 			String userID, String userName, String state, String type, String teachingMethod, String classHour,
-			String downPayment, String startDateTime, String tel, String isBatch, String serviceExplain,
+			String downPayment, String startDateTime, String tel, String isBatch, String isTaught, String serviceExplain,
 			String created_TS, String updated_TS, Collection<com.galaxy.ggolf.dto.Activity> activity) {
 		CourseOrderID = courseOrderID;
 		CoachID = coachID;
@@ -44,6 +45,7 @@ public class CourseOrder {
 		StartDateTime = startDateTime;
 		Tel = tel;
 		IsBatch = isBatch;
+		IsTaught = isTaught;
 		ServiceExplain = serviceExplain;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
@@ -138,6 +140,12 @@ public class CourseOrder {
 	}
 	public void setIsBatch(String isBatch) {
 		IsBatch = isBatch;
+	}
+	public String getIsTaught() {
+		return IsTaught;
+	}
+	public void setIsTaught(String isTaught) {
+		IsTaught = isTaught;
 	}
 	public String getServiceExplain() {
 		return ServiceExplain;

@@ -37,7 +37,7 @@ public class MessageRowMapper implements RowMapper<Message> {
 		String Title = res.getString(COLUMN_Title);
 		String Details = res.getString(COLUMN_Details);
 		String photoList = res.getString(COLUMN_PhotoList);
-		Collection<String> PhotoList = new ListUtil().StringToList(photoList);
+		Collection<String> PhotoList = new ListUtil().StringToList(photoList,";");
 		String Video = res.getString(COLUMN_Video);
 		String Period = res.getString(COLUMN_Period);
 		String Status = res.getString(COLUMN_Status);

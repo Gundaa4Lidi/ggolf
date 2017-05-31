@@ -14,6 +14,7 @@ public class UserRowMapper implements RowMapper<User> {
 	public static final String COLUMN_Sex = "sex";
 	public static final String COLUMN_Password = "password";
 	public static final String COLUMN_Head_Portrait = "head_portrait";
+	public static final String COLUMN_IsCoach = "isCoach";
 	public static final String COLUMN_Longitude = "longitude";
 	public static final String COLUMN_Latitude = "latitude";
 	public static final String COLUMN_Wechat = "wechat";
@@ -31,12 +32,13 @@ public class UserRowMapper implements RowMapper<User> {
 		String sex = res.getString(COLUMN_Sex);
 		String password = res.getString(COLUMN_Password);
 		String head_portrait = res.getString(COLUMN_Head_Portrait);
+		String isCoach = res.getString(COLUMN_IsCoach);
 		String longitude = res.getString(COLUMN_Longitude);
 		String latitude = res.getString(COLUMN_Latitude);
 		String wechat = res.getString(COLUMN_Wechat);
 		String created_TS = res.getString(COLUMN_Created_TS);
 		String updated_TS = res.getString(COLUMN_Updated_TS);
-		return new User(userID, phone, name, age, sex, password, head_portrait,longitude,latitude,
+		return new User(userID, phone, name, age, sex, password, head_portrait,isCoach,longitude,latitude,
 				wechat, created_TS, updated_TS);
 	}
 

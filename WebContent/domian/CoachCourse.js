@@ -10,9 +10,12 @@ var CoachCourse = {
     "Valid":"",
     "IsOpen":"",
     "MaxPeople":"",
+    "IsBatch":"",
+    "ClassHour":"",
     "ContainExplain":"",
     "IsVideo":"",
     "Created_TS":"",
     "Updated_TS":"",
-    "courseVideo":{}
+    "courseVideo":{},
+    "courseTime":{}
 }

@@ -63,10 +63,10 @@ public class CourseOrderDAO extends GenericDAO<CourseOrder> {
 	public boolean updateOrderState(String CourseOrderID,String activity,String state,String state1,String payType){
 		String sqlString = "";
 		if(state.equals("3") && payType!=null){
-			sqlString +="Type='"+payType+"'";
+			sqlString +="Type='"+payType+"',IsTaught='0',";
 		}
 		String sql = "update `courseorder` set `Activity` = concat(`Activity`,'"+activity+"'),"
-				+ "Updated_TS='"+Time()+"', "+sqlString+" State = '"+state+"'"
+				+ "Updated_TS='"+Time()+"', "+sqlString+" State ='"+state+"'"
 				+"' where State = '"+state1+"' and CourseOrderID='"+CourseOrderID+"'";
 		return super.executeUpdate(sql);
 	}
@@ -131,7 +131,7 @@ public class CourseOrderDAO extends GenericDAO<CourseOrder> {
 	 */
 	public boolean cancel(String OrderID){
 		String sql = "update `courseorder` set Activity = concat(Activity,'"+Time()+",取消订单|'),Updated_TS='"+Time()+"',"
-				+ "State='0' where State != '3' and OrderID='"+OrderID+"'";
+				+ "State='0' where State!='3' and State!='0' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -143,8 +143,35 @@ public class CourseOrderDAO extends GenericDAO<CourseOrder> {
 	 */
 	public boolean cancelOrders(String dateTime)throws Exception{
 		String sql = "update `courseorder` set `Activity` = concat(`Activity`,'"+Time()+",下单30分钟没有付款取消订单|'),"
-				+ "Updated_TS='"+Time()+"',State = '0' where State != '3' and Created_TS<'"+dateTime+"'";
+				+ "Updated_TS='"+Time()+"',State='0' where State!='3' and State!='0' and Created_TS<'"+dateTime+"'";
 		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 修改订单为课程结束
+	 * @param dateTime
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean IsTaught(String dateTime)throws Exception{
+		String sql = "update `courseorder` set `Activity` = concat(`Activity`,'"+Time()+",课程结束|'),"
+				+ "Updated_TS='"+Time()+"',IsTaught='1' where State='3' and StartDateTime<'"+dateTime+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	public Collection<CourseOrder> getIsTaughtCoach(){
+		String sql = "select * from courseorder where DeletedFlag is null and IsTaught='1' and State='3' Group by CoachID";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 获取教练教过的学生人数
+	 * @param CoachID
+	 * @return
+	 */
+	public int getIsTaughtCount(String CoachID){
+		String sql = "select count(*) from courseOrder where DeletedFlag is null and IsTaught='1' and State='3' and CoachID='"+CoachID+"' Group by UserID";
+		return super.count(sql);
 	}
 
 }

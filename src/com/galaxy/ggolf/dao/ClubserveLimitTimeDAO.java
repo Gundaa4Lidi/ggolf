@@ -18,8 +18,8 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 	 */
 	public int getClubserveLimitTimeID(){
 		String[] s = new String[2];
-		s[0] = "insert into clubservelimittime(`Num`)values(NULL)";
-		s[1] = "select max(Num) as a  from clubservelimittime";
+		s[0] = "insert into clubservelimittimeid(`Num`)values(NULL)";
+		s[1] = "select max(Num) as a  from clubservelimittimeid";
 		return super.getId(s);
 	}
 	

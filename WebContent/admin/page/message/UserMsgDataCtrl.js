@@ -33,13 +33,13 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
     /**
      * 监听加载数量是否超出当前评论的数量
      */
-    sc.$watch('Rows',function(newValue){
-        if(newValue< sc.TotalComment){
-            sc.loadMore = true;
-        }else if(newValue >= sc.TotalComment){
-            sc.loadMore = false;
-        }
-    });
+    // sc.$watch('Rows',function(newValue){
+    //     if(newValue< sc.TotalComment){
+    //         sc.loadMore = true;
+    //     }else if(newValue >= sc.TotalComment){
+    //         sc.loadMore = false;
+    //     }
+    // });
     /**
      * 点击回复或添加评论弹出评论编辑器
      * @param e
@@ -130,7 +130,6 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
      * @param e
      */
     sc.getReplyList = function(index,e){
-        console.log(e)
         var url = appConfig.url + "Message/getReplyList";
         var method = 'GET';
         var params = {
@@ -170,6 +169,7 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
         }),function(data){
             sc.Load_Failed(data);
         }
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalComment);
 
     }
 

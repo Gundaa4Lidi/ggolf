@@ -12,6 +12,7 @@
 	    <constructor-arg ref="clubserveLimitTimeDAO"/>
 	    <constructor-arg ref="clubScoreDAO"/>
 	    <constructor-arg ref="clubTotalScoreDAO"/>
+	    <constructor-arg ref="otherDateDAO"/>
 	</bean>
 	<bean id="clubManager" class="com.galaxy.ggolf.manager.ClubManager">
 	    <constructor-arg ref="clubDAO"/>
@@ -55,5 +56,6 @@
 	</bean>
 	<bean id="clubTotalScoreDAO" class="com.galaxy.ggolf.dao.ClubTotalScoreDAO">
 	</bean>
-	
+	<bean id="otherDateDAO" class="com.galaxy.ggolf.dao.OtherDateDAO">
+	</bean>
 </beans>

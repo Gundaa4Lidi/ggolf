@@ -23,6 +23,18 @@ public class ClubDetail {
 	private Collection<String> MapImg;  //地图图片
 	private String Facility; //球场设施
 	
+	
+	
+	public ClubDetail(String clubID, String clubName, String totalHole, String totalStemNum, String phoneNum,
+			Collection<String> photoList) {
+		ClubID = clubID;
+		ClubName = clubName;
+		TotalHole = totalHole;
+		TotalStemNum = totalStemNum;
+		PhoneNum = phoneNum;
+		PhotoList = photoList;
+	}
+
 	public ClubDetail(String uID, String clubID, String clubName, String mode, String totalHole, String totalStemNum,
 			String phoneNum, String createTime, String stylist, String square, String length, String puttingSeed,
 			String fairwaySeed, String address, String intro, String updated_TS, Collection<String> photoList,

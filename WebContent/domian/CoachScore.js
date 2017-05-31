@@ -1,11 +1,8 @@
 var CoachScore = {
-    "UID;":"",
-    "CoachID;":"",
-    "Score;":"",
-    "TeachNo;":"",
-    "TeachLocation;":"",
-    "TeachCollege;":"",
-    "TeachAddress;":"",
-    "Created_TS;":"",
-    "Updated_TS;":""
+    "UID":"",
+    "CoachID":"",
+    "Score":"",
+    "TeachNo":"",
+    "Created_TS":"",
+    "Updated_TS":""
 }

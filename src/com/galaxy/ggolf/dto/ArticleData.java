@@ -5,17 +5,17 @@ import java.util.Collection;
 import com.galaxy.ggolf.domain.Article;
 
 public class ArticleData {
-	private int Count;
+	private int count;
 	private Collection<Article> articles;
 	public ArticleData(int count, Collection<Article> articles) {
-		Count = count;
+		this.count = count;
 		this.articles = articles;
 	}
 	public int getCount() {
-		return Count;
+		return count;
 	}
 	public void setCount(int count) {
-		Count = count;
+		this.count = count;
 	}
 	public Collection<Article> getArticles() {
 		return articles;
@@ -23,6 +23,8 @@ public class ArticleData {
 	public void setArticles(Collection<Article> articles) {
 		this.articles = articles;
 	}
+	
+	
 	
 	
 }

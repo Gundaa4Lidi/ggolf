@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+    <bean id="commentService" class="com.galaxy.ggolf.rest.CommentService">
+	    <constructor-arg ref="commentManager"/>
+	</bean>
+    
+    <bean id="commentManager" class="com.galaxy.ggolf.manager.CommentManager">
+	    <constructor-arg ref="commentDAO"/>
+	    <constructor-arg ref="likeDAO"/>
+	    <constructor-arg ref="clubDAO"/>
+	    <constructor-arg ref="articleDAO"/>
+	    <constructor-arg ref="messageDAO"/>
+	    <constructor-arg ref="userDAO"/>
+	    <constructor-arg ref="coachDAO"/>
+	    <constructor-arg ref="coachScoreDAO"/>
+	</bean>
+	<bean id="clubDAO" class="com.galaxy.ggolf.dao.ClubDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
+	</bean>
+	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
+    <bean id="articleDAO" class="com.galaxy.ggolf.dao.ArticleDAO">
+	</bean>
+	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
+	</bean>
+	<bean id="coachScoreDAO" class="com.galaxy.ggolf.dao.CoachScoreDAO">
+	</bean>
+</beans>

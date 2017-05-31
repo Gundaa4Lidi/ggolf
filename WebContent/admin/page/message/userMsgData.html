@@ -1,4 +1,5 @@
 <div ng-controller="UserMsgDataController" ng-init="load()">
+    <div page-loader is-loading="true"></div>
     <section id="main__content">
         <div class="action-header-alt">
             <a href="" class="top-nav__back" style="top:10px;" ng-click="back()" title="返回"></a>
@@ -26,8 +27,24 @@
 
                     <div class="questions-answers__attrs">
                         <a href=""><i class="zmdi zmdi-account"></i>{{UserMsgData.SenderName}}</a>
-                        <span><i class="zmdi zmdi-calendar"></i> {{UserMsgData.Created_TS.substring(0,19)}}</span>
-
+                        <span><i class="zmdi zmdi-calendar"></i> {{CurrentDT(UserMsgData.Created_TS)}}</span>
+                        <div class="row">
+                            <div class="col-sm-4" ng-if="UserMsgData.PhotoList.length == 1">
+                                <a href="{{photo}}" lightgallery ng-repeat="photo in UserMsgData.PhotoList">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="">
+                                </a>
+                            </div>
+                            <div class="col-sm-4" ng-if="UserMsgData.PhotoList.length == 4">
+                                <a href="{{photo}}" lightgallery ng-repeat="photo in UserMsgData.PhotoList">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="160px" width="160px">
+                                </a>
+                            </div>
+                            <div class="col-sm-6" ng-if="UserMsgData.PhotoList.length > 1 && UserMsgData.PhotoList.length != 4">
+                                <a href="{{photo}}" lightgallery ng-repeat="photo in UserMsgData.PhotoList">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="160px" width="160px">
+                                </a>
+                            </div>
+                        </div>
                         <!--<div class="actions questions-answers__actions">-->
                             <!--<div class="actions__toggle">-->
                                 <!--<input type="checkbox" checked>-->
@@ -72,7 +89,7 @@
                     </div>
                     <div class="media-body list-group__text">
                         <strong>{{comment.UserName}}</strong>
-                        <small>{{comment.Created_TS.substring(0,19)}}</small>
+                        <small>{{CurrentDT(comment.Created_TS)}}</small>
                         <p class="m-t-15 f-18">{{comment.Memo}}</p>
 
                         <div class="actions actions--blog-comment dropdown">
@@ -94,7 +111,7 @@
                                 </span>
                             </p>
                             <div class="f-12">
-                                <small>{{sub.Created_TS.substring(0,19)}}</small>
+                                <small>{{CurrentDT(sub.Created_TS)}}</small>
                                 <a href="#" ng-click="Reply($parent.$index,sub)"><i class="fa fa-commenting-o fa-fw" aria-hidden="true"></i>回复</a>
                                 <a href="#" id="removeSub" ng-if="sub.UserID === criticsID" ng-click="remove(sub)">删除</a>
                             </div>
@@ -134,35 +151,35 @@
     </section>
 
     <!-- Flag question modal -->
-    <div class="modal fade note-view" id="flag-question" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Flag this question</h4>
-                </div>
+    <!--<div class="modal fade note-view" id="flag-question" data-backdrop="static" data-keyboard="false">-->
+        <!--<div class="modal-dialog modal-sm">-->
+            <!--<div class="modal-content">-->
+                <!--<div class="modal-header">-->
+                    <!--<h4 class="modal-title">Flag this question</h4>-->
+                <!--</div>-->
 
-                <div class="modal-body">
-                    <div class="form-group">
-                        <select class="select2">
-                            <option>Select Reason</option>
-                            <option>Option 2</option>
-                            <option>Option 3</option>
-                            <option>Option 4</option>
-                            <option>Option 5</option>
-                        </select>
-                    </div>
+                <!--<div class="modal-body">-->
+                    <!--<div class="form-group">-->
+                        <!--<select class="select2">-->
+                            <!--<option>Select Reason</option>-->
+                            <!--<option>Option 2</option>-->
+                            <!--<option>Option 3</option>-->
+                            <!--<option>Option 4</option>-->
+                            <!--<option>Option 5</option>-->
+                        <!--</select>-->
+                    <!--</div>-->
 
-                    <div class="form-group">
-                        <textarea class="form-control textarea-autoheight" placeholder="Message..."></textarea>
-                        <i class="form-group__bar"></i>
-                    </div>
-                </div>
+                    <!--<div class="form-group">-->
+                        <!--<textarea class="form-control textarea-autoheight" placeholder="Message..."></textarea>-->
+                        <!--<i class="form-group__bar"></i>-->
+                    <!--</div>-->
+                <!--</div>-->
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>
-                    <button type="button" class="btn btn-link">Report</button>
-                </div>
-            </div>
-        </div>
-    </div>
+                <!--<div class="modal-footer">-->
+                    <!--<button type="button" class="btn btn-link" data-dismiss="modal">Dismiss</button>-->
+                    <!--<button type="button" class="btn btn-link">Report</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
 </div>

@@ -2,19 +2,18 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	var sc = $scope;
 	var ArticlePageCtrl = sc.$parent;
 
-    sc.Articles = null;
-	sc.Categories = null;
-	sc.articleTypes = null;
-	sc.currentCategory = null;
-	sc.currentType = null;
-	sc.currentSubject = null;
-	sc.currentArticle = null;
-	sc.coverImage = null;
-	sc.recycles = null;
-	sc.TypeTitle = null;
+    sc.Articles = new Object();
+	sc.Categories = new Object();
+	sc.articleTypes = new Object();
+	sc.currentCategory = new Object();
+	sc.currentType = new Object();
+	sc.currentSubject = new Object();
+	sc.currentArticle = new Object();
+	sc.coverImage = new Object();
+	sc.recycles = new Object();
+	sc.TypeTitle = new Object();
 //	sc.currrentType.TypeKey = "文章";
-	sc.coverCroppedImage = null;
-	sc.TotalArticle = 0;
+	sc.coverCroppedImage = new Object();
 	sc.SubOrNot = '0';
 	sc.open_add = false;
 	sc.selects = [
@@ -22,6 +21,38 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
       {type: "图片",id: "2"},
       {type: "视频",id: "3"}
 	]
+
+    sc.searchClean = function () {
+        sc.currentType = new Object();
+        sc.currentSubject = new Object();
+        sc.getSearch();
+        sc.load();
+    }
+
+	sc.status = {
+		indexC : 0,
+		indexT : 0
+	}
+
+    sc.rows = 10;
+    sc.Rows = 0;
+    sc.loadMore = false;
+    sc.TotalArticle = 0;
+
+    sc.loading = function(){
+        if(sc.loadMore) {
+            sc.rows += 30;
+            sc.getSearch();
+        }
+    }
+
+    // sc.$watch('Rows',function(newValue){
+    //     if(newValue < sc.TotalArticle){
+    //         sc.loadMore = true;
+    //     }else if(newValue >= sc.TotalArticle){
+    //         sc.loadMore = false;
+    //     }
+    // })
 	
 	sc.selectSub = function(sub){
 		if(sub=='0'){
@@ -35,22 +66,9 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 		sc.currentType.TypeKey = key;
 	}
 	
-    // sc.config = {
-    //     height: '300px',
-    //     filterMode: false,
-    //     items: ['source', '|', 'undo', 'redo', '|', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull', '|', 'insertorderedlist', 'insertunorderedlist', '|',
-    //     'fontname', 'fontsize', 'forecolor', 'hilitecolor', 'bold', 'italic', 'underline', '|', 'table', '|', 'image']
-    // }
-	
-
 	sc.load = function() {
-		var promise = sc.getArticle();
-		promise.then(function(data){
-			/*console.log(data)*/
-			sc.Categories = data;
-		}),(function(data){
-            sc.Load_Failed(data);
-		})
+        sc.getArticleTree();
+        // sc.getSearch();
 	
 	}
     sc.addCategory = function(e){
@@ -70,52 +88,49 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 
     sc.addArticle = function(){
         sc.currentArticle = new Object();
-        sc.test();
+        sc.currentArticle.Video = "";
+        var type = sc.currentType;
+        if(type.TypeKey == '文章'){
+        	$('#new-note').modal('show');
+		}
+		if(type.TypeKey == '图片'){
+            $('#new-photo').modal('show');
+        }
+        if(type.TypeKey == '视频'){
+            $('#new-note').modal('show');
+        }
     }
-    sc.test = function(){
-    	var url = appConfig.url + 'Score/create';
-    	var method = 'POST';
-    	var params = {
-			standardScores : '1',
-			score : '1',
-			userId:'2',
-			playGroundName:'dfdf',
-			playerName:'fdf'
-    	}
-    	var promise = sc.httpParams(url,method,params);
-    	promise.then(function (data) {
-    		console.log(data);
-            sc.processResult(data);
-        }),function(data){
-    		sc.Load_Failed(data);
-    	}
-    }
-    
+
+
 
     sc.editArticle = function(e){
-        sc.currentArticle = e;
+        sc.currentArticle = angular.copy(e);
+        sc.setVideo(e.Video);
     }
 
-    sc.check = function(e){
-        sc.currentCategory = e;
+    sc.check = function(e,index){
+        sc.currentCategory = angular.copy(e);
+        sc.status.indexC = index;
     }
-    sc.check2 = function(e){
+    sc.check2 = function(e,indexC,indexT){
+        sc.currentType = new Object();
+        sc.currentSubject = new Object();
+    	sc.status.indexC = indexC;
+    	sc.status.indexT = indexT;
         if(sc.currentCategory.SubOrNot == '1'){//是专题的话,点击文集类别,不能新建文章
             sc.open_add = false;
             sc.TotalArticle = 0;
-            sc.currentType = new Object();
         }else{//不是专题的话,当前专题为null,用于新建文章时,不混淆专题
             sc.open_add = true;
-            sc.currentSubject = null;
         }
-        sc.TypeTitle = e.TypeName
-        sc.currentType = new Object();
         sc.currentType = angular.copy(e);
-		sc.getArticleByTypeID();
+        sc.getSearch();
+        // sc.getArticleByTypeID();
     }
 
+
     sc.check3 = function(e){
-        sc.currentArticle = e;
+        sc.currentArticle = angular.copy(e);
     }
 
     //跳转到文章内容
@@ -126,14 +141,114 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 
     sc.checkSub = function(e){
     	sc.open_add = true;
-        sc.currentSubject = e;
-        sc.getArticleBySubjectID();
+        sc.currentSubject = angular.copy(e);
+        sc.getSearch();
+    }
+
+    /**
+	 * 刷新文集类别
+     * @param CategoryID
+     * @param index
+     */
+    sc.getTypeByCategoryID = function (CategoryID,index) {
+		var url = appConfig.url + 'Article/getTypeByCategoryID';
+        var method = 'GET';
+        var params = {
+            CategoryID : CategoryID,
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            if(data.status != "Error"){
+				sc.Categories[index].articleType = data;
+            }
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+    }
+
+    /**
+	 * 刷新专题
+     * @param TypeID
+     * @param indexC
+     * @param indexT
+     */
+    sc.getSubjectByTypeID = function (TypeID,indexC,indexT) {
+        var url = appConfig.url + 'Article/getSubjectByTypeID';
+        var method = 'GET';
+        var params = {
+            TypeID : TypeID,
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            if(data.status != "Error"){
+                sc.Categories[indexC].articleType[indexT].articleSubject = data;
+            }
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+    }
+    sc.IsRelease = [
+        {key:"全部",id:"0"},
+        {key:"已发布文章",id:"1"}
+    ]
+
+    sc.isRelease = sc.IsRelease[0].id;
+
+    sc.relSelectOpt = {
+        width : "130",
+    }
+
+    // sc.pageOptions = {
+    //     currentPage : 1,
+    //     itemsPerPage : 5,
+    //     onChange:function () {
+    //         sc.getSearch()
+    //     }
+    // }
+
+
+    sc.getSearch = function () {
+        var typeId = null;
+        var subjectId = null;
+        var at = sc.currentType;
+        var as = sc.currentSubject;
+        if(at.TypeID!=null){
+            typeId = at.TypeID;
+        }
+        if(as.SubjectID!=null){
+            subjectId = as.SubjectID;
+            typeId = null;
+        }
+        var url = appConfig.url + 'Article/getSearch';
+        var method = 'GET';
+        var params = {
+            IsRelease : sc.isRelease,
+            TypeID : typeId,
+            SubjectID : subjectId,
+            keyword : sc.keyword,
+            rows : sc.rows
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.Articles = data.articles;
+            sc.TotalArticle = data.count;
+            sc.Rows = sc.rows;
+            // sc.pageOptions.totalItems = data.count;
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalArticle);
     }
 
 
 	sc.getArticleByTypeID = function(){
 		var at = sc.currentType
-		var ReleaseOrAll = "all";
+        var ReleaseOrAll = "";
+        if(sc.isRelease=='0'){
+            ReleaseOrAll = "all";
+        }else if(sc.isRelease=='1'){
+            ReleaseOrAll = "release";
+        }
 		var url = appConfig.url + 'Article/getArticleByTypeID';
 		var method = 'GET';
 		var params = {
@@ -143,13 +258,8 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 		}
 		var promise = sc.httpParams(url,method,params);
 		promise.then(function (data) {
-            if(data.status == "Error"){
-                sc.TotalArticle = 0;
-                sc.Articles = new Object();
-            }else{
-                sc.Articles = data;
-                sc.TotalArticle = data.length;
-            }
+            sc.Articles = data.articles;
+            sc.TotalArticle = data.count;
         }),function (data) {
 			sc.Load_Failed(data);
         }
@@ -157,46 +267,38 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	
 	sc.getArticleBySubjectID = function(){
 		var as = sc.currentSubject;
-		var ReleaseOrAll = "all";
-		$http({
-			url: '/GGolfz/rest/Article/getArticleBySubjectID',
-			method: 'GET',
-			params:{
-				ReleaseOrAll:ReleaseOrAll,
-				SubjectID:as.SubjectID
-			}
-		}).then(function(response){
-			/*console.log(response.data)*/
-			var data = response.data;
-			if(data.status == "Error"){
-				sc.TotalArticle = 0;
-                sc.Articles = new Object();
-			}else{
-				sc.Articles = data;
-				sc.TotalArticle = data.length;
-			}
-		},function(response){
-			sc.errorResult(response);
-		})
+        var ReleaseOrAll = "";
+        if(sc.isRelease=='0'){
+            ReleaseOrAll = "all";
+        }else if(sc.isRelease=='1'){
+            ReleaseOrAll = "release";
+        }
+        var url = appConfig.url + 'Article/getArticleBySubjectID';
+        var method = 'GET';
+        var params = {
+            ReleaseOrAll:ReleaseOrAll,
+            SubjectID:as.SubjectID
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.Articles = data.articles;
+            sc.TotalArticle = data.count;
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
 	}
+
+
 	
-	sc.getArticle = function(){
-		var ReleaseOrAll = "all";
-		var dfd = $q.defer();
-		$http({
-			url: '/GGolfz/rest/Article/getArticle?&ReleaseOrAll='+ReleaseOrAll,
-			method: 'GET'
-		}).then(
-			function(response){
-				console.log(response.data)
-				dfd.resolve(response.data);
-			},
-			function(response) {
-				sc.errorResult(response)
-				dfd.reject(response)
-			}
-		)
-		return dfd.promise; 
+	sc.getArticleTree = function(){
+        var url = appConfig.url + 'Article/getTree';
+        var method = 'GET';
+        var promise = sc.httpParams(url,method);
+        promise.then(function(data){
+            sc.Categories = data;
+        }),(function(data){
+            sc.Load_Failed(data);
+        })
 	}
 	
 	sc.saveType = function(){
@@ -213,7 +315,10 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 			var promise = sc.httpDataUrl(url,method,data);
 			promise.then(function (data) {
 				sc.processResult(data);
-				sc.load()
+                if(data.status != 'Error'){
+                    $("#edit_type").modal("hide");
+                    sc.getTypeByCategoryID(cd.CategoryID,sc.status.indexC);//刷新文集类别
+                }
             })
 		}
 	}
@@ -233,7 +338,10 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
             var promise = sc.httpDataUrl(url,method,data);
             promise.then(function(data){
             	sc.processResult(data);
-            	sc.load();
+            	if(data.status != 'Error'){
+					$("#edit_subject").modal("hide");
+                    sc.getSubjectByTypeID(td.TypeID,sc.status.indexC,sc.status.indexT);//刷新专题
+                }
 			}),function(data){
             	sc.Load_Failed(data);
 			}
@@ -242,7 +350,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	
 	sc.saveCategory = function(CategoryName){
 		if(CategoryName){
-			sc.currentCategory.CategoryName = CategoryName
+			sc.currentCategory.CategoryName = angular.copy(CategoryName)
 			sc.currentCategory.SubOrNot = sc.SubOrNot;
 			var url = appConfig.url + 'Article/saveArticleCategory';
 			var method = 'POST';
@@ -250,6 +358,10 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 			var promise = sc.httpDataUrl(url,method,data);
 			promise.then(function (data) {
                 sc.processResult(data);
+                if(data.status != 'Error'){
+					$("#edit_Category").modal("hide");
+                    sc.load();
+                }
             })
 		}else{
 			swal("请输入文集名","","warning");
@@ -263,9 +375,12 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 			swal("请选择文章封面!","","warning");
 		}else if(!sc.currentArticle.Content){
 			swal("请填写文章简介!","","warning");
+        }else if(sc.currentType.TypeKey=='视频'&&!sc.currentArticle.Video){
+            swal("请上传视频!","","warning");
 		}else{
-			if(sc.currentSubject==null){
-                var td = sc.currentType;
+            var td = sc.currentType;
+            sc.currentArticle.TypeKey = td.TypeKey;
+            if(sc.currentSubject==null){
                 sc.currentArticle.CategoryID =td.CategoryID;
                 sc.currentArticle.TypeID = td.TypeID;
                 sc.currentArticle.TypeName = td.TypeName;
@@ -274,9 +389,11 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
                 var data = sc.currentArticle;
                 var promise = sc.httpDataUrl(url,method,data);
                 promise.then(function(data){
-                    $("#new-note").modal("hide");
                     sc.processResult(data);
-                    sc.getArticleByTypeID();
+                    if(data.status != 'Error'){
+                        $("#new-note").modal("hide");
+                        sc.getSearch();
+                    }
 				}),function(data){
                 	sc.Load_Failed(data);
 				}
@@ -286,15 +403,18 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
                 sc.currentArticle.TypeID = sub.TypeID;
                 sc.currentArticle.TypeName = sub.Attr;
                 sc.currentArticle.SubjectID = sub.SubjectID;
+                sc.currentArticle.SubjectName = sub.SubjectName;
 				var url = appConfig.url + 'Article/saveArticle';
 				var method = 'POST';
 				var data = sc.currentArticle;
 				var promise = sc.httpDataUrl(url,method,data);
 				promise.then(function(data){
 					console.log(data)
-                    $("#new-note").modal("hide");
 					sc.processResult(data);
-					sc.getArticleBySubjectID();
+                    if(data.status != 'Error'){
+                        $("#new-note").modal("hide");
+                        sc.getSearch();
+                    }
 				}),function(data){
 					sc.Load_Failed(data);
 				}
@@ -303,14 +423,10 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	}
 	
 	sc.getRecycle_bin = function(){
-		var dfd = $q.defer();
-		$http({
-			url: '/GGolfz/rest/Article/getbyRemove',
-			method: 'GET'
-		}).then(function(response){
-			dfd.resolve(response.data);
-			/*console.log(response)*/
-			var data = response.data;
+        var url = appConfig.url + 'Article/getbyRemove';
+        var method = 'GET';
+        var promise = sc.httpParams(url,method);
+        promise.then(function(data){
             if(data.status == "Error"){
                 sc.TotalRecycle= 0;
                 sc.recycles = new Object();
@@ -318,37 +434,34 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
                 sc.recycles = data;
                 sc.TotalRecycle = data.length;
             }
-		},function(response){
-			sc.errorResult(response)
-			dfd.reject(response)
-		})
-		return dfd.promise;
+        }),function(data){
+            sc.Load_Failed(data);
+        }
 	}
 	//还原文章
 	sc.restore = function(art){
 		var id = art.ArticleID;
-		var dfd = $q.defer();
-		$http({
-			url: '/GGolfz/rest/Article/restoreArticle?ArticleID='+id,
-			method: 'POST'
-		}).then(function(response){
-			dfd.resolve(response.data);
-			sc.processResult(response.data);
-			sc.getRecycle_bin();
-			if(art.SubjectID){
-                sc.getArticleBySubjectID();
-            }else{
-                sc.getArticleByTypeID();
-            }
-		},function(response){
-			sc.errorResult(response)
-			dfd.reject(response)
-		})
-		return dfd.promise;
+		var url = appConfig.url + 'Article/restoreArticle';
+		var method = 'POST';
+		var params = {
+			ArticleID : id
+		}
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.processResult(data);
+            sc.getRecycle_bin();
+            sc.getSearch();
+            // if(art.SubjectID){
+            //     sc.getArticleBySubjectID();
+            // }else{
+            //     sc.getArticleByTypeID();
+            // }
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
 	}
 	//彻底删除文章
 	sc.deleteArticle = function(id){
-		var dfd = $q.defer();
         swal({
             title : "确认清除此文章?",
             text : "清除后将无法恢复!",
@@ -359,18 +472,20 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
             cancelButtonText : "取消",
             closeOnConfirm : false
         }, function() {
-            $http({
-                url: '/GGolfz/rest/Article/deleteArticle?ArticleID='+id,
-                method: 'POST'
-            }).then(function(response){
-                dfd.resolve(response.data);
-                sc.processResult(response.data);
-                sc.getRecycle_bin();
-            },function(response){
-                sc.errorResult(response)
-                dfd.reject(response)
-            })
-            return dfd.promise;
+            var url = appConfig.url + 'Article/deleteArticle';
+            var method = 'POST';
+            var params = {
+                ArticleID : id
+            }
+            var promise = sc.httpParams(url,method,params);
+            promise.then(function (data) {
+                sc.processResult(data);
+                if(data.status != 'Error'){
+                    sc.getRecycle_bin();
+                }
+            }),function (data) {
+                sc.Load_Failed(data);
+            }
 
         });
 	}
@@ -411,9 +526,20 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 		sc.removeAlert(removeObj)
 		
 	}
-	
 
-	
+    // sc.selectImg = function (index) {
+    //     $timeout.cancel(sc.timeout);
+    //     sc.timeout = $timeout(function () {
+    //         sc.active = index;
+    //     },200);
+    //
+    // }
+    //
+    // sc.deleteImg = function(index){
+    //     sc.PhotoList.splice(index,1);
+    // }
+    //
+    // sc.callbackFile = "";
 	
 	sc.upload = function (files) {
         if (files && files.length) {
@@ -426,20 +552,55 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
                 }).progress(function (evt) {
                     var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                     console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-                }).success(function (data, status, headers, config) {
+                }).success(function (data) {
                 	sc.currentArticle.Cover = data;
-                }).error(function (data, status, headers, config) {
-                	// console.log(data,status,headers,config)
-                	alert('上传失败');
-                    // console.log('error status: ' + status);
+					// sc.callbackFile = data;
+                }).error(function (data) {
+                    swal("上传失败",data,"error");
                 })
             }
         }
     };
+
+	sc.videoSize = 0;
+	sc.videoProgress = 0;
+    sc.barTypes = ['success', 'info', 'warning', 'danger'];
+	sc.uploadVideo = function (files) {
+        if (files && files.length) {
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var fileExt = file.name.substring(file.name.lastIndexOf(".")+1).toLowerCase();//获得文件后缀名
+                console.log(fileExt)
+                //rm,rmvb,avi,mp4,3gp
+                if(fileExt!='rm' && fileExt!='rmvb' && fileExt!='avi' && fileExt!='mp4' && fileExt!='3gp'){
+                    swal("请选择视频格式文件上传(rm,rmvb,avi,mp4,3gp等)","","warning");
+                }else{
+                    Upload.upload({
+                        url: '/GGolfz/rest/file/upload',
+                        file: file
+                    }).progress(function (evt) {
+                        sc.videoSize = parseFloat(evt.total / (1024 * 1024)).toFixed(2);
+                        sc.videoProgress = parseFloat(evt.loaded / (1024 * 1024)).toFixed(2);
+                        if(sc.videoProgress < 100){
+                            sc.barType = sc.barTypes[1];
+                        }
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                    }).success(function (data) {
+                        sc.barType = sc.barTypes[0];
+                        sc.currentArticle.Video = data;
+                        sc.setVideo(data);
+                    }).error(function (data) {
+                        sc.barType = sc.barTypes[3];
+                        swal("上传失败",data,"error");
+                    })
+
+                }
+            }
+        }
+    }
     
     sc.removeAlert = function(removeObj){
-    	var dfd = $q.defer();
-    	/*console.log(removeObj)*/
 		swal({
 			title : ""+removeObj.Title+"",
 			text : ""+removeObj.Text+"",
@@ -450,40 +611,64 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 			cancelButtonText : "取消",
 			closeOnConfirm : false
 		}, function() {
-			$http({
-				url:'/GGolfz/rest/Article/remove',
-				method:'POST',
-				params:{
-					CategoryID:removeObj.CD,
-					TypeID:removeObj.TD,
-					SubjectID:removeObj.SD,
-					ArticleID:removeObj.AD,
-				}
-			}).then(function(response){
-				dfd.resolve(response.data);
-				sc.processResult(response.data);
-				if(removeObj.CD,removeObj.TD,removeObj.AD){
-					sc.getArticleByTypeID();
-				}else{
-					sc.load();
-				}
-			},function(response){
-				sc.errorResult(response)
-				dfd.reject(response)
-			})
+            var url = appConfig.url + 'Article/remove';
+            var method = 'POST';
+            var params = {
+                CategoryID:removeObj.CD,
+                TypeID:removeObj.TD,
+                SubjectID:removeObj.SD,
+                ArticleID:removeObj.AD,
+            }
+            var promise = sc.httpParams(url,method,params);
+            promise.then(function (data) {
+                sc.processResult(data);
+                if(removeObj.CD,removeObj.TD,removeObj.AD){
+                    sc.getSearch();
+                }else{
+                    sc.load();
+                }
+            }),function (data) {
+                sc.Load_Failed(data);
+            }
+
 		});
 	}
     
-	var handleFileSelect = function (evt) {
-	        var file = evt.currentTarget.files[0];
-	        var reader = new FileReader();
-	        reader.onload = function (evt) {
-	        	sc.$apply(function ($scope) {
-	        		sc.coverImage = evt.target.result;
-	            });
-	        };
-	        reader.readAsDataURL(file);
-    };
-    angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
-	
+    // var handleFileSelect = function (evt) {
+	 //        var file = evt.currentTarget.files[0];
+	 //        var reader = new FileReader();
+	 //        reader.onload = function (evt) {
+	 //        	sc.$apply(function ($scope) {
+	 //        		sc.coverImage = evt.target.result;
+	 //            });
+	 //        };
+	 //        reader.readAsDataURL(file);
+    // };
+    // angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
+
+
+
+    sc.videoTemplate =
+        '<div>' +
+            '<span class="fr-video fr-fvc fr-draggable fr-dvb fr-active"' +
+                ' contenteditable="false" draggable="true">' +
+                '<iframe height="240" width="360"' +
+                    ' src="http://player.youku.com/embed/XMjc1MTU1NDE5Ng==" frameborder="0">' +
+                '</iframe>' +
+            '</span>' +
+        '</div>';
+
+    sc.myVideo = null;
+
+    sc.setVideo = function (video) {
+        sc.myVideo =
+            '<div>' +
+            '   <span class="fr-video fr-draggable fr-dvb" contenteditable="false" draggable="true">' +
+            '       <video class="fr-draggable fr-fic fr-dii" controls="" height="240" src="'+video+'"' +
+            '        style="background: black;"width="360">' +
+            '       </video>' +
+            '   </span>' +
+            '</div>';
+    }
+
 }

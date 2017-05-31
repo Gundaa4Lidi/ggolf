@@ -3,6 +3,7 @@ package com.galaxy.ggolf.rest;
 import java.io.File;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 
 import javax.ws.rs.Consumes;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Staff;
+import com.galaxy.ggolf.dto.StaffData;
 import com.galaxy.ggolf.dto.StaffSessionData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.StaffManager;
@@ -191,7 +193,41 @@ public class StaffService extends BaseService{
 	
 	@GET
 	@Path("/GetAll")
-	public String GetAll(@Context HttpHeaders headers) {
-		return getResponse(this.manager.getAll());
+	public String GetAll(
+			@FormParam("keyword") String keyword,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers) {
+		try {
+			String sqlString = search(keyword);
+			Collection<Staff> data = this.manager.getAll(sqlString, rows, pageNum);
+			int count = this.manager.getCount(sqlString);
+			StaffData staffData = new StaffData(count,data);
+			return getResponse(staffData);
+		} catch (Exception ex) {
+			logger.error("Error occured", ex);
+			return getErrorResponse();
+		}
+		
+	}
+	
+	//搜索关键字
+	public String search(String keyword){
+		String sqlString = "";
+		if(keyword!=null&&!keyword.equals("")&&!keyword.equalsIgnoreCase("null")){
+			sqlString = "and (StaffName like '%"
+					+ keyword
+					+ "%' or Phone like '%"
+					+ keyword
+					+ "%' or StaffID like '%"
+					+ keyword 
+					+ "%' or Position like '%"
+					+ keyword 
+					+ "%' or WorkPlace like '%"
+					+ keyword 
+					+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
+					+ keyword +"%') ";
+		}
+		return sqlString;
 	}
 }

@@ -26,6 +26,16 @@ public class CollectDAO extends GenericDAO<Collect> {
 		return null;
  	}
 	
+	public Collection<Collect> getUserCollect(String UserID,String sqlString){
+		String sql = "select * from collect where UserID='"+UserID+"' "+sqlString+" and Status='1'";
+		return super.executeQuery(sql);
+	}
+	
+	public int getUserCollectCount(String UserID,String sqlString){
+		String sql = "select count(*) from collect where UserID='"+UserID+"' "+sqlString+" and Status='1'";
+		return super.count(sql);
+	}
+	
 	public boolean update(String UID,String Status){
 		String sql = "update set collect Status='"+Status+"' where UID='"+UID+"'";
 		return super.executeUpdate(sql);

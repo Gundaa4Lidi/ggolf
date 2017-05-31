@@ -3,36 +3,59 @@ var ArticleDataController = function($scope,appConfig,Upload){
     var ArticlePageCtrl = sc.$parent;
     sc.editor = false;
     sc.ArticleData = angular.copy(ArticlePageCtrl.ArticleData);
+    // console.log(sc.ArticleData);
     sc.load = function () {
-        var url = appConfig.url + 'Article/getArticleContent';
-        var method = 'GET';
-        var params = {
-            ArticleID : sc.ArticleData.ArticleID
-        }
-        var promise = sc.httpParams(url,method,params);
-        promise.then(function (data) {
-            if(data){
-                if(data.Content!=""){
-                    sc.articleHtml = data.Content;
-                }
-            }else{
-                sc.articleHtml = '<div>' +
-                                    '<h1 style="text-align: center;">' +
-                                        '<strong><span style="color: rgb(0, 0, 0);">'+sc.ArticleData.Title+'</span>' +
-                                        '</strong>' +
-                                    '</h1>' +
-                                    '<p> <br> </p> ' +
-                                    '<p><img src="'+sc.ArticleData.Cover+'" style="min-width: 500px;" class="fr-fic fr-dib" alt=""></p>' +
-                                    '<p style="text-align: center;">'+sc.ArticleData.Content+'</p>'+
-                                '</div>';
+        if(sc.ArticleData.TypeKey == '视频'){
+            videoContent();
+        } else {
+            var url = appConfig.url + 'Article/getArticleContent';
+            var method = 'GET';
+            var params = {
+                ArticleID : sc.ArticleData.ArticleID
             }
-        }),function(data){
-            sc.Load_Failed(data);
+            var promise = sc.httpParams(url,method,params);
+            promise.then(function (data) {
+                if(data){
+                    if(data.Content!=""){
+                        sc.articleHtml = data.Content;
+                    }
+                }else{
+                    sc.articleHtml =
+                        '<div>' +
+                        '   <h1 style="text-align: center;">' +
+                        '       <strong><span style="color: rgb(0, 0, 0);">'+sc.ArticleData.Title+'</span>' +
+                        '       </strong>' +
+                        '   </h1>' +
+                        '   <p> <br> </p> ' +
+                        '   <p><img src="'+sc.ArticleData.Cover+'" style="min-width: 500px;" class="fr-fic fr-dib" alt=""></p>' +
+                        '   <p style="text-align: center;">'+sc.ArticleData.Content+'</p>'+
+                        '</div>';
+                }
+            }),function(data){
+                sc.Load_Failed(data);
+            }
+
         }
     }
 
     sc.editData = function(){
         sc.editor = !sc.editor;
+    }
+
+    var videoContent = function () {
+        sc.articleHtml =
+            '<div>' +
+            '   <h1 style="text-align: center;">' +
+            '       <strong><span style="color: rgb(0, 0, 0);">'+sc.ArticleData.Title+'</span>' +
+            '       </strong>' +
+            '   </h1>' +
+            '   <span class="fr-video fr-draggable fr-dvb" contenteditable="false" draggable="true">' +
+            '       <video class="fr-draggable fr-fic fr-dii" controls="" height="480" src="'+sc.ArticleData.Video+'"' +
+            '        style="background: black;"width="640">' +
+            '       </video>' +
+            '   </span>' +
+            '   <p style="text-align: center;">'+sc.ArticleData.Content+'</p>'+
+            '</div>';
     }
 
     /**
@@ -64,13 +87,16 @@ var ArticleDataController = function($scope,appConfig,Upload){
     }
 
     sc.saveContent = function(){
+        if(sc.ArticleData.TypeKey == '视频'){
+            videoContent();
+        }
         var url = appConfig.url + "Article/saveArticleContent";
         var method =  "POST";
         var data = {
             ArticleID : sc.ArticleData.ArticleID,
             Content : sc.articleHtml
         }
-        console.log(sc.articleHtml);
+        // console.log(sc.articleHtml);
         var promise = sc.httpDataUrl(url,method,data);
         promise.then(function (data) {
             // sc.processResult(data);

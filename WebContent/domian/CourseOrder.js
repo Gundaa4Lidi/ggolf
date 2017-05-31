@@ -1,0 +1,22 @@
+var CourseOrder = {
+    "CourseOrderID":"",
+    "CoachID":"",
+    "CoachName":"",
+    "CourseID":"",
+    "CourseTitle":"",
+    "UserID":"",
+    "UserName":"",
+    "State":"",
+    "Type":"",
+    "TeachingMethod":"",
+    "ClassHour":"",
+    "DownPayment":"",
+    "StartDateTime":"",
+    "Tel":"",
+    "IsBatch":"",
+    "IsTaught":"",
+    "ServiceExplain":"",
+    "Created_TS":"",
+    "Updated_TS":"",
+    "Activity":[]
+}

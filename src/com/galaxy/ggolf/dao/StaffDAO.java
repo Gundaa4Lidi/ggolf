@@ -15,13 +15,14 @@ public class StaffDAO extends GenericDAO<Staff> {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public int getCount() {
-		String sql = "select count(*) from staff WHERE DeletedFlag is NULL";
+	public int getCount(String sqlString) {
+		String sql = "select count(*) from staff WHERE DeletedFlag is NULL "+sqlString+"";
 		return super.count(sql);
 	}
 	
-	public Collection<Staff> getAllStaff(){
-		String sql = "select * from staff where DeletedFlag is NULL order by Created_TS desc";
+	public Collection<Staff> getAllStaff(String sqlString,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from staff where DeletedFlag is NULL "+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	
 	}

@@ -24,6 +24,7 @@ public class CourseOrderRowMapper implements RowMapper<CourseOrder> {
 	private static final String COLUMN_StartDateTime = "StartDateTime";
 	private static final String COLUMN_Tel = "Tel";
 	private static final String COLUMN_IsBatch = "IsBatch";
+	private static final String COLUMN_IsTaught = "IsTaught";
 	private static final String COLUMN_ServiceExplain = "ServiceExplain";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
@@ -46,19 +47,23 @@ public class CourseOrderRowMapper implements RowMapper<CourseOrder> {
 		String StartDateTime = res.getString(COLUMN_StartDateTime);
 		String Tel = res.getString(COLUMN_Tel);
 		String IsBatch = res.getString(COLUMN_IsBatch);
+		String IsTaught = res.getString(COLUMN_IsTaught);
 		String ServiceExplain = res.getString(COLUMN_ServiceExplain);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
+		String act = res.getString(COLUMN_Activity);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
-		String[] activities = res.getString(COLUMN_Activity).split("\\|");
-		for(String activity:activities){
-			Activity a = new Activity();
-			String[] properties = activity.split(",");
-			a.setTime(properties[0]);
-			a.setAction(properties[1]);
-			Activities.add(a);
+		if(act.indexOf("\\|")!=-1){
+			String[] activities = act.split("\\|");
+			for(String activity:activities){
+				Activity a = new Activity();
+				String[] properties = activity.split(",");
+				a.setTime(properties[0]);
+				a.setAction(properties[1]);
+				Activities.add(a);
+			}
 		}
-		return new CourseOrder(CourseOrderID,CoachID,CoachName,CourseID,CourseName,UserID,UserName,State,Type,TeachingMethod,ClassHour,DownPayment,StartDateTime,Tel,IsBatch,ServiceExplain,Created_TS,Updated_TS,Activities);
+		return new CourseOrder(CourseOrderID,CoachID,CoachName,CourseID,CourseName,UserID,UserName,State,Type,TeachingMethod,ClassHour,DownPayment,StartDateTime,Tel,IsBatch,IsTaught,ServiceExplain,Created_TS,Updated_TS,Activities);
 	}
 
 }

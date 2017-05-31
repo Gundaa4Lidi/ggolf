@@ -1,0 +1,432 @@
+<div ng-controller="CoachController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content">
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="getCoachList()">
+                </form>
+            </div>
+
+            <!-- 	        <div class="action-header__item action-header__add">
+                            <a href="new-contact.html" class="btn btn-danger btn-sm">New Contact</a>
+                        </div>
+             -->
+            <div class="action-header__item action-header__item--sort hidden-xs">
+
+                <!--<select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" >-->
+                <!--<option ng-repeat="item in selectOptions" selected="{{item}}">{{item.title}}</option>-->
+                <!--</select>-->
+            </div>
+        </div>
+
+        <div class="main__container">
+            <header class="main__title">
+                <h1>教练列表</h1>
+            </header>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="list-group list-group--block contact-lists">
+                        <div class="list-group__header text-left">
+                            <span>共{{TotalCoach}}位教练</span>
+                            <!--<input ng-model="keyword2">-->
+                        </div>
+                        <div class="list-group__wrap" ng-repeat="item in Coachs ">
+                            <a class="list-group-item media" href="">
+                                <div class="pull-left">
+                                    <!-- <div class="avatar-char mdc-bg-amber-400">T</div> -->
+                                    <img ng-src="{{item.CoachHead}}" err-src="../img/user_empty.png" class="list-group__img img-circle" width="80" height="80" alt="">
+                                </div>
+                                <div class="media-body list-group__text" >
+                                    <div class="row">
+                                        <div class="col col-md-3">
+                                            <strong>用户名:{{item.UserName}}</strong>
+                                        </div>
+                                        <div class="col col-md-2">
+                                            <strong>性别:{{item.Sex}}</strong>
+                                        </div>
+                                        <div class="col col-md-4">
+                                            <strong>姓名:{{item.CoachName}}</strong>
+                                        </div>
+                                    </div><br>
+                                    <div class="row">
+                                        <div class="col col-md-3">
+                                            <strong>教龄:{{GetAge(item.Seniority)}}年</strong>
+                                        </div>
+                                        <div class="col col-md-2">
+                                            <strong>年龄:{{GetAge(item.Birthday)}}岁</strong>
+                                        </div>
+                                        <div class="col col-md-6">
+                                            <strong>所属学院:{{item.ClubName}}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="actions list-group__actions">
+                                <div class="dropdown">
+                                    <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a href="#" ng-click="checkCoachDetail(item)">详情</a></li>
+                                        <li><a href="#" ng-click="checkCoachCourse(item)">Ta的课程</a></li>
+                                        <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                            <div  class="list-group__date">
+                                <div >
+                                    <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    <strong>{{CurrentDT(item.Created_TS)}}</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="load-more">
+                        <a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="coach_detail" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentCoach.CoachHead}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <div class="m-t-25">
+                        <h3>{{currentCoach.CoachName}}</h3>
+                        <span uib-rating ng-model="rate" max="max" read-only="isReadonly"
+                              on-hover="hoveringOver(value)" on-leave="overStar = null"
+                              aria-labelledby="default-rating"
+                              style="color: #f6b543;font-size: 20px"></span>
+                        <h4 class="text-strong m-t-5">{{currentCoach.coachScore.TeachNo}}次教学</h4>
+                    </div>
+                    <table class="table table-bordered table-hover table_wrap">
+                        <tr><th width="25%">用户名</th><td>{{currentCoach.UserName}}</td></tr>
+                        <tr><th width="25%">出生日期</th>
+                            <td>
+                                <p>{{currentCoach.Birthday}}</p>
+                                <p style="color: #00B0FF">年龄:{{GetAge(currentCoach.Birthday)}}岁</p>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">性别</th><td>{{currentCoach.Sex}}</td></tr>
+                        <tr><th width="25%">联系电话</th><td>{{currentCoach.CoachPhone}}</td></tr>
+                        <tr><th width="25%">所属俱乐部</th><td>{{currentCoach.ClubName}}</td></tr>
+                        <tr><th width="25%">入行日期</th>
+                            <td>
+                                <p>{{currentCoach.Seniority}}</p>
+                                <p style="color: #00B0FF">教龄:{{GetAge(currentCoach.Seniority)}}年</p>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">简介</th><td>{{currentCoach.Intro}}</td></tr>
+                        <tr><th width="25%">所获成就</th><td>{{currentCoach.ACHV}}</td></tr>
+                        <tr><th width="25%">教学成果</th><td>{{currentCoach.TeachACHV}}</td></tr>
+                    </table>
+                </div>
+
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="view_course" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center " style="background: #f3f3f3">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentCoach.CoachHead}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <div class="m-t-25">
+                        <h3>{{currentCoach.CoachName}}</h3>
+                    </div>
+                    <div class="m-t-25" ng-show="totalCourse==0">
+                        <small>暂无课程</small>
+                    </div>
+                    <!--<table class="table table-bordered table-hover table_wrap">-->
+                    <!--</table>-->
+                    <div class="list-group list-group--block contact-lists" ng-show="totalCourse > 0">
+                        <div class="list-group__header text-left">
+                            <span>共{{totalCourse}}个课程</span>
+                            <!--<input ng-model="keyword2">-->
+                        </div>
+                        <div class="list-group__wrap" ng-repeat="course in CoachCourse ">
+                            <div class="list-group-item media" href="#">
+                                <div class="p-t-20 p-l-10">
+                                    <div class="row pull-left">
+                                        <h4><span>{{course.Title}}</span></h4>
+                                    </div>
+
+                                </div>
+                                <div class="list-group__label list-group__label--float">
+                                    <span class="mdc-bg-orange-400">
+                                        <a class="tooltip_a" tooltips tooltip-side="top" tooltip-template="课程价格">
+                                            <i class="fa fa-jpy" aria-hidden="true"></i>{{course.Price}}
+                                            <span ng-show="course.IsBatch=='0'">/小时</span>
+                                            <span ng-show="course.IsBatch=='1'">{{course.ClassHour}}课时</span>
+                                        </a>
+                                    </span>
+                                    <span class="mdc-bg-green" ng-show="course.IsBatch=='1'">套课教学</span>
+                                    <span class="mdc-bg-blue-50" ng-show="course.IsVideo=='1'">直播教学</span>
+                                    <span class="mdc-bg-pink" ng-show="course.IsBatch=='0'&&course.IsVideo=='0'">预约教学</span>
+                                    <span class="mdc-bg-teal-400" ng-show="course.Verify=='1'">
+                                        <a class="tooltip_a" tooltips tooltip-side="top" tooltip-template="课程销量">
+                                            <i class="zmdi zmdi-eye"></i> 6421
+                                        </a>
+                                    </span>
+                                    <span class="mdc-bg-red-400" ng-show="course.Verify=='2'">审核拒绝</span>
+                                    <span class="mdc-bg-amber-A700" ng-show="course.Verify=='0'">申请中</span>
+                                </div>
+                                <div class="actions list-group__actions list-group__actions--centered">
+                                    <div class="dropdown">
+                                        <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li><a href="#" ng-click="checkCourse(course)">详情</a></li>
+                                            <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="m-t-25">
+                        <a href="" class="red_btn mdc-text-red" ng-click="ApplyCourse()">申请开通课程</a>
+                    </div>
+                </div>
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="course_detail" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentCourse.CoachHead}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <table class="table table-bordered table-hover table_wrap">
+                        <tr><th width="25%">课程标题</th><td>{{currentCourse.Title}}</td></tr>
+                        <tr><th width="25%">姓名</th><td>{{currentCourse.CoachName}}</td></tr>
+                        <tr><th width="25%">联系电话</th><td>{{currentCourse.CoachPhone}}</td></tr>
+                        <tr><th width="25%">课程价格</th>
+                            <td>
+                                <span><i class="fa fa-jpy" aria-hidden="true"></i>{{currentCourse.Price}}</span>
+                                <span ng-show="currentCourse.IsBatch=='0'">/小时</span>
+                                <span ng-show="currentCourse.IsBatch=='1'">{{currentCourse.ClassHour}}课时</span>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">教学模式</th>
+                            <td>
+                                <span class="mdc-text-green" ng-show="currentCourse.IsBatch=='1'">套课教学</span>
+                                <span class="mdc-text-blue-50" ng-show="currentCourse.IsVideo=='1'">直播教学</span>
+                                <span class="mdc-text-deep-orange-400" ng-show="currentCourse.IsBatch=='0'&& currentCourse.IsVideo=='0'">预约教学</span>
+                            </td>
+                        </tr>
+                        <tr><th width="25%">学员上限</th><td><p>{{currentCourse.MaxPeople}}人</p></td></tr>
+                        <tr><th width="25%">课程描述</th><td>{{currentCourse.ContainExplain}}</td></tr>
+                    </table>
+                    <!--<input type="checkbox"><label>已阅览</label>-->
+                </div>
+
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Open Course -->
+    <div class="modal fade" id="apply-open-course" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">申请开通课程</h4>
+                </div>
+                <form class="new-contact ng-pristine ng-valid" style="margin-bottom: 0px;" name="courseApplyForm" ng-submit="submitCourseApply(courseApplyForm.$valid)" novalidate>
+
+                    <div class="modal-body">
+                        <div class="col-md-12 m-b-10 text-center">
+                            <a href="" tooltips tooltip-side="top" tooltip-template="用户头像">
+                                <img ng-src="{{currentCourse.CoachHead}}" err-src="../img/user_empty.png"
+                                     class="img-circle border_3_s_c" width="80px" height="80px" alt="">
+                            </a>
+                            <h3>{{currentCourse.CoachName}}</h3>
+                            <small>{{currentCourse.CoachPhone}}</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.Title.$invalid && !courseApplyForm.Title.$pristine }">
+                                    <label>课程标题<span style="color: red">*</span></label>
+                                    <input type="text" name="Title" ng-model="currentCourse.Title"
+                                           class="form-control" required>
+                                    <p ng-show="courseApplyForm.Title.$invalid && !courseApplyForm.Title.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.Title.$error.required">必填项</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine }">
+                                    <label>课程价格<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="Price" ng-model="currentCourse.Price"
+                                               class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)$/">
+                                        <span class="input-group-addon">元</span>
+                                    </div>
+                                    <p ng-show="courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.Price.$error.required">必填项</span>
+                                        <span ng-show="courseApplyForm.Price.$error.pattern">格式有误</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.MaxPeople.$invalid && !courseApplyForm.MaxPeople.$pristine }">
+                                    <label>学员上限<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="MaxPeople" ng-maxlength="2" ng-model="currentCourse.MaxPeople"
+                                               class="form-control" required ng-pattern="/^[1-9]\d*$/">
+                                        <span class="input-group-addon">人</span>
+                                    </div>
+                                    <p ng-show="courseApplyForm.MaxPeople.$invalid && !courseApplyForm.MaxPeople.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.MaxPeople.$error.required">必填项</span>
+                                        <span ng-show="courseApplyForm.MaxPeople.$error.pattern">格式有误</span>
+                                        <span ng-show="courseApplyForm.MaxPeople.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.Method.$invalid && !courseApplyForm.Method.$pristine }">
+                                    <lable>教学方式<span style="color: red">*</span></lable>
+                                    <select ng-model="Method" class="form-control" name="Method"
+                                            ng-change="courseApplyForm.ClassHour.$setPristine();courseApplyForm.Valid.$setPristine();cleanMethod()"
+                                            ng-options="method.value as method.key for method in selectTeachMethod" required>
+                                    </select>
+                                    <p ng-show="courseApplyForm.Method.$invalid && !courseApplyForm.Method.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.Method.$error.required">必填项</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4" ng-show="Method=='2'">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.ClassHour.$invalid && !courseApplyForm.ClassHour.$pristine }">
+                                    <label>课时<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="ClassHour" ng-maxlength="2" ng-model="currentCourse.ClassHour"
+                                               class="form-control" ng-required="Method=='2'" ng-pattern="/^[1-9]\d*$/">
+                                        <span class="input-group-addon">小时</span>
+                                    </div>
+                                    <p ng-show="courseApplyForm.ClassHour.$invalid && !courseApplyForm.ClassHour.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.ClassHour.$error.required">必填项</span>
+                                        <span ng-show="courseApplyForm.ClassHour.$error.pattern">格式有误</span>
+                                        <span ng-show="courseApplyForm.ClassHour.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-4" ng-show="Method=='2'">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.Valid.$invalid && !courseApplyForm.Valid.$pristine }">
+                                    <label>有效期<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="Valid" ng-maxlength="3" ng-model="currentCourse.Valid"
+                                               class="form-control" ng-required="Method=='2'" ng-pattern="/^[1-9]\d*$/">
+                                        <span class="input-group-addon">天</span>
+                                    </div>
+                                    <p ng-show="courseApplyForm.Valid.$invalid && !courseApplyForm.Valid.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.Valid.$error.required">必填项</span>
+                                        <span ng-show="courseApplyForm.Valid.$error.pattern">格式有误</span>
+                                        <span ng-show="courseApplyForm.Valid.$error.maxlength">超出长度</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine }">
+                                    <label>课程描述<span style="color: red">*</span></label>
+                                    <textarea type="text" name="ContainExplain" cols="1" rows="3" class="form-control"
+                                              ng-model="currentCourse.ContainExplain" required></textarea>
+                                    <p ng-show="courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.ContainExplain.$error.required">必填项</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="modal-footer" style="padding: 0 30px 10px;">
+                        <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="courseApplyForm.$setPristine()">取消</button>
+                        <button type="submit" class="btn btn-primary"
+                                ng-disabled="courseApplyForm.$invalid"
+                                ng-click="courseApplyForm.$setPristine()">确认提交申请
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--<div class="modal fade" id="view-contact">-->
+        <!--<div class="modal-dialog">-->
+            <!--<div class="modal-content">-->
+                <!--<div class="modal-body text-center">-->
+                    <!--<div class="view-contact__img">-->
+                        <!--<img src="../img/demo/people/2.jpg" class="img-circle" width="150" height="150" alt="">-->
+                    <!--</div>-->
+
+                    <!--<div class="m-t-25">-->
+                        <!--<h4>Mallinda Hollaway</h4>-->
+                        <!--<small>421 Walnut St. Hartford, CT 06106, United States</small>-->
+                    <!--</div>-->
+
+                    <!--<div class="m-t-25">-->
+                        <!--<small>Email Address</small>-->
+                        <!--<div class="text-strong m-t-5">mallinda-h@gmail.com</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="m-t-25">-->
+                        <!--<small>Mobile Phone</small>-->
+                        <!--<div class="text-strong m-t-5">(203) 991-4171</div>-->
+                    <!--</div>-->
+
+                    <!--<div class="m-t-25">-->
+                        <!--<small>Home Phone</small>-->
+                        <!--<div class="text-strong m-t-5">(902) 093-3923</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <!--<div class="modal-footer text-center modal-footer&#45;&#45;bordered">-->
+                    <!--<button type="button" class="btn btn-link" data-dismiss="modal">Close</button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>

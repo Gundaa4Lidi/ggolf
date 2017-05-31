@@ -22,3 +22,4 @@ window.onload = function() {
         fade(document.getElementById('page-loader'));
     }, 200);
 };
+

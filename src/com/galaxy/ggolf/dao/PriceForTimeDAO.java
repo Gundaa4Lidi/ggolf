@@ -27,10 +27,12 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 				+ "Type,"
 				+ "IsPrivilege,"
 				+ "IsDeposit,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?)";
+				+ "IsValid,"
+				+ "DateTime,"
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,pft.getClubserveID(),pft.getClubID(),pft.getWeek(),
 				pft.getTime(),pft.getDownPayment(),pft.getOtherPrice(),pft.getType(),
-				pft.getIsPrivilege()+"",pft.getIsDeposit(),Time());
+				pft.getIsPrivilege(),pft.getIsDeposit(),pft.getIsValid(),pft.getDateTime(),Time());
 	}
 	
 	/**
@@ -50,9 +52,10 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 					+ "Type,"
 					+ "IsPrivilege,"
 					+ "IsDeposit,"
+					+ "IsValid,"
 					+ "Created_TS)values('"+pft.getClubserveID()+"','"+pft.getClubID()+"','"+pft.getWeek()+"','"+pft.getTime()
 					+ "','"+pft.getDownPayment()+"','"+pft.getOtherPrice()+"','"+pft.getType()+"','"+pft.getIsPrivilege()
-					+ "','"+pft.getIsDeposit()+"','"+Time()+"')";
+					+ "','"+pft.getIsDeposit()+"','"+pft.getIsValid()+"','"+Time()+"')";
 			sqls.add(sql);
 		}
 		return super.batchInsert(sqls);
@@ -69,10 +72,13 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 				+ "Type=?,"
 				+ "IsDeposit=?,"
 				+ "IsPrivilege=?,"
+				+ "IsValid=?,"
+				+ "DateTime=?,"
 				+ "Updated_TS=?"
 				+ " where DeletedFlag is null and ClubservePriceID=?";
 		return super.executeUpdate(sql,pft.getDownPayment(),pft.getOtherPrice(),
-				pft.getType(),pft.getIsDeposit(),pft.getIsPrivilege()+"",Time(),pft.getClubservePriceID());
+				pft.getType(),pft.getIsDeposit(),pft.getIsPrivilege(),pft.getIsValid(),
+				pft.getDateTime(),Time(),pft.getClubservePriceID());
 	}
 	
 	/**
@@ -88,6 +94,7 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 					+ "Type='"+pft.getType()+"',"
 					+ "IsDeposit='"+pft.getIsDeposit()+"',"
 					+ "IsPrivilege='"+pft.getIsPrivilege()+"',"
+					+ "IsValid='"+pft.getIsValid()+"',"
 					+ "Updated_TS='"+Time()+"'"
 					+ " where DeletedFlag is null and ClubservePriceID='"+pft.getClubservePriceID()+"'";
 			sqls.add(sql);
@@ -101,8 +108,8 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 	 * @param ClubserveID
 	 * @return
 	 */
-	public Collection<PriceForTime> getPricesByClubserveID(String Week,String ClubserveID){
-		String sql = "select * from pricefortime where Week='"+Week+"' and ClubserveID='"+ClubserveID+"'";
+	public Collection<PriceForTime> getPricesByClubserveID(String Week,String ClubserveID,String sqlString){
+		String sql = "select * from pricefortime where DeletedFlag is null a Week='"+Week+"' and ClubserveID='"+ClubserveID+"' "+sqlString+"";
 		return super.executeQuery(sql);
 	}
 	
@@ -114,13 +121,50 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 	 * @param ClubserveID
 	 * @return
 	 */
-	public PriceForTime getPriceByClubServeID(String Week, String Time, String ClubserveID){
-		String sql = "select * from pricefortime where Week='"+Week+"' and Time='"+Time+"' and ClubserveID='"+ClubserveID+"'";
+	public PriceForTime getPriceByClubServeID(String Week, String Time, String ClubserveID,String sqlString){
+		String sql = "select * from pricefortime where DeletedFlag is null and Week='"+Week+"' and Time='"+Time+"' and ClubserveID='"+ClubserveID+"' "+sqlString+"";
 		Collection<PriceForTime> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (PriceForTime) result.toArray()[0];
 		}
 		return null;
+	}
+	
+	/**
+	 * 查找该时段是否存在
+	 * @param ClubserveID
+	 * @param DateTime
+	 * @return
+	 */
+	public PriceForTime checkByDateTime(String ClubserveID,String DateTime){
+		String sql = "select * from pricefortime where DeletedFlag is null and ClubserveID='"+ClubserveID+"' and DateTime='"+DateTime+"' Group by DateTime";
+		Collection<PriceForTime> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return (PriceForTime) result.toArray()[0];
+		}
+		return null;
+	}
+	/**
+	 * 根据相关信息查看时段价格
+	 * @param sqlString
+	 * @return
+	 */
+	public Collection<PriceForTime> getByString(String sqlString,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from pricefortime where DeletedFlag is null "+sqlString+" "+limit+"";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 删除有特殊日期的价格数据
+	 * @param ClubserveID
+	 * @param DateTime
+	 * @return
+	 */
+	public boolean deleteDateTime(String ClubserveID,String DateTime){
+		String sql = "update pricefortime set DeletedFlag='Y',Updated_TS='"+Time()+"'"
+				+ " where ClubserveID='"+ClubserveID+"' and DateTime='"+DateTime+"' and DeletedFlag is null";
+		return super.executeUpdate(sql);
 	}
 	
 	

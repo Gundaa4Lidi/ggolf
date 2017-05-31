@@ -15,8 +15,10 @@ var CourseController = function($scope,$http,appConfig,$window,$q,Upload,$timeou
     sc.active = 0;
 
     sc.loading = function(){
-        sc.rows += 20;
-        sc.getClubList();
+        if(sc.loadMore) {
+            sc.rows += 20;
+            sc.getClubList();
+        }
     }
     sc.$watch('Rows',function(e){
         if(e < sc.TotalClub){
@@ -86,7 +88,7 @@ var CourseController = function($scope,$http,appConfig,$window,$q,Upload,$timeou
         var promise = sc.httpParams(url,method,params);
         promise.then(function(data){
             sc.clubList = data.data;
-            sc.TotalClub = data.pageCount;
+            sc.TotalClub = data.count;
             sc.Rows = sc.rows;
         }),function(data){
             sc.Load_Failed(data);

@@ -57,7 +57,8 @@ public class ClubDetailManager {
 	}
 	
 	public void saveClubDetail(ClubDetail cd)throws GalaxyLabException{
-		if(cd.getUID() == null){
+		ClubDetail clubDetail = this.clubDetailDAO.getClubDetailByClubID(cd.getClubID());
+		if(clubDetail == null){
 			createDetail(cd);
 		}else{
 			updateDetail(cd);
@@ -127,11 +128,18 @@ public class ClubDetailManager {
 		if(!clubDetailDAO.updateClubDetail(cd, sqlString)){
 			throw new GalaxyLabException("Error in update ClubDetail");
 		}
-		cache.put(cd.getClubID(), cd);
+		ClubDetail clubDetail = clubDetailDAO.getClubDetailByClubID(cd.getClubID());
+		if(clubDetail != null){
+			this.cache.put(clubDetail.getClubID(),clubDetail);
+		}
 		
 	}
 	
 	private void updateFairway(ClubFairway cf)throws GalaxyLabException {
+		ClubFairway exist1 = clubFairwayDAO.getFairwayNameByClubID(cf.getFairwayName(), cf.getClubID());
+		if(exist1 != null){
+			throw new GalaxyLabException("ClubFairway exist");
+		}
 		if(!clubFairwayDAO.update(cf)){
 			throw new GalaxyLabException("Error in update ClubFairway");
 		}
@@ -146,13 +154,19 @@ public class ClubDetailManager {
 			throw new GalaxyLabException("Error in create clubDetail");
 		}
 		ClubDetail clubDetail = clubDetailDAO.getClubDetailByClubID(cd.getClubID());
-		cache.put(clubDetail.getClubID(), clubDetail);
+		if(clubDetail!=null){
+			cache.put(clubDetail.getClubID(), clubDetail);
+		}
 		
 	}
 	
 	private void createFairway(ClubFairway cf)throws GalaxyLabException {
 		ClubFairway exist = clubFairwayDAO.getClubFairwayByUID(cf.getUID());
 		if(exist != null){
+			throw new GalaxyLabException("ClubFairway exist");
+		}
+		ClubFairway exist1 = clubFairwayDAO.getFairwayNameByClubID(cf.getFairwayName(), cf.getClubID());
+		if(exist1 != null){
 			throw new GalaxyLabException("ClubFairway exist");
 		}
 		if(!clubFairwayDAO.create(cf)){

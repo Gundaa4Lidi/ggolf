@@ -9,11 +9,11 @@ public class ListUtil {
 		
 	}
 
-	public Collection<String> StringToList(String str){
+	public Collection<String> StringToList(String str,String ss){
 		Collection<String> list = new ArrayList<String>();
 		if(str != null){
-			if(str.indexOf(";")!=-1){
-				String[] string = str.split(";");
+			if(str.indexOf(ss)!=-1){
+				String[] string = str.split(ss);
 				for(String s : string){
 					if(!s.equals("")){
 						list.add(s);

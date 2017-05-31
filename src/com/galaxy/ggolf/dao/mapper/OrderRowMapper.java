@@ -56,13 +56,16 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
-		String[] activities = res.getString(COLUMN_Activity).split("\\|");
-		for(String activity:activities){
-			Activity a = new Activity();
-			String[] properties = activity.split(",");
-			a.setTime(properties[0]);
-			a.setAction(properties[1]);
-			Activities.add(a);
+		String act = res.getString(COLUMN_Activity);
+		if(act.indexOf("\\|")!=-1){
+			String[] activities = act.split("\\|");
+			for(String activity:activities){
+				Activity a = new Activity();
+				String[] properties = activity.split(",");
+				a.setTime(properties[0]);
+				a.setAction(properties[1]);
+				Activities.add(a);
+			}
 		}
 		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,Tel,ServiceExplain,Created_TS,Updated_TS,Activities);
 	}

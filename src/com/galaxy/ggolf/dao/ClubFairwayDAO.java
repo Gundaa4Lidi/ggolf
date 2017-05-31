@@ -32,6 +32,10 @@ public class ClubFairwayDAO extends GenericDAO<ClubFairway> {
 	
 	public boolean create(ClubFairway clubFairway){
 		String photo = "";
+		String par = "";
+		if(clubFairway.getPar().size()>0){
+			par = new ListUtil().ListToString(clubFairway.getPar(),",");
+		}
 		if(clubFairway.getPhoto()!=null){
 			photo = new ListUtil().ListToString(clubFairway.getPhoto());
 		}
@@ -46,17 +50,36 @@ public class ClubFairwayDAO extends GenericDAO<ClubFairway> {
 					+"','"
 					+ photo
 					+"','" 
-					+ clubFairway.getPar()+"'" +")";
+					+ par+"')";
 		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 查看同一球场是否存在相同名称的球道
+	 * @param FairwayName
+	 * @param ClubID
+	 * @return
+	 */
+	public ClubFairway getFairwayNameByClubID(String FairwayName,String ClubID){
+		String sql = "select * from clubfairway where FairwayName='"+FairwayName+"' and ClubID='"+ClubID+"'";
+		Collection<ClubFairway> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return (ClubFairway) result.toArray()[0];
+		}
+		return null;
 	}
 
 	public boolean update(ClubFairway clubFairway){
 		String photo = "";
+		String par = "";
+		if(clubFairway.getPar().size()>0){
+			par = new ListUtil().ListToString(clubFairway.getPar(),",");
+		}
 		if(clubFairway.getPhoto()!=null){
 			photo = new ListUtil().ListToString(clubFairway.getPhoto());
 		}
-		String sql = "update clubfairway set HoleNum=?,FairwayName=?,Updated_TS=?,Photo=? where UID=? and DeletedFlag is null";
-		return super.sqlUpdate(sql, clubFairway.getHoleNum(),clubFairway.getFairwayName(),Time(),photo,clubFairway.getUID());
+		String sql = "update clubfairway set HoleNum=?,FairwayName=?,Updated_TS=?,Par=?,Photo=? where UID=? and DeletedFlag is null";
+		return super.sqlUpdate(sql, clubFairway.getHoleNum(),clubFairway.getFairwayName(),Time(),par,photo,clubFairway.getUID());
 	}
 	
 	public boolean delete(String uid){

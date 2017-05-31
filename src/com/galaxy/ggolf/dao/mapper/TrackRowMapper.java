@@ -10,7 +10,7 @@ import com.galaxy.ggolf.tools.ListUtil;
 public class TrackRowMapper implements RowMapper<Track>{
    private static final String  COLUMN_UserId="UserId";
    private static final String  COLUMN_TrackId="TrackId";
-   private static final String  COLUMN_Grade="Grade";
+   private static final String  COLUMN_UGrade="UGrade";
    private static final String  COLUMN_Created_TS="Created_TS";
    private static final String  COLUMN_PhotoList="PhotoList";
    private static final String  COLUMN_Content="Content";
@@ -26,10 +26,10 @@ public class TrackRowMapper implements RowMapper<Track>{
 	public Track mapRow(ResultSet res) throws SQLException {
 		String UserId=res.getString(COLUMN_UserId);
 		String TrackId=res.getString(COLUMN_TrackId);
-		String Grade=res.getString(COLUMN_Grade);
+		String UGrade=res.getString(COLUMN_UGrade);
 		String Created_TS=res.getString(COLUMN_Created_TS);
 		String photoList=res.getString(COLUMN_PhotoList);
-		Collection<String> PhotoList=new ListUtil().StringToList(photoList);
+		Collection<String> PhotoList=new ListUtil().StringToList(photoList,";");
 		String Content=res.getString(COLUMN_Content);
 		String ClubName=res.getString(COLUMN_ClubName);
 		String PlayerName=res.getString(COLUMN_PlayerName);
@@ -39,7 +39,7 @@ public class TrackRowMapper implements RowMapper<Track>{
 	    String ScoresTwo=res.getString(COLUMN_ScoresTwo);
 	    String PuttersOne=res.getString(COLUMN_PuttersOne);
 	    String PuttersTwo=res.getString(COLUMN_PuttersTwo);
-		return new Track(UserId,TrackId,Grade,Created_TS,PhotoList,Content,ClubName,PlayerName,SiteOnePAR,SiteTwoPAR,ScoresOne,ScoresTwo,PuttersOne,PuttersTwo);
+		return new Track(UserId,TrackId,UGrade,Created_TS,PhotoList,Content,ClubName,PlayerName,SiteOnePAR,SiteTwoPAR,ScoresOne,ScoresTwo,PuttersOne,PuttersTwo);
 	}
 
 }

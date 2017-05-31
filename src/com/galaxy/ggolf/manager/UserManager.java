@@ -209,7 +209,7 @@ public class UserManager {
 		if(this.coachDAO.getCoachByCoachID(user.getUserID(),null)!=null){
 			String sql = "CoachName='"+user.getName()+"',"
 					+ "CoachHead='"+user.getHead_portrait()+"',"
-					+ "Age='"+user.getAge()+"'";
+					+ "CoachPhone='"+user.getPhone()+"'";
 			if(!this.coachDAO.update(user.getUserID(), sql)){
 				throw new GalaxyLabException("Error in update Coach");
 			}
@@ -243,7 +243,7 @@ public class UserManager {
 	}*/
 	
 	//分页获取全部用户信息
-	public Collection<User> getUser(String pageNum,String size,String keyword,String lon,String lat) throws Exception{
+	public Collection<User> getUser(String pageNum,String rows,String keyword,String lon,String lat) throws Exception{
 		String sqlString = "";
 		if(keyword!=null && !keyword.equals("")){
 			sqlString = "and (UserID like '%"
@@ -259,8 +259,8 @@ public class UserManager {
 					+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
 					+ keyword +"%') ";
 		}
-		Collection<User> userList = userDAO.getUsers(pageNum,size,sqlString);
-		if(lon != null && lat != null){
+		Collection<User> userList = userDAO.getUsers(pageNum,rows,sqlString);
+		if(lon != null && lat != null && !lon.equals("") && !lat.equals("")){
 			double lon1 = Double.parseDouble(lon);
 			double lat1 = Double.parseDouble(lat);
 			userList = getDistance(lon1, lat1, userList);

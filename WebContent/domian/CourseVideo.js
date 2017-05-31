@@ -1,8 +1,11 @@
 var CourseVideo = {
     "UID":"",
     "CreatorID":"",
+    "CourseID":"",
     "RoomID":"",
     "Password":"",
     "RoomName":"",
-    "Users":[],
+    "Created_TS":"",
+    "Updated_TS":"",
+    "Users":[]
 }
