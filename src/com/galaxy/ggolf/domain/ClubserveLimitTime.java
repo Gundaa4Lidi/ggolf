@@ -11,11 +11,14 @@ public class ClubserveLimitTime {
     private String Count;
     private String Date;
     private String ServiceExplain;
+    private String BeginStartTime;
+    private String BeginEndTime;
     private String Created_TS;
     private String Updated_TS;
+    
 	public ClubserveLimitTime(String clubserveLimitTimeID, String clubserveID, String price, String startTime,
-			String endTime, String isUsed, String count, String date, String serviceExplain, String created_TS,
-			String updated_TS) {
+			String endTime, String isUsed, String count, String date, String serviceExplain, String beginStartTime,
+			String beginEndTime, String created_TS, String updated_TS) {
 		ClubserveLimitTimeID = clubserveLimitTimeID;
 		ClubserveID = clubserveID;
 		Price = price;
@@ -25,9 +28,13 @@ public class ClubserveLimitTime {
 		Count = count;
 		Date = date;
 		ServiceExplain = serviceExplain;
+		BeginStartTime = beginStartTime;
+		BeginEndTime = beginEndTime;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 	}
+	
+	
 	public String getClubserveLimitTimeID() {
 		return ClubserveLimitTimeID;
 	}
@@ -82,6 +89,18 @@ public class ClubserveLimitTime {
 	public void setServiceExplain(String serviceExplain) {
 		ServiceExplain = serviceExplain;
 	}
+	public String getBeginStartTime() {
+		return BeginStartTime;
+	}
+	public void setBeginStartTime(String beginStartTime) {
+		BeginStartTime = beginStartTime;
+	}
+	public String getBeginEndTime() {
+		return BeginEndTime;
+	}
+	public void setBeginEndTime(String beginEndTime) {
+		BeginEndTime = beginEndTime;
+	}
 	public String getCreated_TS() {
 		return Created_TS;
 	}
@@ -94,6 +113,6 @@ public class ClubserveLimitTime {
 	public void setUpdated_TS(String updated_TS) {
 		Updated_TS = updated_TS;
 	}
-    
+	
     
 }

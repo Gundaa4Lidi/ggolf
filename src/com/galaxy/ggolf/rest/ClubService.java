@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -606,36 +607,58 @@ public class ClubService extends BaseService {
 			if(rows!=null&&!rows.equals("")&&!rows.equalsIgnoreCase("null")){
 				row = Integer.parseInt(rows);
 			}
+			//日期的星期
+			String week = this.clubServeDAO.GetWeek(date);
+			
+			//可预订的供应商map
 			Map<String,String> cMap = new HashMap<String,String>();
+			//无效不可预订的供应商map
+			Map<String,String> invalidMap = new HashMap<String,String>();
+			
 			String sqlString = "and DateTime='"+date+"' "
-					+ "and Time='"+time+"' "
-					+ "and IsValid='1' "
-					+ "group by ClubID";
-			//先查询特殊时段有无球场可提供预订
+					+ "and Time='"+time+"' ";
+			//先查询特殊时段有无球场供应商可提供预订
 			Collection<PriceForTime> priceForTimes = this.priceForTimeDAO.getByString(sqlString,row+"",pageNum);
 			if(priceForTimes.size()>0){
 				for(PriceForTime pft : priceForTimes){
-					cMap.put(pft.getClubID(), pft.getClubID());
+					if(pft.getIsValid().equals("0")){//无效时段
+						invalidMap.put(pft.getClubserveID(), pft.getClubserveID());
+					}else if(pft.getIsValid().equals("1")){//有效时段
+						cMap.put(pft.getClubserveID(), pft.getClubserveID());
+					}
 				}
 			}
 			row -= priceForTimes.size();
-			String sqlString1 = "and Time='"+time+"' group by ClubID";
-			//在查询所有时段有无球场可提供预订,进行过滤
+			String sqlString1 = "and Week='"+week+"' and Time='"+time+"' and DateTime is null";
+			//进行过滤
 			if(row > 0){
 				Collection<PriceForTime> priceForTimes1 = this.priceForTimeDAO.getByString(sqlString1,row+"",pageNum);
 				if(priceForTimes1.size()>0){
 					for(PriceForTime pft1 : priceForTimes1){
-						if(!cMap.containsKey(pft1.getClubID())){
-							cMap.put(pft1.getClubID(),pft1.getClubID());
+						if(invalidMap.containsKey(pft1.getClubserveID())){
+							continue;
+						}else if(!cMap.containsKey(pft1.getClubserveID())){
+							cMap.put(pft1.getClubserveID(),pft1.getClubserveID());
 						}
 					}
 				}
 			}
+			//找到可提供预订的供应商球场
 			Collection<Club> clubs = new ArrayList<Club>();
-			int count = cMap.size();
+			Map<String,String> clubMap = new HashMap<String,String>();
 			if(cMap.size()>0){
 				for(String key : cMap.keySet()){
-					Club club = this.manager.getClub(cMap.get(key));
+					ClubServe cs = this.clubServeDAO.getClubServe(cMap.get(key));
+					if(cs!=null&&!clubMap.containsKey(cs.getClubID())){
+						clubMap.put(cs.getClubID(), cs.getClubID());
+					}
+				}
+			}
+			//添加球场
+			int count = clubMap.size();
+			if(clubMap.size()>0){
+				for(String key1 : clubMap.keySet()){
+					Club club = this.manager.getClub(clubMap.get(key1));
 					if(club!=null){
 						clubs.add(club);
 					}
@@ -650,6 +673,191 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 查询服务商某日的报价
+	 * @param ClubID
+	 * @param date
+	 * @param rows
+	 * @param pageNum
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getServeDatePrice")
+	public String getServeDatePrice(
+			@FormParam("ClubID") String ClubID,
+			@FormParam("date") String date,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers){
+		try {
+			if(date!=null && !date.equals("") && !date.equalsIgnoreCase("null")){
+				
+			}else{
+				return getErrormessage("日期必填,请填写日期");
+			}
+			String week = this.clubServeDAO.GetWeek(date);
+			String sqlString = "";
+			if(ClubID!=null && !ClubID.equals("") && !ClubID.equalsIgnoreCase("null")){
+				sqlString = "and ClubID='"+ClubID+"' ";
+			}else{
+				return getErrormessage("ClubID必填");
+			}
+			Collection<ClubServe> result = new ArrayList<ClubServe>();
+			Collection<ClubServe> clubServes = this.clubServeDAO.getClubServe(sqlString, pageNum, rows);
+			if(clubServes.size()>0){
+				for(ClubServe cs : clubServes){
+					Collection<PriceForTime> allTimes = new ArrayList<PriceForTime>();
+					Map<String,PriceForTime> oMap = new HashMap<String,PriceForTime>();
+					Map<String,PriceForTime> pMap = new HashMap<String,PriceForTime>();
+					
+					String sql = "and DateTime='"+date+"' and ClubserveID='"+cs.getClubserveID()+"'";
+					String sql1 = "and DateTime is null and week='"+week+"' and ClubserveID='"+cs.getClubserveID()+"'";
+					
+					//特殊时段
+					Collection<PriceForTime> times = this.priceForTimeDAO.getByString(sql, null, null);
+					if(times.size()>0){
+						for(PriceForTime ot : times){
+							if(!ot.getIsValid().equals("0")){
+								oMap.put(ot.getClubservePriceID(), ot);
+							}
+						}
+					}
+					
+					//一般时段
+					Collection<PriceForTime> times1 = this.priceForTimeDAO.getByString(sql1, null, null);
+					if(times1.size()>0){
+						for(PriceForTime pft1 : times1){
+							pMap.put(pft1.getClubservePriceID(), pft1);
+							if(times.size()>0){
+								for(PriceForTime pft : times){
+									if(pft1.getWeek().equals(pft.getWeek())&&pft1.getTime().equals(pft.getTime())){
+										pMap.remove(pft1.getClubservePriceID(), pft1);
+									}
+								}
+							}
+						}
+					}
+					
+					if(oMap.size()>0){
+						for(String key : oMap.keySet()){
+							allTimes.add(oMap.get(key));
+						}
+					}
+					if(pMap.size()>0){
+						for(String key1 : pMap.keySet()){
+							allTimes.add(pMap.get(key1));
+						}
+					}
+					if(allTimes.size()>0){
+						cs.setPriceForTimes(allTimes);
+						result.add(cs);
+					}
+				}
+			}
+			return getResponse(result);
+			
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	
+	/**
+	 * 查询优惠时段
+	 * @param ClubID
+	 * @param rows
+	 * @param pageNum
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/IsPrivilege")
+	public String IsPrivilege(
+			@FormParam("ClubID") String ClubID,
+			@FormParam("date") String date,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@Context HttpHeaders headers){
+		try {
+			if(date!=null && !date.equals("") && !date.equalsIgnoreCase("null")){
+				
+			}else{
+				return getErrormessage("日期必填,请填写日期");
+			}
+			String week = this.clubServeDAO.GetWeek(date);
+			String sqlString = "";
+			if(ClubID!=null && !ClubID.equals("") && !ClubID.equalsIgnoreCase("null")){
+				sqlString = "and ClubID='"+ClubID+"' ";
+			}else{
+				return getErrormessage("ClubID必填");
+			}
+			Collection<ClubServe> result = new ArrayList<ClubServe>();
+			int count = this.clubServeDAO.getCount(sqlString);
+			
+			Collection<ClubServe> clubServes = this.clubServeDAO.getClubServe(sqlString, pageNum, rows);
+			if(clubServes.size()>0){
+				for(ClubServe cs : clubServes){
+					Collection<PriceForTime> allTimes = new ArrayList<PriceForTime>();
+					Map<String,PriceForTime> oMap = new HashMap<String,PriceForTime>();
+					Map<String,PriceForTime> pMap = new HashMap<String,PriceForTime>();
+					
+					String sql = "and DateTime='"+date+"' and ClubserveID='"+cs.getClubserveID()+"'";
+					String sql1 = "and DateTime is null and week='"+week+"' and IsPrivilege='1' and ClubserveID='"+cs.getClubserveID()+"'";
+					
+					//特殊时段
+					Collection<PriceForTime> times = this.priceForTimeDAO.getByString(sql, null, null);
+					if(times.size()>0){
+						for(PriceForTime ot : times){
+							if(!ot.getIsValid().equals("0")&&!ot.getIsPrivilege().equals("0")){
+								oMap.put(ot.getClubservePriceID(), ot);
+							}
+						}
+					}
+					
+					//一般时段
+					Collection<PriceForTime> times1 = this.priceForTimeDAO.getByString(sql1, null, null);
+					if(times1.size()>0){
+						for(PriceForTime pft1 : times1){
+							pMap.put(pft1.getClubservePriceID(), pft1);
+							if(times.size()>0){
+								for(PriceForTime pft : times){
+									if(pft1.getWeek().equals(pft.getWeek())&&pft1.getTime().equals(pft.getTime())){
+										pMap.remove(pft1.getClubservePriceID(), pft1);
+									}
+								}
+							}
+						}
+					}
+					
+					if(oMap.size()>0){
+						for(String key : oMap.keySet()){
+							allTimes.add(oMap.get(key));
+						}
+					}
+					if(pMap.size()>0){
+						for(String key1 : pMap.keySet()){
+							allTimes.add(pMap.get(key1));
+						}
+					}
+					if(allTimes.size()>0){
+						cs.setPriceForTimes(allTimes);
+						result.add(cs);
+					}
+				}
+			}
+			
+			return getResponse(result);
+			
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	
+	
 	
 	/**
 	 * 保存限时抢购
@@ -662,7 +870,6 @@ public class ClubService extends BaseService {
 	public String saveClubserveLimitTime(String data,@Context HttpHeaders headers){
 		try {
 			ClubserveLimitTime clt = super.fromGson(data, ClubserveLimitTime.class);
-			logger.info("限时------{}",clt);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			if(clt.getClubserveLimitTimeID()!=null&&!clt.getClubserveLimitTimeID().equals("")&&!clt.getClubserveLimitTimeID().equalsIgnoreCase("null")){
 				if(!this.clubserveLimitTimeDAO.update(clt)){
@@ -932,6 +1139,7 @@ public class ClubService extends BaseService {
 		return getErrorResponse();
 		
 	}
+	
 	
 
 }

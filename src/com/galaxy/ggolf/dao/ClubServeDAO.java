@@ -68,6 +68,18 @@ public class ClubServeDAO extends GenericDAO<ClubServe> {
 		return super.count(sql);
 	}
 	
+	public Collection<ClubServe> getClubServe(String sqlString,String pageNum,String rows){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubserve where DeletedFlag is null  "+sqlString+""
+				+ "order by Created_TS desc "+limit+" ";
+		return super.executeQuery(sql);
+	}
+	
+	public int getCount(String sqlString){
+		String sql = "select count(*) from clubserve where DeletedFlag is null "+sqlString+"";
+		return super.count(sql);
+	}
+	
 	/**
 	 * 修改球场供应商(俱乐部)
 	 * @param cs

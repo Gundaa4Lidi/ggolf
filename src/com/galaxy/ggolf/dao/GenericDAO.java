@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -202,6 +203,22 @@ public abstract class GenericDAO<T> {
 		Date now = new Date();
 		String dt = new String(new SimpleDateFormat("yyyy-MM-dd").format(now));
 		return dt;
+	}
+	
+	public String GetWeek(String dt){
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = new Date();
+			if(dt!=null){
+				date = sdf.parse(dt);
+			}
+			String week = new String(new SimpleDateFormat("E").format(date)); 
+			return week.substring(week.length()-1);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class AutoEventService {
 	}
 	
 	public void startTask(){
-		Runnable task = new MessageCloseRunner();
+//		Runnable task = new MessageCloseRunner();
 //		Runnable task1 = new CourseCloseRunner();
 //		Runnable task2 = new CancelClubOrderRunner();
 //		Runnable task3 = new CancelCourseOrderRunner();

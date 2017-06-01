@@ -1,5 +1,7 @@
 package com.galaxy.ggolf.domain;
 
+import java.util.Collection;
+
 public class ClubServe {
 	private String ClubserveID;
 	private String ClubID;
@@ -11,6 +13,7 @@ public class ClubServe {
 	private String MaxDay;
 	private String Created_TS;
 	private String Updated_TS;
+	private Collection<PriceForTime> priceForTimes;
 	
 	public ClubServe(String clubserveID, String clubID, String clubName, String name, String cancelExplain,
 			String reserveExplain, String serviceExplain, String maxDay, String created_TS, String updated_TS) {
@@ -85,6 +88,14 @@ public class ClubServe {
 	}
 	public void setUpdated_TS(String updated_TS) {
 		Updated_TS = updated_TS;
+	}
+
+	public Collection<PriceForTime> getPriceForTimes() {
+		return priceForTimes;
+	}
+
+	public void setPriceForTimes(Collection<PriceForTime> priceForTimes) {
+		this.priceForTimes = priceForTimes;
 	}
 	
 	
