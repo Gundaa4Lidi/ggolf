@@ -167,7 +167,48 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 		return super.executeUpdate(sql);
 	}
 	
+	/**
+	 * 查询某日供应商的时段价格
+	 * @param DateTime
+	 * @param ClubserveID
+	 * @param rows
+	 * @param pageNum
+	 * @return
+	 */
+	public Collection<PriceForTime> getByDateTime(String DateTime, String ClubserveID, String Time, String rows, String pageNum){
+		String time = "";
+		if(Time!=null&&!Time.equals("")){
+			time = "and Time='"+Time+"' ";
+		}
+		String week = super.GetWeek(DateTime);
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from("
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"' "+time+")"
+				+ " UNION "
+				+ "(select * from pricefortime where `DeletedFlag` is null  and `DateTime` is null and `Week`='"+week+"' and `ClubserveID`='"+ClubserveID+"' "+time+""
+				+ " and `Time` not in"
+				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"' "+time+"))) a "
+				+ "where `IsValid`='1' order by Time "+limit+"";
+		return super.executeQuery(sql);
+	}
 	
+	/**
+	 * 查询某日供应商的时段价格数量
+	 * @param DateTime
+	 * @param ClubserveID
+	 * @return
+	 */
+	public int getByDateTimeCount(String DateTime,String ClubserveID){
+		String week = super.GetWeek(DateTime);
+		String sql = "select count(*) from("
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"')"
+				+ " UNION "
+				+ "(select * from pricefortime where `DeletedFlag` is null  and `DateTime` is null and `Week`='"+week+"' and `ClubserveID`='"+ClubserveID+"'"
+				+ " and `Time` not in"
+				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"'))) a "
+				+ "where `IsValid`='1'";
+		return super.count(sql);
+	}
 }
 
 /**                                                                    

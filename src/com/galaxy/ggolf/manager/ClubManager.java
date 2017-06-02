@@ -39,12 +39,12 @@ public class ClubManager {
 		return clubDAO.getCount();
 	}
 	
-	public Collection<Club> getSearchClub(String keyword, String rows,String pageNum)throws Exception{
-		return clubDAO.getSearchClub(keyword, rows, pageNum);
+	public Collection<Club> getSearchClub(String sqlString, String rows,String pageNum)throws Exception{
+		return clubDAO.getSearchClub(sqlString, rows, pageNum);
 	}
 	
-	public int getSearchCount(String keyword)throws Exception{
-		return clubDAO.getSearchCount(keyword);
+	public int getSearchCount(String sqlString)throws Exception{
+		return clubDAO.getSearchCount(sqlString);
 	}
 	
 	

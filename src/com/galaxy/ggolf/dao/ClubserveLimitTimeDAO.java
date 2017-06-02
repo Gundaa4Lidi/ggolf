@@ -32,19 +32,19 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 			clt.setClubserveLimitTimeID(id);
 			String sql = "insert into clubservelimittime("
 					+ "ClubserveLimitTimeID,"
+					+ "Name,"
 					+ "ClubserveID,"
 					+ "Price,"
 					+ "StartTime,"
 					+ "EndTime,"
-					+ "IsUsed,"
 					+ "Count,"
 					+ "Date,"
 					+ "BeginStartTime,"
 					+ "BeginEndTime,"
 					+ "ServiceExplain,"
 					+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?) ";
-			return super.executeUpdate(sql,clt.getClubserveLimitTimeID(),clt.getClubserveID(),clt.getPrice(),
-					clt.getStartTime(),clt.getEndTime(),clt.getIsUsed(),clt.getCount(),clt.getDate(),
+			return super.executeUpdate(sql,clt.getClubserveLimitTimeID(),clt.getName(),clt.getClubserveID(),clt.getPrice(),
+					clt.getStartTime(),clt.getEndTime(),clt.getCount(),clt.getDate(),
 					clt.getBeginStartTime(),clt.getBeginEndTime(),clt.getServiceExplain(),Time());
 		}
 		return false;
@@ -52,19 +52,19 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 	
 	public boolean update(ClubserveLimitTime clt){
 		String sql = "update clubservelimittime set "
+				+ "Name=?,"
 				+ "ClubserveID=?,"
 				+ "Price=?,"
 				+ "StartTime=?,"
 				+ "EndTime=?,"
-				+ "IsUsed=?,"
 				+ "Count=?,"
 				+ "Date=?,"
 				+ "BeginStartTime=?,"
 				+ "BeginEndTime=?,"
 				+ "ServiceExplain=?,"
 				+ "Updated_TS=? where ClubserveLimitTimeID=?";
-		return super.executeUpdate(sql,clt.getClubserveID(),clt.getPrice(),clt.getStartTime(),
-				clt.getEndTime(),clt.getIsUsed(),clt.getCount(),clt.getDate(),clt.getBeginStartTime(),clt.getBeginStartTime(),
+		return super.executeUpdate(sql,clt.getName(),clt.getClubserveID(),clt.getPrice(),clt.getStartTime(),
+				clt.getEndTime(),clt.getCount(),clt.getDate(),clt.getBeginStartTime(),clt.getBeginStartTime(),
 				clt.getServiceExplain(),Time(),clt.getClubserveLimitTimeID());
 	}
 	

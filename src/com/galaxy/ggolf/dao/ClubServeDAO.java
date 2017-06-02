@@ -81,6 +81,88 @@ public class ClubServeDAO extends GenericDAO<ClubServe> {
 	}
 	
 	/**
+	 * 是否有效和有优惠时段的供应商
+	 * @param DateTime
+	 * @param ClubID
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
+	public Collection<ClubServe> getPrivilegeClubserve(String DateTime,String ClubID, String pageNum,String rows){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubserve where DeletedFlag is null and ClubserveID in("
+				+ "select ClubserveID from pricefortime where DeletedFlag is null and IsPrivilege='1'"
+				+ " and IsValid='1' and DateTime='"+DateTime+"' and ClubID='"+ClubID+"' group by ClubserveID)"
+				+ " order by Created_TS desc "+limit+" ";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 是否有效和有优惠时段的供应商数量
+	 * @param DateTime
+	 * @param ClubID
+	 * @return
+	 */
+	public int getPrivilegeCount(String DateTime,String ClubID){
+		String sql = "select count(*) from clubserve where DeletedFlag is null and ClubserveID in("
+				+ "select ClubserveID from pricefortime where DeletedFlag is null IsPrivilege='1'"
+				+ " and IsValid='1' and DateTime='"+DateTime+"' and ClubID='"+ClubID+"' group by ClubserveID)";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 查询有效价格时段的供应商
+	 * @param DateTime
+	 * @param ClubID
+	 * @param pageNum
+	 * @param rows
+	 * @return
+	 */
+	public Collection<ClubServe> getValidClubserve(String DateTime,String ClubID, String Time, String pageNum,String rows){
+		String time = "";
+		if(Time!=null&&!Time.equals("")){
+			time = "and Time='"+Time+"' ";
+		}
+		String limit = super.limit(pageNum, rows);
+		String week = super.GetWeek(DateTime);
+		String sql = "select * from clubserve where DeletedFlag is null and ClubserveID in("
+				+ "select ClubserveID from("
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' "+time+")"
+				+ " UNION "
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime` is null and `Week`='"+week+"' "+time+""
+				+ " and `Time` not in"
+				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' "+time+"))) a "
+				+ "where `IsValid`='1' and ClubID='"+ClubID+"' group by `ClubserveID`)"
+				+ " order by Created_TS desc "+limit+" ";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 查询有效价格时段的供应商数量
+	 * @param DateTime
+	 * @param ClubID
+	 * @return
+	 */
+	public int getValidClubserveCount(String DateTime,String ClubID,String Time){
+		String time = "";
+		if(Time!=null&&!Time.equals("")){
+			time = "and Time='"+Time+"' ";
+		}
+		String week = super.GetWeek(DateTime);
+		String sql = "select count(*) from clubserve where DeletedFlag is null and ClubserveID in("
+				+ "select ClubserveID from("
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' "+time+")"
+				+ " UNION "
+				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime` is null and `Week`='"+week+"' "+time+""
+				+ " and `Time` not in"
+				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' "+time+"))) a "
+				+ "where `IsValid`='1' and ClubID='"+ClubID+"' group by `ClubserveID`)";
+		return super.count(sql);
+	}
+	
+	
+	
+	/**
 	 * 修改球场供应商(俱乐部)
 	 * @param cs
 	 * @return

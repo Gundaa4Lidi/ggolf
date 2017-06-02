@@ -256,7 +256,7 @@
                                     </h4>
                                 </div>
                                 <div id="contain{{$index}}" class="panel-collapse collapse">
-                                    <div class="panel-body">
+                                    <div class="panel-body" >
                                         <div class="row">
                                             <div class="col-sm-4 pull-right" ng-show="edit">
                                                 <div class="form-group">
@@ -266,11 +266,52 @@
                                             </div>
                                         </div>
                                         <uib-tabset active="active" justified="true">
-                                            <uib-tab index="$index" class="p-t-10" ng-repeat="weekday in weekdays track by $index" ng-click="wnIndex($index)" heading="{{weekday=='other'?'特殊时段':weekday}}">
+                                            <uib-tab index="0" heading="限时活动">
                                                 <div class="p-t-10">
-                                                    <!--<div class="col-sm-12">-->
-                                                    <!--<div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>-->
-                                                    <!--</div>-->
+                                                    <div class="col-sm-12">
+                                                        <!--<div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>-->
+                                                        <div class="text-center" >
+                                                            <div class="m-t-25" >
+                                                                <small>暂无限时活动</small>
+                                                            </div>
+                                                            <!--<table class="table table-bordered table-hover table_wrap">-->
+                                                            <!--</table>-->
+                                                            <div class="list-group list-group--block contact-lists" >
+                                                                <div class="list-group__header text-left">
+                                                                    <span>共1个课程</span>
+                                                                    <!--<input ng-model="keyword2">-->
+                                                                </div>
+                                                                <div class="list-group__wrap">
+                                                                    <div class="list-group-item media" href="#">
+                                                                        <div class="p-t-20 p-l-10">
+                                                                            <div class="row pull-left">
+                                                                                <h4><span>三角形中单</span></h4>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="list-group__label list-group__label--float">
+                                                                            <span class="mdc-bg-amber-A700">申请中</span>
+                                                                        </div>
+                                                                        <div class="actions list-group__actions list-group__actions--centered">
+                                                                            <div class="dropdown">
+                                                                                <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
+                                                                                <ul class="dropdown-menu pull-right">
+                                                                                    <li><a href="#">详情</a></li>
+                                                                                    <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="m-t-25">
+                                                                <a href="" class="red_btn mdc-text-red" ng-click="ApplyCourse()">添加限时活动</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </uib-tab>
+                                            <uib-tab index="$index + 1" class="p-t-10" ng-repeat="weekday in weekdays track by $index" ng-click="wnIndex($index)" heading="{{weekday=='other'?'特殊时段':'周'+weekday}}">
+                                                <div class="p-t-10">
                                                     <div>
                                                         <div class="col-sm-4" ng-show="weekday==='other'">
                                                             <div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>
@@ -387,14 +428,14 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
-                                                                    <div class="col-sm-6">
+                                                                    <div class="col-sm-6" ng-show="weekday==='other'">
                                                                         <label>是否优惠时段</label>
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="1">是
+                                                                                <input type="radio" name="IsPrivilege" ng-disabled="!edit" ng-model="currentTime.IsPrivilege" value="1">是
                                                                             </div>
                                                                             <div class="col-md-6">
-                                                                                <input type="radio" name="IsPrivilege" ng-model="currentTime.IsPrivilege" value="0">否
+                                                                                <input type="radio" name="IsPrivilege" ng-disabled="!edit" ng-model="currentTime.IsPrivilege" value="0">否
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -402,10 +443,10 @@
                                                                         <label>是否有效时段</label>
                                                                         <div class="row">
                                                                             <div class="col-md-4">
-                                                                                <input type="radio" name="IsValid" ng-model="currentTime.IsValid" value="1">是
+                                                                                <input type="radio" name="IsValid" ng-disabled="!edit" ng-model="currentTime.IsValid" value="1">是
                                                                             </div>
                                                                             <div class="col-md-6">
-                                                                                <input type="radio" name="IsValid" ng-model="currentTime.IsValid" value="0">否
+                                                                                <input type="radio" name="IsValid" ng-disabled="!edit" ng-model="currentTime.IsValid" value="0">否
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -459,6 +500,74 @@
 
         </div>
     </section>
+    <div class="modal fade" id="addLimitTime" data-backdrop="static"
+         data-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">限时活动</h4>
+                </div>
+                <form class="new-contact ng-pristine ng-valid" name="limitTimeForm" ng-submit="submitlimitTimeForm(limitTimeForm.$valid)" novalidate>
+                    <div class="modal-body">
+
+                        <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.DateTime.$invalid && !limitTimeForm.DateTime.$pristine }">
+                            <label>特殊日期</label>
+                            <input type="text" readonly class="form-control" name="DateTime" uib-datepicker-popup="{{format}}" ng-model="DateTime" required>
+                            <p ng-show="limitTimeForm..$invalid && !limitTimeForm..$pristine" class="help-block">必填项</p>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : limitTimeForm.Title.$invalid && !limitTimeForm.Title.$pristine }">
+                                    <label>活动名称<span style="color: red">*</span></label>
+                                    <input type="text" name="Title" ng-model="currentCourse.Title"
+                                           class="form-control" required>
+                                    <p ng-show="courseApplyForm.Title.$invalid && !courseApplyForm.Title.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.Title.$error.required">必填项</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group"
+                                 ng-class="{ 'has-error' : courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine }">
+                                <label>课程价格<span style="color: red">*</span></label>
+                                <div class="input-group">
+                                    <input type="text" name="Price" ng-model="currentCourse.Price"
+                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)$/">
+                                    <span class="input-group-addon">元</span>
+                                </div>
+                                <p ng-show="courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine"
+                                   class="help-block">
+                                    <span ng-show="courseApplyForm.Price.$error.required">必填项</span>
+                                    <span ng-show="courseApplyForm.Price.$error.pattern">格式有误</span>
+                                </p>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine }">
+                                    <label>课程描述<span style="color: red">*</span></label>
+                                    <textarea type="text" name="ContainExplain" cols="1" rows="3" class="form-control"
+                                              ng-model="currentCourse.ContainExplain" required></textarea>
+                                    <p ng-show="courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine"
+                                       class="help-block">
+                                        <span ng-show="courseApplyForm.ContainExplain.$error.required">必填项</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer" style="padding: 0 30px 10px;">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" ng-disabled="limitTimeForm.$invalid" ng-click="limitTimeForm.$setPristine();">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="addDateTime" data-backdrop="static"
          data-keyboard="false">
         <div class="modal-dialog" style="width:380px;">

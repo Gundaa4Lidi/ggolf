@@ -197,7 +197,7 @@ public class ClubDAO extends GenericDAO<Club> {
 		String sql = "update club set DeletedFlag='Y',updated_TS='"+Time()+"' where ClubID='"+ clubID +"'";
 		return super.executeUpdate(sql);
 	}
-
+	
 }
 
 /**

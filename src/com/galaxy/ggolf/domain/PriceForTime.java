@@ -98,11 +98,9 @@ public class PriceForTime {
 	public String getIsValid() {
 		return IsValid;
 	}
-
 	public void setIsValid(String isValid) {
 		IsValid = isValid;
 	}
-
 	public String getDateTime() {
 		return DateTime;
 	}

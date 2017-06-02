@@ -22,6 +22,7 @@ public class Club {
     private String Longitude;  //经度
     private String Latitude;  //纬度
     private String Created_TS; //创建时间
+    private Collection<ClubServe> clubServes;
     
     
 	
@@ -163,6 +164,12 @@ public class Club {
 	}
 	public void setCreated_TS(String created_TS) {
 		Created_TS = created_TS;
+	}
+	public Collection<ClubServe> getClubServes() {
+		return clubServes;
+	}
+	public void setClubServes(Collection<ClubServe> clubServes) {
+		this.clubServes = clubServes;
 	}
     
 

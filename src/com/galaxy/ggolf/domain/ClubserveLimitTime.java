@@ -3,11 +3,11 @@ package com.galaxy.ggolf.domain;
 public class ClubserveLimitTime {
 
     private String ClubserveLimitTimeID;
+    private String Name;
     private String ClubserveID;
     private String Price;
     private String StartTime;
     private String EndTime;
-    private String IsUsed;
     private String Count;
     private String Date;
     private String ServiceExplain;
@@ -16,15 +16,15 @@ public class ClubserveLimitTime {
     private String Created_TS;
     private String Updated_TS;
     
-	public ClubserveLimitTime(String clubserveLimitTimeID, String clubserveID, String price, String startTime,
-			String endTime, String isUsed, String count, String date, String serviceExplain, String beginStartTime,
+	public ClubserveLimitTime(String clubserveLimitTimeID,String name, String clubserveID, String price, String startTime,
+			String endTime, String count, String date, String serviceExplain, String beginStartTime,
 			String beginEndTime, String created_TS, String updated_TS) {
 		ClubserveLimitTimeID = clubserveLimitTimeID;
+		Name = name;
 		ClubserveID = clubserveID;
 		Price = price;
 		StartTime = startTime;
 		EndTime = endTime;
-		IsUsed = isUsed;
 		Count = count;
 		Date = date;
 		ServiceExplain = serviceExplain;
@@ -40,6 +40,12 @@ public class ClubserveLimitTime {
 	}
 	public void setClubserveLimitTimeID(String clubserveLimitTimeID) {
 		ClubserveLimitTimeID = clubserveLimitTimeID;
+	}
+	public String getName() {
+		return Name;
+	}
+	public void setName(String name) {
+		Name = name;
 	}
 	public String getClubserveID() {
 		return ClubserveID;
@@ -64,12 +70,6 @@ public class ClubserveLimitTime {
 	}
 	public void setEndTime(String endTime) {
 		EndTime = endTime;
-	}
-	public String getIsUsed() {
-		return IsUsed;
-	}
-	public void setIsUsed(String isUsed) {
-		IsUsed = isUsed;
 	}
 	public String getCount() {
 		return Count;

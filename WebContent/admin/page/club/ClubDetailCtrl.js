@@ -841,4 +841,5 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     //     }
     //
     // }
+
 }
