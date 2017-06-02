@@ -304,7 +304,7 @@
                                                                 </div>
                                                             </div>
                                                             <div class="m-t-25">
-                                                                <a href="" class="red_btn mdc-text-red" ng-click="ApplyCourse()">添加限时活动</a>
+                                                                <a href="" class="red_btn mdc-text-red" ng-click="AddLimitTime()">添加限时活动</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -521,13 +521,13 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group"
-                                     ng-class="{ 'has-error' : limitTimeForm.Title.$invalid && !limitTimeForm.Title.$pristine }">
+                                     ng-class="{ 'has-error' : limitTimeForm.Name.$invalid && !limitTimeForm.Name.$pristine }">
                                     <label>活动名称<span style="color: red">*</span></label>
-                                    <input type="text" name="Title" ng-model="currentCourse.Title"
+                                    <input type="text" name="Title" ng-model="currentLimitTime.Name"
                                            class="form-control" required>
-                                    <p ng-show="courseApplyForm.Title.$invalid && !courseApplyForm.Title.$pristine"
+                                    <p ng-show="limitTimeForm.Title.$invalid && !limitTimeForm.Title.$pristine"
                                        class="help-block">
-                                        <span ng-show="courseApplyForm.Title.$error.required">必填项</span>
+                                        <span ng-show="limitTimeForm.Title.$error.required">必填项</span>
                                     </p>
                                 </div>
                             </div>
@@ -545,6 +545,9 @@
                                     <span ng-show="courseApplyForm.Price.$error.pattern">格式有误</span>
                                 </p>
                             </div>
+
+                        </div>
+                        <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine }">

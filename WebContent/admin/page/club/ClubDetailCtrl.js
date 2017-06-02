@@ -842,4 +842,11 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     //
     // }
 
+    sc.currentLimitTime = null;
+    /**
+     * 添加限时活动
+     */
+    sc.AddLimitTime = function () {
+        $("#addLimitTime").modal("show");
+    }
 }
