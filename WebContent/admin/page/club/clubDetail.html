@@ -512,47 +512,79 @@
                 <form class="new-contact ng-pristine ng-valid" name="limitTimeForm" ng-submit="submitlimitTimeForm(limitTimeForm.$valid)" novalidate>
                     <div class="modal-body">
 
-                        <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.DateTime.$invalid && !limitTimeForm.DateTime.$pristine }">
-                            <label>特殊日期</label>
-                            <input type="text" readonly class="form-control" name="DateTime" uib-datepicker-popup="{{format}}" ng-model="DateTime" required>
-                            <p ng-show="limitTimeForm..$invalid && !limitTimeForm..$pristine" class="help-block">必填项</p>
-                        </div>
+                        <!--<div class="form-group" ng-class="{ 'has-error' : limitTimeForm.DateTime.$invalid && !limitTimeForm.DateTime.$pristine }">-->
+                            <!--<label>特殊日期</label>-->
+                            <!--<input type="text" readonly class="form-control" name="DateTime" uib-datepicker-popup="{{format}}" ng-model="DateTime" required>-->
+                            <!--<p ng-show="limitTimeForm..$invalid && !limitTimeForm..$pristine" class="help-block">必填项</p>-->
+                        <!--</div>-->
                         <div class="row">
-
                             <div class="col-sm-6">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : limitTimeForm.Name.$invalid && !limitTimeForm.Name.$pristine }">
                                     <label>活动名称<span style="color: red">*</span></label>
-                                    <input type="text" name="Title" ng-model="currentLimitTime.Name"
+                                    <input type="text" name="Name" ng-model="currentLimitTime.Name"
                                            class="form-control" required>
-                                    <p ng-show="limitTimeForm.Title.$invalid && !limitTimeForm.Title.$pristine"
+                                    <p ng-show="limitTimeForm.Name.$invalid && !limitTimeForm.Name.$pristine"
                                        class="help-block">
-                                        <span ng-show="limitTimeForm.Title.$error.required">必填项</span>
+                                        <span ng-show="limitTimeForm.Name.$error.required">必填项</span>
                                     </p>
                                 </div>
                             </div>
-                            <div class="form-group"
-                                 ng-class="{ 'has-error' : courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine }">
-                                <label>课程价格<span style="color: red">*</span></label>
-                                <div class="input-group">
-                                    <input type="text" name="Price" ng-model="currentCourse.Price"
-                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)$/">
-                                    <span class="input-group-addon">元</span>
+                            <div class="col-sm-6">
+                                <div class="form-group"
+                                     ng-class="{ 'has-error' : limitTimeForm.Price.$invalid && !limitTimeForm.Price.$pristine }">
+                                    <label>抢购金额<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="Price" ng-model="currentLimitTime.Price"
+                                               class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)$/">
+                                        <span class="input-group-addon">元</span>
+                                    </div>
+                                    <p ng-show="limitTimeForm.Price.$invalid && !limitTimeForm.Price.$pristine"
+                                       class="help-block">
+                                        <span ng-show="limitTimeForm.Price.$error.required">必填项</span>
+                                        <span ng-show="limitTimeForm.Price.$error.pattern">格式有误</span>
+                                    </p>
                                 </div>
-                                <p ng-show="courseApplyForm.Price.$invalid && !courseApplyForm.Price.$pristine"
-                                   class="help-block">
-                                    <span ng-show="courseApplyForm.Price.$error.required">必填项</span>
-                                    <span ng-show="courseApplyForm.Price.$error.pattern">格式有误</span>
-                                </p>
                             </div>
-
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label>使用日期<span style="color: red">*</span></label>
+                                    <div class="input-group" ng-class="{ 'has-error' : clubForm.CreateTime.$invalid && !clubForm.CreateTime.$pristine }">
+                                        <input type="text" name="UseDate" readonly class="form-control" uib-datepicker-popup="{{format}}" ng-model="UseDate"
+                                               is-open="status.LTDateOpen" datepicker-options="dateOptions" close-text="关闭" current-text="今天" ng-required="true"/>
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="IsOpen(3)">
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        </button>
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div class="form-group">
+                                    <label>使用时间范围</label>
+                                    <div class="col-sm-4">
+                                        <div uib-timepicker ng-model="mytime" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="false"></div>
+                                    </div>
+                                    <div class="col-sm-4 text-center">
+                                        <i class="fa fa-arrows-h fa-3x" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div uib-timepicker ng-model="mytime" ng-change="changed()" hour-step="1" minute-step="30" show-meridian="false"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group"
                                      ng-class="{ 'has-error' : courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine }">
-                                    <label>课程描述<span style="color: red">*</span></label>
-                                    <textarea type="text" name="ContainExplain" cols="1" rows="3" class="form-control"
+                                    <label>服务说明<span style="color: red">*</span></label>
+                                    <textarea type="text" name="ContainExplain" cols="1" rows="2" class="form-control"
                                               ng-model="currentCourse.ContainExplain" required></textarea>
                                     <p ng-show="courseApplyForm.ContainExplain.$invalid && !courseApplyForm.ContainExplain.$pristine"
                                        class="help-block">

@@ -16,7 +16,8 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     sc.status = {
         dateOpen : false,
         dateTimeOpen : false,
-        uibOpen : false
+        uibOpen : false,
+        UseDateOpen : false,
     }
     sc.weekdays = ["一","二","三","四","五","六","日","other"];
     sc.Payment = [
@@ -147,10 +148,13 @@ var ClubDetailController = function($scope,appConfig,$timeout){
 
     sc.IsOpen = function (i) {
         if(i==1){
-            sc.status.dateOpen = true;
+            sc.status.dateOpen = !sc.status.dateOpen;
         }
         if(i==2){
-            sc.status.dateTimeOpen = true;
+            sc.status.dateTimeOpen = !sc.status.dateTimeOpen;
+        }
+        if(i==3){
+            sc.status.LTDateOpen = !sc.status.UseDateOpen;
         }
     }
 
