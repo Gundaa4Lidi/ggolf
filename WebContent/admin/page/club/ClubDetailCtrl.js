@@ -851,6 +851,24 @@ var ClubDetailController = function($scope,appConfig,$timeout){
      * 添加限时活动
      */
     sc.AddLimitTime = function () {
+        sc.currentLimitTime = new Object();
         $("#addLimitTime").modal("show");
+        var getDate = new Date().getDate();
+        var bst = new Date().setDate(getDate+1);
+        var bet = new Date().setDate(getDate+3);
+        var hour = "06:00";
+        var format = "yyyy-MM-dd";
+        var startTime = sc.formatDT(bst,format) + " " + hour;
+        var endTime = sc.formatDT(bet,format) + " " + hour;
+        sc.begin_start_time = startTime;
+        sc.begin_end_time = endTime;
+        // sc.currentLimitTime.BeginStartTime = startTime ;
+        // sc.currentLimitTime.BeginEndTime = endTime;
     }
+
+    sc.changeDate = function () {
+        var now
+    }
+
+
 }

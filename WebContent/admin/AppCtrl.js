@@ -26,6 +26,7 @@ app.directive('scrollTop',['$window', '$document', '$compile',scrollTop]);
 app.directive('selectAddress',['$http', '$q', '$compile','cities',selectAddress]);
 app.directive('activityView',activityView);
 app.directive('pageLoader',['$window', '$document', '$compile',pageLoader]);
+app.directive('ngTime',ngTime);
 
 app.controller('UserController',UserController);
 app.controller('CoachController',CoachController);
