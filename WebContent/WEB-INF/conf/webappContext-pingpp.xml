@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+			
+	<bean id="pingPPService" class="com.galaxy.ggolf.rest.PingPPService">
+		<constructor-arg ref="clubOrderDAO"/>
+		<constructor-arg ref="courseOrderDAO"/>
+	</bean>
+	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
+	</bean>
+	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
+	</bean>
+</beans>

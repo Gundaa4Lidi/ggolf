@@ -193,6 +193,29 @@ public class PriceForTimeDAO extends GenericDAO<PriceForTime> {
 	}
 	
 	/**
+	 * 按价格排序获取时段
+	 * @param DateTime
+	 * @param ClubserveID
+	 * @param Time
+	 * @return
+	 */
+//	public Collection<PriceForTime> sortForPrice(String DateTime, String ClubserveID, String Time){
+//		String time = "";
+//		if(Time!=null&&!Time.equals("")){
+//			time = "and Time='"+Time+"' ";
+//		}
+//		String week = super.GetWeek(DateTime);
+//		String sql = "select * from("
+//				+ "(select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"' "+time+")"
+//				+ " UNION "
+//				+ "(select * from pricefortime where `DeletedFlag` is null  and `DateTime` is null and `Week`='"+week+"' and `ClubserveID`='"+ClubserveID+"' "+time+""
+//				+ " and `Time` not in"
+//				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+DateTime+"' and `ClubserveID`='"+ClubserveID+"' "+time+"))) a "
+//				+ "where `IsValid`='1' order by DownPayment ";
+//		return super.executeQuery(sql);
+//	}
+	
+	/**
 	 * 查询某日供应商的时段价格数量
 	 * @param DateTime
 	 * @param ClubserveID

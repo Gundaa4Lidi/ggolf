@@ -27,8 +27,10 @@ import com.galaxy.ggolf.domain.ClubServe;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.dto.ClubOrderData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
+import com.galaxy.ggolf.tools.PingPPUtil;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.model.Charge;
+import com.pingplusplus.model.ChargeCollection;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -41,6 +43,9 @@ public class ClubOrderService extends BaseService {
 	private static final String Confirm_ball = "确认球位"; 
 	private static final String Online_booking = "在线预订";
 	private static final String Finish_booking = "完成预订";
+	private static final String Refund_apply = "退款申请";
+	private static final String Refund_success = "退款成功";
+	private static final String Refund_field = "退款失败";
 	
 	private ClubOrderDAO orderDAO;
 	private ClubDAO clubDAO;
@@ -171,6 +176,7 @@ public class ClubOrderService extends BaseService {
 	@Path("/createOrder")
 	public String createOrder(String data,@Context HttpHeaders headers){
 		try {
+			logger.info("订单数据------{}",data);
 			ClubOrder order = super.fromGson(data, ClubOrder.class);
 			if(order.getClubserveID()!=null){
 				ClubServe cs = this.clubServeDAO.getClubServe(order.getClubserveID());
@@ -208,7 +214,6 @@ public class ClubOrderService extends BaseService {
 	@Path("/updateOrderState")
 	public String updateState(@FormParam("StateType") String StateType,
 			@FormParam("OrderID") String OrderID,
-			@FormParam("PayType") String payType,
 			@Context HttpHeaders headers){
 		try {
 			if(StateType.equals("0")){
@@ -221,21 +226,24 @@ public class ClubOrderService extends BaseService {
 					throw new GalaxyLabException("Error in confirm for ball");
 				}
 			}
-			if(StateType.equals("3")){
-				if(!this.orderDAO.onlineBooking(OrderID)){
-					throw new GalaxyLabException("Error in online booking ");
-				}
-			}
-			if(StateType.equals("4")){
-				if(!this.orderDAO.finishBooking(OrderID,payType)){
-					throw new GalaxyLabException("Error in finish booking");
-				}
-			}
+//			if(StateType.equals("3")){
+//				if(!this.orderDAO.onlineBooking(OrderID)){
+//					throw new GalaxyLabException("Error in online booking ");
+//				}
+//			}
+//			if(StateType.equals("4")){
+//				if(!this.orderDAO.finishBooking(OrderID,ch.getChannel())){
+//					throw new GalaxyLabException("Error in finish booking");
+//				}
+//			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
 		return getErrorResponse();
 	}
+
+	
+	
 	
 	public Charge sendPingppOrder(String orderID,
 			String price,
@@ -246,14 +254,15 @@ public class ClubOrderService extends BaseService {
 			String phoneNum){
 		try {
 			Pingpp.apiKey = CommonConfig.PingPP_Apikey;
-			String path = "D:\\workspace\\GGolfz\\ggolf\\src\\my_rsa_private_key.pem";
+			String path = "D:\\workspace\\GGolfz\\ggolf\\res\\my_rsa_private_key.pem";
 			Pingpp.privateKeyPath = path;
 			double orderPrice = Double.parseDouble(price) * 100;
 			Map<String, Object> chargeParams = new HashMap<String, Object>();
 			chargeParams.put("order_no",  orderID);
+//			chargeParams.put("Authorization",CommonConfig.PingPP_Apikey);
 			chargeParams.put("amount", orderPrice);
 			Map<String, String> app = new HashMap<String, String>();
-			app.put("id", CommonConfig.PingPP_Apikey);
+			app.put("id", CommonConfig.PingPP_AppID);
 			chargeParams.put("app", app);
 			chargeParams.put("channel",  channel);
 			chargeParams.put("currency", "cny");

@@ -21,6 +21,7 @@ public class Club {
     private String IsTop; //是否置顶轮播图
     private String Longitude;  //经度
     private String Latitude;  //纬度
+    private String Distance; //距离
     private String Created_TS; //创建时间
     private Collection<ClubServe> clubServes;
     
@@ -158,6 +159,12 @@ public class Club {
 	}
 	public void setLatitude(String latitude) {
 		Latitude = latitude;
+	}
+	public String getDistance() {
+		return Distance;
+	}
+	public void setDistance(String distance) {
+		Distance = distance;
 	}
 	public String getCreated_TS() {
 		return Created_TS;

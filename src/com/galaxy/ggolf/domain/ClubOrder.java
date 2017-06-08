@@ -24,6 +24,7 @@ public class ClubOrder {
 	private String Names;
 	private String Tel;
 	private String ServiceExplain;
+	private String ChargeID;
 	private String Created_TS;
 	private String Updated_TS;
 	private Collection<Activity> Activities;
@@ -32,7 +33,7 @@ public class ClubOrder {
 	public ClubOrder(String uID, String orderID, String userID, String clubID, String clubName, String clubserveID,
 			String clubserveName, String clubserveLimitTimeID, String clubservePriceID, String state, String createTime,
 			String type, String downPayment, String payBillorNot, String startDate, String startTime, String names,
-			String tel, String serviceExplain, String created_TS, String updated_TS, Collection<Activity> activities) {
+			String tel, String serviceExplain, String chargeID, String created_TS, String updated_TS, Collection<Activity> activities) {
 		UID = uID;
 		OrderID = orderID;
 		UserID = userID;
@@ -52,10 +53,13 @@ public class ClubOrder {
 		Names = names;
 		Tel = tel;
 		ServiceExplain = serviceExplain;
+		ChargeID = chargeID;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 		Activities = activities;
 	}
+
+
 
 
 	public String getUID() {
@@ -276,8 +280,14 @@ public class ClubOrder {
 	public void setActivities(Collection<Activity> activities) {
 		Activities = activities;
 	}
-	
-	
+
+	public String getChargeID() {
+		return ChargeID;
+	}
+
+	public void setChargeID(String chargeID) {
+		ChargeID = chargeID;
+	}
 	
 	
 	

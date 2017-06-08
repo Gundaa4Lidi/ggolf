@@ -219,7 +219,6 @@ public class FileUtil {
 	 /**
      * <p>Title: thumbnailImage</p>
      * <p>Description: 根据图片路径生成缩略图 </p>
-     * @param imagePath    原图片路径
      * @param w            缩略图宽
      * @param h            缩略图高
      * @param prevfix    生成缩略图的前缀

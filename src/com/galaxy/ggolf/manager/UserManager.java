@@ -1,5 +1,6 @@
 package com.galaxy.ggolf.manager;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -328,8 +329,9 @@ public class UserManager {
 	
 	//获取范围内的人距离
 	public Collection<User> getDistance(double lon1, double lat1, Collection<User> userList){
-		List<User> users = (List<User>) userList;
-		if(users.size()>0){
+		ArrayList<User> users = new ArrayList<User>(); 
+		if(userList.size()>0){
+			users = (ArrayList<User>) userList;
 			for(User user : users){
 				if(user.getLongitude()!=null && user.getLatitude()!=null){
 					double lon2 = Double.parseDouble(user.getLongitude());//用户的经度
@@ -337,7 +339,6 @@ public class UserManager {
 					double distance = LocationUtil.GetDistance(lon1, lat1, lon2, lat2);//获取距离
 					user.setDistance(String.valueOf(distance));
 				}
-				
 			}
 			long bt = System.nanoTime();//开始排序
 			Collections.sort(users,new Comparator<User>() {
@@ -361,10 +362,9 @@ public class UserManager {
 			});
 			long et = System.nanoTime();//结束排序
 			logger.info("耗时----{}to{}",bt,et);
-			return users;
 			
 		}
-		return null;
+		return users;
 	}
 	
 	

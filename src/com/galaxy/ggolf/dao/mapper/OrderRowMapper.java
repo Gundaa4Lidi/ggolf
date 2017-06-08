@@ -28,6 +28,7 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 	private static final String COLUMN_Names = "Names";
 	private static final String COLUMN_Tel = "Tel";
 	private static final String COLUMN_ServiceExplain = "ServiceExplain";
+	private static final String COLUMN_ChargeID = "ChargeID";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 	private static final String COLUMN_Activity = "Activity";
@@ -53,11 +54,12 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 		String Names = res.getString(COLUMN_Names);
 		String Tel = res.getString(COLUMN_Tel);
 		String ServiceExplain = res.getString(COLUMN_ServiceExplain);
+		String ChargeID = res.getString(COLUMN_ChargeID);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
 		String act = res.getString(COLUMN_Activity);
-		if(act.indexOf("\\|")!=-1){
+		if(act!=null&&act.indexOf("\\|")!=-1){
 			String[] activities = act.split("\\|");
 			for(String activity:activities){
 				Activity a = new Activity();
@@ -67,7 +69,7 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 				Activities.add(a);
 			}
 		}
-		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,Tel,ServiceExplain,Created_TS,Updated_TS,Activities);
+		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,Tel,ServiceExplain,ChargeID,Created_TS,Updated_TS,Activities);
 	}
 
 }

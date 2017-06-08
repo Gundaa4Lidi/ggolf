@@ -6,7 +6,7 @@
   <display-name>GGolfz</display-name>
   <welcome-file-list>
     <welcome-file>main.html</welcome-file>
-    <welcome-file>index.html</welcome-file>
+    <!--<welcome-file>index.html</welcome-file>-->
   </welcome-file-list>
   <context-param>
     <param-name>contextConfigLocation</param-name>

@@ -350,40 +350,40 @@ public class ScoreService extends BaseService {
 	    fr.setHead_portrait(u.getHead_portrait());
 	}
 	String Ub = "";
-	if (grade.size() > 0) {
-	    for (Score f : grade) {
-		if (f.getUGrade() != null && !f.getUGrade().equals("")) {
-		    Ub = f.getUGrade();
+		if (grade.size() > 0) {
+			for (Score f : grade) {
+				if (f.getUGrade() != null && !f.getUGrade().equals("")) {
+					Ub = f.getUGrade();
+				} else {
+					Ub = "200";
+				}
+			}
+			String Ub2 = "";
+			Collection<Track> tk = scoreManager.getTrackBest(UserId, Time);
+			if (tk.size() > 0) {
+				for (Track t : tk) {
+					if (t.getUGrade() != null && !t.getUGrade().equals("")) {
+						Ub2 = t.getUGrade();
+					} else {
+						Ub2 = "200";
+					}
+				}
+
+				if (Integer.parseInt(Ub) <= Integer.parseInt(Ub2)) {
+					fr.setBest(Ub);
+				} else {
+					fr.setBest(Ub2);
+				}
+
+			} else {
+				fr.setBest(Ub);
+			}
+
+			frk.add(fr);
 		} else {
-		    Ub = "200";
+			fr.setBest("200");
+			frk.add(fr);
 		}
-	    }
-	    String Ub2 = "";
-	    Collection<Track> tk = scoreManager.getTrackBest(UserId, Time);
-	    if (tk.size() > 0) {
-		for (Track t : tk) {
-		    if (t.getUGrade() != null && !t.getUGrade().equals("")) {
-			Ub2 = t.getUGrade();
-		    } else {
-			Ub2 = "200";
-		    }
-		}
-
-		if (Integer.parseInt(Ub) <= Integer.parseInt(Ub2)) {
-		    fr.setBest(Ub);
-		} else {
-		    fr.setBest(Ub2);
-		}
-
-	    } else {
-		fr.setBest(Ub);
-	    }
-
-	    frk.add(fr);
-	} else {
-	    fr.setBest("200");
-	    frk.add(fr);
-	}
 
 	// 计算好友的信息
 	Collection<Follow> fenid = scoreManager.getFenId(UserId);

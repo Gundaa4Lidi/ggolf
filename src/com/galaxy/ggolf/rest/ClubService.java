@@ -3,9 +3,12 @@ package com.galaxy.ggolf.rest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -37,6 +40,7 @@ import com.galaxy.ggolf.domain.Comment;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.OtherDate;
 import com.galaxy.ggolf.domain.PriceForTime;
+import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.ClubData;
 import com.galaxy.ggolf.dto.ClubServeData;
 import com.galaxy.ggolf.dto.GenericData;
@@ -44,6 +48,8 @@ import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.ClubDetailManager;
 import com.galaxy.ggolf.manager.ClubManager;
 import com.galaxy.ggolf.manager.CommentManager;
+import com.galaxy.ggolf.tools.LocationUtil;
+import com.galaxy.ggolf.tools.SortUtil;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -601,6 +607,10 @@ public class ClubService extends BaseService {
 			@FormParam("time") String time,
 			@FormParam("rows") String rows,
 			@FormParam("pageNum") String pageNum,
+			@FormParam("city") String city,
+			@FormParam("sortforPrice") String sortforPrice,
+			@FormParam("lon") String lon,
+			@FormParam("lat") String lat,
 			@Context HttpHeaders headers){
 		try {
 			if(date!=null && !date.equals("") && !date.equalsIgnoreCase("null")){
@@ -608,26 +618,40 @@ public class ClubService extends BaseService {
 			}else{
 				return getErrormessage("日期必填,请填写日期");
 			}
+			String flag = "";
+			if(lon!=null&&!lon.equals("")&&lat!=null&&!lat.equals("")){//经纬度不为空时标识
+				flag = "0";
+			}else if(sortforPrice!=null&&!sortforPrice.equals("")){//有价格排序标识
+				flag = "1";
+			}
+			String Time = "";
+			if(time!=null&&!time.equals("")){
+				Time = "and `Time`='"+time+"' ";
+			}
 			String week = this.clubScoreDAO.GetWeek(date);
 			String sqlString = "and ClubID in("
 				+ "select ClubID from("
-				+ "select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+date+"' and `Time`='"+time+"'"
+				+ "select * from pricefortime where `DeletedFlag` is null and `DateTime`='"+date+"' "+Time+" "
 				+ " UNION "
-				+ "select * from pricefortime where `DeletedFlag` is null and `DateTime` is null and `Week`='"+week+"' and `Time`='"+time+"'"
+				+ "select * from pricefortime where `DeletedFlag` is null and `DateTime` is null and `Week`='"+week+"' "+Time+""
 				+ " and `Time` not in"
-				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+date+"' and `Time`='"+time+"')) a "
-				+ "where `IsValid`='1' group by `ClubID`)";
+				+ "(select `Time` from pricefortime where `DeletedFlag` is null and `DateTime`='"+date+"' "+Time+")) a "
+				+ "where `IsValid`='1' group by `ClubID`) ";
+			if(city!=null&&!city.equals("")&&!city.equalsIgnoreCase("null")){
+				sqlString += "and City like '%"+city+"%' ";
+			}
 				
 			Collection<Club> clubs = this.manager.getSearchClub(sqlString, rows, pageNum);
 			int count = this.manager.getSearchCount(sqlString);
 			
 			if(clubs.size()>0){
 				for (Club club : clubs) {
+					//获取供应商
 					Collection<ClubServe> clubServes = this.clubServeDAO.getValidClubserve(date,club.getClubID(),time, null, null);
 					if (clubServes.size() > 0) {
 						for (ClubServe cs : clubServes) {
-							// 特殊时段
-							Collection<PriceForTime> times = this.priceForTimeDAO.getByDateTime(date, cs.getClubserveID(), time, null, null);
+							// 获取时段价格
+							Collection<PriceForTime> times = this.priceForTimeDAO.getByDateTime(date, cs.getClubserveID(), time, null, null);;
 							if (times.size() > 0) {
 								cs.setPriceForTimes(times);
 							}
@@ -635,6 +659,11 @@ public class ClubService extends BaseService {
 						club.setClubServes(clubServes);
 					}
 				}
+			}
+			if(flag.equals("0")){
+				clubs = SortUtil.sortForDistanceOrPrice("0", lon, lat, clubs);
+			}else if(flag.equals("1")){
+				clubs = SortUtil.sortForDistanceOrPrice("1", null, null, clubs);
 			}
 			GenericData<Club> result = new GenericData<Club>(count,clubs);
 			return getResponse(result);
@@ -644,6 +673,7 @@ public class ClubService extends BaseService {
 		}
 		return getErrorResponse();
 	}
+	
 	
 	
 	/**

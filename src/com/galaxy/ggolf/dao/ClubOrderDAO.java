@@ -43,6 +43,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "State,"
 				+ "CreateTime,"
 				+ "DownPayment,"
+				+ "PayBillorNot,"
 				+ "StartDate,"
 				+ "StartTime,"
 				+ "Names,"
@@ -50,10 +51,10 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "ServiceExplain,"
 				+ "Created_TS,"
 				+ "Activity"
-				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,o.getOrderID(),o.getUserID(),o.getClubID(),o.getClubName(),o.getClubserveID(),
 				o.getClubserveName(),o.getClubserveLimitTimeID(),o.getClubservePriceID(),Submit_order,Time1(),
-				o.getDownPayment(),o.getStartDate(),o.getStartTime(),o.getNames(),o.getTel(),
+				o.getDownPayment(),"0",o.getStartDate(),o.getStartTime(),o.getNames(),o.getTel(),
 				o.getServiceExplain(),Time(),Time()+",提交订单|");
 	}
 	
@@ -125,6 +126,16 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 		return null;
 	}
 	
+	//TODO
+	public ClubOrder getValidOrderForNotPay(String OrderID){
+		String sql = "select * from `cluborder` where DeletedFlag is null and State and OrderID='"+OrderID+"'";
+		Collection<ClubOrder> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return (ClubOrder) result.toArray()[0];
+		}
+		return null;
+	}
+	
 	/**
 	 * 客服确认球位
 	 * @param OrderID
@@ -143,7 +154,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean onlineBooking(String OrderID){
 		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",在线预订|'), State = '"+Online_booking
-				+"',Updated_TS='"+Time()+"' where State = '"+Confirm_ball+"' and OrderID='"+OrderID+"'";
+				+"', Updated_TS='"+Time()+"' where State = '"+Confirm_ball+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -152,9 +163,12 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @param OrderID
 	 * @return
 	 */
-	public boolean finishBooking(String OrderID,String Type){
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'),Type='"+Type+"' State = '"+Finish_booking
-				+"',Updated_TS='"+Time()+"' where State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
+	public boolean finishBooking(String OrderID,String Type,String chargeID){
+		String ChargeID = "";
+		if(chargeID!=null){
+			ChargeID = "ChargeID='"+chargeID+"',";
+		}
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'),Type='"+Type+"',PayBillorNot='1', State = '"+Finish_booking+"',"+ChargeID+" Updated_TS='"+Time()+"' where State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	

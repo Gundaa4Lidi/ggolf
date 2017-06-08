@@ -482,15 +482,12 @@ public class CoachService extends BaseService {
 				Collection<CoachCourse> coachCourses = this.coachCourseDAO.getCourse(sqlString, pageNum, rows);
 				int count = this.coachCourseDAO.getCourseCount(sqlString);
 				if(coachCourses.size() > 0){
-//					Map<String,String> cMap = new HashMap<String,String>();
 					for(CoachCourse ccs : coachCourses){
-//						if(cMap.get(ccs.getCoachID())==null){
 							Coach coach = this.coachDAO.getCoachByCoachID(ccs.getCoachID(), null);
 							if(coach != null){
 								ccs.setCoachName(coach.getCoachName());
 								ccs.setCoachHead(coach.getCoachHead());
 								ccs.setCoachPhone(coach.getCoachPhone());
-//								cMap.put(ccs.getCoachID(), ccs.getCoachID());
 							}
 //						}
 					}
@@ -867,7 +864,7 @@ public class CoachService extends BaseService {
 				}
 				Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
 				int count = this.courseOrderDAO.getOrderCount(sqlString);
-				if(orders.size() > 0){
+				if(orders!=null&&orders.size() > 0){
 					for(CourseOrder co : orders){
 						User user = this.userDAO.getUserByUserID(co.getUserID());
 						if(user!=null){

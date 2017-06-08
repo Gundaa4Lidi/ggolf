@@ -36,6 +36,13 @@ public class LocationUtil {
        return s;  
     }
     
+    /**
+     * 以经纬度为中心和距离获取方圆范围
+     * @param lon
+     * @param lat
+     * @param radius
+     * @return
+     */
     public static Rectangle GetRange(double lon, double lat, int radius){
     	SpatialContext geo = SpatialContext.GEO;
     	Rectangle rec = geo.getDistCalc().calcBoxByDistFromPt(

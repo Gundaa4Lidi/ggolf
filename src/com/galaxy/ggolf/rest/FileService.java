@@ -20,10 +20,6 @@ import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -76,8 +72,6 @@ public class FileService  extends BaseService{
 
 	/**
 	 * 空接口
-	 * @param request
-	 * @param headers
 	 * @return
 	 */
 	@POST
@@ -118,7 +112,6 @@ public class FileService  extends BaseService{
 	 * 上传文件
 	 * @param filePath
 	 * @param attachments
-	 * @param request
 	 * @param headers
 	 * @return
 	 */
@@ -129,7 +122,6 @@ public class FileService  extends BaseService{
 			@PathParam("w") String w,
 			@PathParam("h") String h,
 			List<Attachment> attachments,
-			@Context HttpServletRequest request,
 			@Context HttpHeaders headers) {
 		String filePath1 = "";
 		if(filePath!=null&&!filePath.equals("")){
@@ -196,7 +188,6 @@ public class FileService  extends BaseService{
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public String upload(List<Attachment> attachments,
-			@Context HttpServletRequest request,
 			@Context HttpHeaders headers) {
 		createDirIfNotExist(CommonConfig.FILE_UPLOAD_PATH);
 		for (Attachment attachment : attachments) {
@@ -230,14 +221,12 @@ public class FileService  extends BaseService{
 	
 	/**
 	 * Froala上传图片
-	 * @param req
-	 * @param res
 	 * @return
 	 */
 	@POST
 	@Path("/uploadFile")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public String uploadFile(List<Attachment> attachments,@Context HttpServletRequest req)throws ServletException, IOException{
+	public String uploadFile(List<Attachment> attachments)throws IOException{
 		createDirIfNotExist(CommonConfig.FROALA_UPLOAD_PATH);
 		for (Attachment attachment : attachments) {
 			DataHandler handler = attachment.getDataHandler();
@@ -272,12 +261,11 @@ public class FileService  extends BaseService{
 	
 	/**
 	 * Froala获取图片列表
-	 * @param req
 	 * @return
 	 */
 	@GET
 	@Path("/load_images")
-	public String load_images(@Context HttpServletRequest req){
+	public String load_images(){
 		String fileRoute = CommonConfig.FROALA_UPLOAD_PATH;
 		String downloadPath = CommonConfig.CONNECT + CommonConfig.FILE_DOWNLOAD + "froala_";
 		ArrayList<FileList> arrayList = new ArrayList<FileList>();
@@ -310,14 +298,13 @@ public class FileService  extends BaseService{
 	
 	/**
 	 * Froala 删除图片
-	 * @param req
 	 * @param headers
 	 * @return
 	 * @throws IOException 
 	 */
 	@POST
 	@Path("/delete_image")
-	public String delete_image(String data,@Context HttpHeaders headers, @Context HttpServletRequest req) throws Exception{
+	public String delete_image(String data,@Context HttpHeaders headers){
 		String filename = null;
 		String d = data.split("&")[1];
 		filename = d.substring(d.lastIndexOf("=")+1);
@@ -329,6 +316,7 @@ public class FileService  extends BaseService{
 			FileUtil.deleteFile(file);
 			return getSuccessResponse();
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			logger.error("Error occured", ex);
 			return getErrorResponse();
 		}
@@ -336,7 +324,7 @@ public class FileService  extends BaseService{
 	
 	@POST
 	@Path("/deleteImage")
-	public String delete_image(@FormParam("filename") String filename, @Context HttpHeaders headers) throws IOException{
+	public String deleteImage(@FormParam("filename") String filename, @Context HttpHeaders headers) throws IOException{
 		String fileRoute = CommonConfig.FROALA_UPLOAD_PATH;
 		try {
 			File file = new File(fileRoute+filename);
@@ -351,8 +339,6 @@ public class FileService  extends BaseService{
 	
 	/**
 	 * 保存用户头像
-	 * @param head
-	 * @param phone
 	 * @return
 	 */
 	@POST
@@ -447,7 +433,7 @@ public class FileService  extends BaseService{
 				System.out.println("DIR created");
 			}
 		} catch (SecurityException se) {
-			// handle it
+			se.printStackTrace();
 		}
 	}
 	

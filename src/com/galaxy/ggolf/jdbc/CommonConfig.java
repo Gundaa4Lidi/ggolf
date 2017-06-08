@@ -104,9 +104,9 @@ public interface CommonConfig {
 	
 	public static final String ArticlePhoto = "AP";
 	
-	public static final String PingPP_Apikey = "app_uvnv505GOCyLivn1";
+	public static final String PingPP_AppID = "app_uvnv505GOCyLivn1";
 	
-//	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
+	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
 	
 	
 	

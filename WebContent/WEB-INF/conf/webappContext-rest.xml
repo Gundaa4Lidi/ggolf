@@ -58,6 +58,7 @@
 			<ref bean="courseOrderService"/>
 			<ref bean="commentService"/>
 			<ref bean="collectService"/>
+			<ref bean="pingPPService"/>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean='jsonProvider' />
