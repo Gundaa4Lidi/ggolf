@@ -15,27 +15,55 @@
             </div>
         </div>
 
-        <div class="main__container" ng-show="TotalClub > 0">
+        <div class="main__container" >
             <header class="main__title">
-                <h1>球场管理</h1>
+                <h1>{{parent.isClub?'球场':'练习场'}}管理</h1>
             </header>
-            <div class="row listings-grid">
+            <div class="row" >
+                <!--<div class="col-md-2">-->
+                    <!--<select ng-model="clubType" class="form-control" ng-change="getClubList()" style="background: white"-->
+                            <!--ng-options="type for type in clubTypes"></select>-->
+                <!--</div>-->
+                <div class="col-md-2 border_3_s_b">
+                    <span class="f-x-l">切换场地</span>
+                    <a href="" class="pull-right f-12 m-t-5" ng-click="parent.setIsClub();getClubList()">
+                        <i ng-class="{'fa fa-toggle-on fa-2x':parent.isClub,'fa fa-toggle-off fa-2x':!parent.isClub}" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="col-md-2 border_3_s_b">
+                    <span class="f-x-l">热门场地</span>
+                    <a href="" class="pull-right f-12 m-t-5" ng-click="parent.setIsHot();getClubList()">
+                        <i ng-class="{'fa fa-toggle-on fa-2x':parent.isHot,'fa fa-toggle-off fa-2x':!parent.isHot}" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="col-md-2 border_3_s_b">
+                    <span class="f-x-l">置顶轮播</span>
+                    <a href="" class="pull-right f-12 m-t-5" ng-click="parent.setIsTop();getClubList()">
+                        <i ng-class="{'fa fa-toggle-on fa-2x':parent.isTop,'fa fa-toggle-off fa-2x':!parent.isTop}" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+            <hr>
+
+            <div class="row listings-grid" ng-show="TotalClub > 0">
                 <div class="col-md-3 col-sm-4 col-xs-8"  ng-repeat="item in clubList | filter:keyword">
                     <div class="listings-grid__item">
                         <a href="" ng-click="openItem(item)">
                             <div class="listings-grid__main">
                                 <img ng-src="{{item.ClubPhoto[0]}}" err-src='../img/club/1.jpg' alt="" height="160px">
-                                <div class="listings-grid__price">${{item.Price}}</div>
+                                <!--<div class="listings-grid__price">${{item.Price}}</div>-->
                             </div>
 
                             <div class="listings-grid__body list__title">
                                 <h4><a href="" ng-click="checkClub(item)">{{item.ClubName}}</a></h4>
                             </div>
-
                             <ul class="listings-grid__attrs">
                                 <li><i class="glyphicon glyphicon-record icon-size"></i>{{item.TotalHole}}洞</li>
                                 <li><i class="glyphicon glyphicon-flag icon-size"></i>{{item.TotalStemNum}}杆</li>
-                                <li><i class="zmdi zmdi-directions-walk big-icon-size"></i>2393码</li>
+                                <li>
+                                    <i class="zmdi zmdi-directions-walk big-icon-size"></i>
+                                    <span>{{item.Distance?GetDistance(item.Distance):'0'}}</span>
+                                </li>
                             </ul>
                         </a>
                         <div class="actions list-group__actions" style="top: 235px;">
@@ -46,12 +74,12 @@
                     </div>
                 </div>
             </div>
-            <div class="load-more">
+            <div class="load-more" ng-show="TotalClub > 0">
                 <a href="" ng-click="loading()"><i ng-if="loadMore" class="zmdi zmdi-refresh-alt"></i> {{loadMore?'加载更多':'没有更多了'}}</a>
             </div>
         </div>
         <div class="main__container" align="center" ng-show="TotalClub<=0">
-            <h1>无球场资料</h1>
+            <h1>无场地资料</h1>
         </div>
     </section>
     <!-- update-to-head modal -->
@@ -104,43 +132,15 @@
                             <!--<input select-address p="p" c="c" a="a" d="d" ng-model="addressKey" ng-change="MapSearch()" placeholder="地区关键字" type="text" class="form-control">-->
                         </div>
                     </div>
-                    <!-- 位置地图 -->
-                    <style>
-                        .container{
-                            background-color: silver;
-                            width:100%;
-                            position:relative;
-                            display: inline-block;
-                        }
-                        .dummy{
-                            margin-top: 50%;
-                        }
-                        .content{
-                            position:absolute;
-                            left:0;
-                            right:0;
-                            top:0;
-                            bottom: 0;
-                        }
-                        #panel {
-                            position: absolute;
-                            background-color: white;
-                            max-height: 90%;
-                            overflow-y: auto;
-                            top: 10px;
-                            right: 10px;
-                            width: 280px;
-                        }
-                    </style>
-                    <div class="container">
-                        <div class='dummy'></div>
-                        <div class='content' id="mapView"></div>
-                        <div id="panel"></div>
+                    <div class="container__map">
+                        <div class='dummy__map'></div>
+                        <div class='content__map' id="mapView"></div>
+                        <div id="panel__map"></div>
                     </div>
                 </div>
                 <div class="modal-footer" style="padding: 0 30px 10px;">
                     <button type="button" class="btn btn-link" data-dismiss="modal" ng-click="openModal(4)">取消</button>
-                    <button type="button" class="btn btn-primary" ng-click="logoSave(logoCroppedImage)">确定</button>
+                    <button type="button" class="btn btn-primary" ng-click="submitAddress()">确定</button>
                 </div>
             </div>
         </div>
@@ -192,9 +192,9 @@
                                         <!--<span><button class="btn btn-sm btn-info" ng-click="openModal(3)">选择地点</button></span>-->
                                     </label>
                                     <div class="input-group">
-                                        <input ng-model="Address" placeholder="请选择所在地" type="text" class="form-control" required/>
+                                        <input ng-model="currentClub.ClubAddress" placeholder="请选择所在地" type="text" class="form-control" required/>
                                         <span class="input-group-addon" style="background-color: white">
-											<a href="" style="color: #828282;" ng-click="openModal(3)">
+											<a href="" style="color: #828282;" ng-click="openModal(3);initMap()">
 												<i class="fa fa-map-marker" aria-hidden="true"></i>
 											</a>
 										</span>
@@ -240,34 +240,35 @@
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine }">
                                     <label>联系电话<span style="color: red">*</span></label>
                                     <input type="text" name="ClubPhoneNumber" ng-model="currentClub.ClubPhoneNumber"
-                                           class="form-control" required ng-pattern="">
+                                           class="form-control" required ng-pattern="/(^(\d{3,4}-)?\d{7,8})$|(1[34578]\d{9})$/">
                                     <p ng-show="clubForm.ClubPhoneNumber.$invalid && !clubForm.ClubPhoneNumber.$pristine" class="help-block">
                                         <span ng-show="clubForm.ClubPhoneNumber.$error.required">必填项</span>
+                                        <span ng-show="clubForm.ClubPhoneNumber.$error.pattern">格式有误</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine || clubForm.Price.$error.pattern }">
-                                    <label>价格<span style="color: red">*</span></label>
-                                    <input type="text" name="Price" ng-model="currentClub.Price"
-                                           class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
-                                    <p ng-show="clubForm.Price.$invalid && !clubForm.Price.$pristine" class="help-block">
-                                        <span ng-show="clubForm.Price.$error.required">必填项</span>
-                                        <span ng-show="clubForm.Price.$error.pattern">数值有误</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && clubForm.DiscountPrice.$error.pattern}">
-                                    <label>优惠价</label>
-                                    <input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice"
-                                           class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">
-                                    <p ng-show="clubForm.DiscountPrice.$error.pattern" class="help-block">输入正确的数值</p>
-                                </div>
-                            </div>
-                        </div>
+                        <!--<div class="row">-->
+                            <!--<div class="col-md-4">-->
+                                <!--<div class="form-group" ng-class="{ 'has-error' : clubForm.Price.$invalid && !clubForm.Price.$pristine || clubForm.Price.$error.pattern }">-->
+                                    <!--<label>价格<span style="color: red">*</span></label>-->
+                                    <!--<input type="text" name="Price" ng-model="currentClub.Price"-->
+                                           <!--class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">-->
+                                    <!--<p ng-show="clubForm.Price.$invalid && !clubForm.Price.$pristine" class="help-block">-->
+                                        <!--<span ng-show="clubForm.Price.$error.required">必填项</span>-->
+                                        <!--<span ng-show="clubForm.Price.$error.pattern">数值有误</span>-->
+                                    <!--</p>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-4">-->
+                                <!--<div class="form-group" ng-class="{ 'has-error' : clubForm.DiscountPrice.$invalid && clubForm.DiscountPrice.$error.pattern}">-->
+                                    <!--<label>优惠价</label>-->
+                                    <!--<input type="text" name="DiscountPrice" ng-model="currentClub.DiscountPrice"-->
+                                           <!--class="form-control" ng-pattern="/^([1-9]\d*(\.\d*[1-9])?)|(0\.\d*[1-9])$/">-->
+                                    <!--<p ng-show="clubForm.DiscountPrice.$error.pattern" class="help-block">输入正确的数值</p>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
                         <div class="row">
                             <div class="col-md-4">
                                 <label>是否热门球场</label>
@@ -292,17 +293,13 @@
                                 </div>
                             </div>
                         </div>
-                        <!--<div class="row">-->
-                            <!--<div class="col-md-12 text-center">-->
-                                <!--<p style="color: #c2c2c2">(<span style="color: red">*</span>为必填项)</p>-->
-                            <!--</div>-->
-                        <!--</div>-->
                     </div>
                     <div class="modal-footer modal-footer--bordered">
                         <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
                         <button type="submit" class="btn btn-info" ng-disabled="clubForm.$invalid">提交</button>
                     </div>
                 </form>
+
 
             </div>
         </div>

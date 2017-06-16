@@ -108,6 +108,22 @@ public interface CommonConfig {
 	
 	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
 	
+//	public static final String Umeng_AppKey = "593df0d2677baa188600054a";
+	
+//	public static final String Umeng_AppMaster_Secret = "an8wabbklncalsao6iojzdg5z0bjires";
+	
+	public static final String Umeng_AppKey = "5902f50daed17963de001284";
+	
+	public static final String Umeng_AppMaster_Secret = "9nhfbkmys265obvicehhlnj54z3joztb";
+	
+	public static final int Umeng_Android_Byte = 44;
+	
+	public static final int Umeng_IOS_Byte = 64;
+	
+	public static final String Umeng_HTTP_SEND = "http://msg.umeng.com/api/send?sign=mysign";
+	
+	public static final String Umeng_HTTPS_SEND = "https://msgapi.umeng.com/api/send?sign=mysign";
+	
 	
 	
 }

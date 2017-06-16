@@ -16,7 +16,7 @@
         <div class="main__container" >
 
             <header class="main__title">
-                <h1 style="font-family: '黑体'">球场明细</h1>
+                <h1 style="font-family: '黑体'">场地明细</h1>
             </header>
             <div class="card">
                 <form class="card new-contac ng-pristine ng-valid" style="margin-bottom: 0px;"
@@ -29,10 +29,10 @@
                     <!-- Gallery -->
                     <div class="detail-media" style="z-index:0">
                         <div class="tab-content">
-                            <!-- 球场图片 -->
+                            <!-- 场地图片 -->
                             <div class="tab-pane fade in active light-gallery" id="detail-media-images">
                                 <a  lightgallery ng-repeat="photo in currentClub.PhotoList" href="{{photo}}">
-                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="球场封面" height="550px">
+                                    <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="场地封面" height="550px">
                                 </a>
                             </div>
 
@@ -64,7 +64,7 @@
                             </style>
                             <div class="tab-pane fade container" id="detail-media-map">
                                 <div class='dummy'></div>
-                                <div class='content' id="mapView"></div>
+                                <div class='content' id="mapView1"></div>
                             </div>
 
                         </div>
@@ -72,8 +72,8 @@
                         <!-- Gallery Icons -->
                         <ul class="detail-media__nav hidden-print">
                             <li class="active"><a href="#detail-media-images" data-toggle="tab"><i class="zmdi zmdi-collection-image"></i></a></li>
-                            <li><a href="#detail-media-floorplan" data-toggle="tab"><i class="zmdi zmdi-map"></i></a></li>
-                            <li><a href="#detail-media-map" data-toggle="tab"><i class="zmdi zmdi-pin"></i></a></li>
+                            <!--<li><a href="#detail-media-floorplan" data-toggle="tab"><i class="zmdi zmdi-map"></i></a></li>-->
+                            <li><a href="#detail-media-map" ng-click="initMap()" data-toggle="tab"><i class="zmdi zmdi-pin"></i></a></li>
                         </ul>
                     </div>
 
@@ -81,7 +81,7 @@
                         <div class="row">
                             <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">球场名称<span style="color: red">*</span></label>
+                                    <label class="club_label">场地名称<span style="color: red">*</span></label>
                                     <input type="text" name="ClubName" ng-disabled="!edit" ng-model="currentClub.ClubName" class="form-control" required>
                                     <p ng-show="clubForm.ClubName.$invalid && !clubForm.ClubName.$pristine" class="help-block">
                                         <span ng-show="clubForm.ClubName.$error.required">必填项</span>
@@ -90,7 +90,7 @@
                             </div>
                             <div class="col-sm-4" ng-class="{ 'has-error' : clubForm.Mode.$invalid && !clubForm.Mode.$pristine }">
                                 <div class="form-group">
-                                    <label class="club_label">球场模式<span style="color: red">*</span></label>
+                                    <label class="club_label">场地模式<span style="color: red">*</span></label>
                                     <input type="text" name="Mode" ng-model="currentClub.Mode" ng-disabled="!edit" class="form-control" required>
                                     <p ng-show="clubForm.Mode.$invalid && !clubForm.Mode.$pristine" class="help-block">
                                         <span ng-show="clubForm.Mode.$error.required">必填项</span>
@@ -160,19 +160,31 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Square.$invalid && !clubForm.Square.$pristine }">
-                                    <label class="club_label">球场面积<span style="color: red">*</span></label>
-                                    <input type="text" name="Square" ng-model="currentClub.Square" ng-disabled="!edit" class="form-control" required>
+                                    <label class="club_label">场地面积<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="Square" ng-model="currentClub.Square" ng-disabled="!edit"
+                                               class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*)?|0\.\d*[1-9])$/">
+                                        <span class="input-group-addon" style="font-size: large;">㎡</span>
+                                    </div>
                                     <p ng-show="clubForm.Square.$invalid && !clubForm.Square.$pristine" class="help-block">
                                         <span ng-show="clubForm.Square.$error.required">必填项</span>
+                                        <span ng-show="clubForm.Square.$error.pattern">数值有误</span>
                                     </p>
                                 </div>
                             </div>
                             <div class="col-sm-4">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.Length.$invalid && !clubForm.Length.$pristine }">
-                                    <label class="club_label">球场长度<span style="color: red">*</span></label>
-                                    <input type="text" name="Length" ng-model="currentClub.Length" ng-disabled="!edit" class="form-control" required>
+                                    <label class="club_label">场地长度<span style="color: red">*</span></label>
+                                    <div class="input-group">
+                                        <input type="text" name="Length" ng-model="currentClub.Length" ng-disabled="!edit"
+                                               class="form-control" required ng-pattern="/^([1-9]\d*(\.\d*)?|0\.\d*[1-9])$/">
+                                        <span class="input-group-addon" style="font-size: large;">
+                                            ㎞
+                                        </span>
+                                    </div>
                                     <p ng-show="clubForm.Length.$invalid && !clubForm.Length.$pristine" class="help-block">
                                         <span ng-show="clubForm.Length.$error.required">必填项</span>
+                                        <span ng-show="clubForm.Length.$error.pattern">数值有误</span>
                                     </p>
                                 </div>
                             </div>
@@ -201,7 +213,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group" ng-class="{ 'has-error' : clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine }">
                                     <label class="club_label">详细地址<span style="color: red">*</span></label>
-                                    <input select-address p="p" c="c" a="a" d="d" ng-disabled="!edit" name="ClubAddress"
+                                    <input readonly ng-disabled="!edit" name="ClubAddress"
                                            ng-model="currentClub.Address" placeholder="请选择所在地" type="text" class="form-control" required>
                                     <p ng-show="clubForm.ClubAddress.$invalid && !clubForm.ClubAddress.$pristine" class="help-block">
                                         <span ng-show="clubForm.ClubAddress.$error.required">必填项</span>
@@ -212,7 +224,7 @@
                         <div class="row ">
                             <div class="col-sm-8">
                                 <div class="form-group">
-                                    <label class="club_label">球场设施</label>
+                                    <label class="club_label">场地设施</label>
                                     <textarea rows="3" cols="1"  ng-model="currentClub.Facility" class="form-control" ng-disabled="!edit" style="font-size: 16px;"></textarea>
                                 </div>
                             </div>
@@ -220,7 +232,7 @@
                         <div class="row ">
                             <div class="col-sm-8">
                                 <div class="form-group">
-                                    <label class="club_label">球场简介</label>
+                                    <label class="club_label">场地简介</label>
                                     <textarea rows="3" cols="1"  ng-model="currentClub.Intro" class="form-control" ng-disabled="!edit" style="font-size: 16px;"></textarea>
                                 </div>
                             </div>
@@ -271,37 +283,44 @@
                                                     <div class="col-sm-12">
                                                         <!--<div ng-show="loading" class="table-loading" activity-view no-relative="true" is-active="loading"></div>-->
                                                         <div class="text-center" >
-                                                            <div class="m-t-25" >
+                                                            <div class="m-t-25" ng-show="TotalLimitTime==0">
                                                                 <small>暂无限时活动</small>
                                                             </div>
                                                             <!--<table class="table table-bordered table-hover table_wrap">-->
                                                             <!--</table>-->
-                                                            <div class="list-group list-group--block contact-lists" >
+                                                            <div class="list-group list-group--block contact-lists" ng-show="TotalLimitTime>0">
                                                                 <div class="list-group__header text-left">
-                                                                    <span>共1个课程</span>
+                                                                    <span>共{{TotalLimitTime}}个活动</span>
                                                                     <!--<input ng-model="keyword2">-->
                                                                 </div>
-                                                                <div class="list-group__wrap">
+                                                                <div class="list-group__wrap" ng-repeat="lt in limitTimeList">
                                                                     <div class="list-group-item media" href="#">
                                                                         <div class="p-t-20 p-l-10">
                                                                             <div class="row pull-left">
-                                                                                <h4><span>三角形中单</span></h4>
+                                                                                <h4><span>{{lt.Name}}</span></h4>
                                                                             </div>
                                                                         </div>
                                                                         <div class="list-group__label list-group__label--float">
-                                                                            <span class="mdc-bg-amber-A700">申请中</span>
+                                                                            <span class="mdc-bg-amber-A700">
+                                                                                <a class="tooltip_a" tooltips tooltip-side="top" tooltip-template="活动价格">
+                                                                                    <i class="fa fa-jpy" aria-hidden="true"></i>{{lt.Price}}
+                                                                                </a>
+                                                                            </span>
                                                                         </div>
                                                                         <div class="actions list-group__actions list-group__actions--centered">
                                                                             <div class="dropdown">
                                                                                 <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
                                                                                 <ul class="dropdown-menu pull-right">
-                                                                                    <li><a href="#">详情</a></li>
-                                                                                    <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
+                                                                                    <li><a href="#" ng-click="checkAct(lt)">详情</a></li>
+                                                                                    <li><a href="#" ng-click="editAct(lt)">修改</a></li>
                                                                                 </ul>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                            </div>
+                                                            <div class="col col-md-12 text-center"  ng-show="TotalLimitTime>5">
+                                                                <tm-pagination conf="LtPageConfig"></tm-pagination>
                                                             </div>
                                                             <div class="m-t-25">
                                                                 <a href="" class="red_btn mdc-text-red" ng-click="AddLimitTime()">添加限时活动</a>
@@ -467,9 +486,7 @@
                             </div>
                         </div>
                         <div class="col col-md-12 text-center">
-                            <ul uib-pagination boundary-links="true" total-items="totalItems" max-size="pageConfig.maxSize"
-                                ng-model="pageConfig.currentPage" ng-show="totalItems>5" ng-change="getClubServe()"
-                                class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></ul>
+                            <tm-pagination conf="pageConfig"></tm-pagination>
                         </div>
                     </div>
                 </div>
@@ -500,6 +517,36 @@
 
         </div>
     </section>
+    <div class="modal fade" id="limitTime_detail" data-keyboard="false" style="font-family: '黑体'">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">限时活动</h4>
+                </div>
+                <div class="modal-body text-center">
+                    <table class="table table-bordered table-hover table_wrap">
+                        <tr><th width="25%">活动标题</th><td>{{currentLimitTime.Name}}</td></tr>
+                        <tr><th width="25%">活动编号</th><td>{{currentLimitTime.ClubserveLimitTimeID}}</td></tr>
+                        <tr><th width="25%">抢购金额</th><td>{{currentLimitTime.Price}}</td></tr>
+                        <tr><th width="25%">限购数量</th><td>{{currentLimitTime.Count}}</td></tr>
+                        <tr><th width="25%">开始抢购时间</th><td>{{currentLimitTime.BeginStartTime}}</td></tr>
+                        <tr><th width="25%">结束抢购时间</th><td>{{currentLimitTime.BeginEndTime}}</td></tr>
+                        <tr><th width="25%">活动日期</th><td>{{currentLimitTime.Date}}</td></tr>
+                        <tr><th width="25%">活动开始时间</th><td>{{currentLimitTime.StartTime}}</td></tr>
+                        <tr><th width="25%">活动结束时间</th><td>{{currentLimitTime.EndTime}}</td></tr>
+                        <tr><th width="25%">服务说明</th><td>{{currentLimitTime.ServiceExplain}}</td></tr>
+                    </table>
+                    <!--<input type="checkbox"><label>已阅览</label>-->
+                </div>
+
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="addLimitTime" data-backdrop="static"
          data-keyboard="false">
         <div class="modal-dialog">
@@ -509,14 +556,8 @@
                             aria-hidden="true" ng-click="limitTimeForm.$setPristine();">&times;</button>
                     <h4 class="modal-title">限时活动</h4>
                 </div>
-                <form class="new-contact ng-pristine ng-valid" name="limitTimeForm" ng-submit="submitlimitTimeForm(limitTimeForm.$valid)" novalidate>
+                <form class="new-contact ng-pristine ng-valid" name="limitTimeForm" ng-submit="submitLimitTimeForm(limitTimeForm.$valid)" novalidate>
                     <div class="modal-body">
-
-                        <!--<div class="form-group" ng-class="{ 'has-error' : limitTimeForm.DateTime.$invalid && !limitTimeForm.DateTime.$pristine }">-->
-                            <!--<label>特殊日期</label>-->
-                            <!--<input type="text" readonly class="form-control" name="DateTime" uib-datepicker-popup="{{format}}" ng-model="DateTime" required>-->
-                            <!--<p ng-show="limitTimeForm..$invalid && !limitTimeForm..$pristine" class="help-block">必填项</p>-->
-                        <!--</div>-->
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group"
@@ -563,66 +604,92 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.BeginStartTime.$invalid && !limitTimeForm.BeginStartTime.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.BeginStartTime.$invalid && !limitTimeForm.BeginStartTime.$pristine ||
+                                    result.bst < 0}">
                                     <label class="control-label">开始抢购时间<span style="color: red">*</span></label>
-                                    <input class="form-control form_datetime" name="BeginStartTime" ng-change="changeDate()"
+                                    <input class="form-control form_datetime" name="BeginStartTime"
                                            ng-model="currentLimitTime.BeginStartTime" ng-time
                                            data-date-format="yyyy-mm-dd hh:ii"
+                                           ng-change="changeDate(1)"
                                            size="16" type="text" value="" readonly required>
                                     <p ng-show="limitTimeForm.BeginStartTime.$invalid && !limitTimeForm.BeginStartTime.$pristine" class="help-block">
                                         <span ng-show="limitTimeForm.BeginStartTime.$error.required">必填项</span>
                                     </p>
+                                    <p ng-show="limitTimeForm.BeginStartTime.$valid && !limitTimeForm.BeginStartTime.$pristine" class="help-block">
+                                        <span ng-show="result.bst < 0">不得小于当前时间</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-6" ng-show="currentLimitTime.BeginStartTime">
-                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.BeginEndTime.$invalid && !limitTimeForm.BeginEndTime.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.BeginEndTime.$invalid && !limitTimeForm.BeginEndTime.$pristine ||
+                                     result.bet < 0}">
                                     <label class="control-label">结束抢购时间<span style="color: red">*</span></label>
-                                    <input class="form-control form_datetime" name="BeginEndTime" ng-change="changeDate()"
+                                    <input class="form-control form_datetime" name="BeginEndTime"
                                            data-date-format="yyyy-mm-dd hh:ii"
+                                           ng-change="changeDate(2)"
                                            ng-model="currentLimitTime.BeginEndTime" ng-time
                                            size="16" type="text" value="" readonly required>
                                     <p ng-show="limitTimeForm.BeginEndTime.$invalid && !limitTimeForm.BeginEndTime.$pristine" class="help-block">
                                         <span ng-show="limitTimeForm.BeginEndTime.$error.required">必填项</span>
+                                    </p>
+                                    <p ng-show="limitTimeForm.BeginEndTime.$valid && !limitTimeForm.BeginEndTime.$pristine" class="help-block">
+                                        <span ng-show="result.bet < 0">不得小于开抢时间</span>
                                     </p>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-6">
-                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.Date.$invalid && !limitTimeForm.Date.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.Date.$invalid && !limitTimeForm.Date.$pristine ||
+                                    (currentLimitTime.StartTime&&result.st < 0)}">
                                     <label class="control-label">活动日期<span style="color: red">*</span></label>
                                     <input class="form-control form_date" name="Date"
                                            data-date-format="yyyy-mm-dd" ng-time
+                                           ng-change="changeDate(3)"
                                            ng-model="currentLimitTime.Date"
                                            size="10" type="text" readonly required>
                                     <p ng-show="limitTimeForm.Date.$invalid && !limitTimeForm.Date.$pristine" class="help-block">
                                         <span ng-show="limitTimeForm.Date.$error.required">必填项</span>
                                     </p>
+                                    <p ng-show="limitTimeForm.Date.$valid && !limitTimeForm.Date.$pristine" class="help-block">
+                                        <span ng-show="currentLimitTime.StartTime&&result.st < 0">不得小于开抢时间</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.StartTime.$invalid && !limitTimeForm.StartTime.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.StartTime.$invalid && !limitTimeForm.StartTime.$pristine ||
+                                    !isStartTime }">
                                     <label class="control-label">活动开始时间<span style="color: red">*</span></label>
                                     <input class="form-control form_time" name="StartTime"
                                            data-date-format="hh:ii" ng-time
+                                           ng-change="checkStartTime(currentLimitTime.StartTime);changeDate(4)"
                                            ng-model="currentLimitTime.StartTime"
                                            size="5" type="text" value="" readonly required>
                                     <p ng-show="limitTimeForm.StartTime.$invalid && !limitTimeForm.StartTime.$pristine" class="help-block">
                                         <span ng-show="limitTimeForm.StartTime.$error.required">必填项</span>
                                     </p>
+                                    <p ng-show="limitTimeForm.StartTime.$valid && !limitTimeForm.StartTime.$pristine" class="help-block">
+                                        <span ng-show="!isStartTime">请选择营业时间内(06:30~20:30)</span>
+                                    </p>
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.EndTime.$invalid && !limitTimeForm.EndTime.$pristine }">
+                                <div class="form-group" ng-class="{ 'has-error' : limitTimeForm.EndTime.$invalid && !limitTimeForm.EndTime.$pristine ||
+                                    !isEndTime || (currentLimitTime.Date&&result.et < 2)}">
                                     <label class="control-label">活动结束时间<span style="color: red">*</span></label>
                                     <input class="form-control form_time" name="EndTime"
                                            data-date-format="hh:ii" ng-time
+                                           ng-change="checkEndTime(currentLimitTime.EndTime);changeDate(5)"
                                            ng-model="currentLimitTime.EndTime"
                                            size="5" type="text" value="" readonly required>
+                                    <p ng-show="limitTimeForm.EndTime.$invalid && !limitTimeForm.EndTime.$pristine" class="help-block">
+                                        <span ng-show="limitTimeForm.EndTime.$error.required">必填项</span>
+                                    </p>
+                                    <p ng-show="limitTimeForm.EndTime.$valid && !limitTimeForm.EndTime.$pristine" class="help-block">
+                                        <span ng-show="!isEndTime">请选择营业时间内(06:30~20:30)</span>
+                                        <span ng-show="currentLimitTime.Date&&result.et < 2">活动时间至少2小时</span>
+                                    </p>
                                 </div>
-                                <p ng-show="limitTimeForm.EndTime.$invalid && !limitTimeForm.EndTime.$pristine" class="help-block">
-                                    <span ng-show="limitTimeForm.EndTime.$error.required">必填项</span>
-                                </p>
                             </div>
 
                         </div>
@@ -644,7 +711,15 @@
                     </div>
                     <div class="modal-footer" style="padding: 0 30px 10px;">
                         <button type="button" class="btn btn-link" data-dismiss="modal">取消</button>
-                        <button type="submit" class="btn btn-primary" ng-disabled="limitTimeForm.$invalid" ng-click="limitTimeForm.$setPristine();">保存</button>
+                        <button type="submit" class="btn btn-primary"
+                                ng-disabled="limitTimeForm.$invalid
+                                ||result.bst<0
+                                ||result.bet<0
+                                ||result.st<0
+                                ||result.et<0
+                                ||!isStartTime
+                                ||!isEndTime"
+                                ng-click="limitTimeForm.$setPristine();">保存</button>
                     </div>
                 </form>
             </div>

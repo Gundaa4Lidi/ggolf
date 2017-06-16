@@ -14,6 +14,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
 import com.galaxy.ggolf.dao.CourseOrderDAO;
+import com.galaxy.ggolf.dao.UmengDAO;
 import com.galaxy.ggolf.domain.CourseOrder;
 import com.mysql.jdbc.StringUtils;
 import org.slf4j.Logger;
@@ -22,7 +23,10 @@ import org.slf4j.LoggerFactory;
 import com.galaxy.ggolf.dao.ClubOrderDAO;
 import com.galaxy.ggolf.domain.ClubOrder;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.Umeng;
+import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.tools.PingPPUtil;
+import com.galaxy.ggolf.tools.PushUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -45,10 +49,14 @@ public class PingPPService extends BaseService {
 	private final ClubOrderDAO clubOrderDAO;
 
 	private final CourseOrderDAO courseOrderDAO;
+	
+	private final UmengDAO umengDAO;
 
-	public PingPPService(ClubOrderDAO clubOrderDAO,CourseOrderDAO courseOrderDAO) {
+	public PingPPService(ClubOrderDAO clubOrderDAO,CourseOrderDAO courseOrderDAO,
+			UmengDAO umengDAO) {
 		this.clubOrderDAO = clubOrderDAO;
 		this.courseOrderDAO = courseOrderDAO;
+		this.umengDAO = umengDAO;
 	}
 	
 	/**
@@ -69,7 +77,7 @@ public class PingPPService extends BaseService {
 			Charge charge = null;
 			Map<String,Object> metadata = new HashMap<String,Object>();
 			metadata.put("orderType", "club");
-			String ip = getIp(request);
+			String ip = "127.0.0.1";
 			if(clubOrder!=null){
 				//开始创建ping++订单
 				charge = PingPPUtil.createCharge(clubOrder.getOrderID(),
@@ -304,10 +312,29 @@ public class PingPPService extends BaseService {
 	//球场订单完成
 	private void ClubOrderStatus(Charge charge){
 		try {
+			logger.info("订单编号:{},支付渠道:{},ping++ID:{}",charge.getOrderNo(),charge.getChannel(),charge.getId());
 			if(!this.clubOrderDAO.finishBooking(charge.getOrderNo(),charge.getChannel(),charge.getId())){
 					throw new GalaxyLabException("Error in finish booking");
+			}else{
+				ClubOrder co = this.clubOrderDAO.getOrderByOrderID(charge.getOrderNo());
+				Umeng umeng = this.umengDAO.getByUserID(co.getUserID());
+				PushUtil push = new PushUtil(CommonConfig.Umeng_AppKey,CommonConfig.Umeng_AppMaster_Secret);
+				String token = umeng.getUmeng_Token();
+				int long_token = token.length();
+				String ticker = "完成订单";
+				String title = "完成订单";
+				String text = "订单已生成,点击查看订单详情.";
+				String after_open = "go_app";
+				String display_type = "notification";
+				String production_mode = "false";
+				if(long_token == CommonConfig.Umeng_Android_Byte){
+					push.sendAndroidUnicast(token, ticker, title, text, after_open, display_type, production_mode, null, null);
+				}else if(long_token == CommonConfig.Umeng_IOS_Byte){
+					push.sendIOSUnicast(token, text, production_mode, null, null);
+				}
 			}
-		} catch (GalaxyLabException e) {
+			
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

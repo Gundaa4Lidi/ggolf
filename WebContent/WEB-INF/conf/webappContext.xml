@@ -29,4 +29,5 @@
     <import resource="webappContext-comment.xml"/>
     <import resource="webappContext-collect.xml"/>
     <import resource="webappContext-pingpp.xml"/>
+    <import resource="webappContext-umeng.xml"/>
 </beans> 

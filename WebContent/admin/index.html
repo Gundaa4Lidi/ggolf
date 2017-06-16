@@ -184,7 +184,6 @@
 		<script src="page/apply/CoachApplyCtrl.js"></script>
 		<script src="page/apply/CourseApplyCtrl.js"></script>
 		<script src="page/user/CoachCtrl.js"></script>
-		<script src="page/datePicker/MyDatePickerCtrl.js"></script>
 
 		<!-- 保持在其他controller的下面 -->
         <script src="AppCtrl.js"></script>
@@ -324,9 +323,9 @@
 	                    <li ng-class="{active: page==4}">
 	                    	<a href="#" active-nav ng-click="navigate(4)"><i class="zmdi zmdi-assignment "></i>球场管理</a>
 	                   	</li>
-	                    <li ng-class="{active: page==5}">
-	                    	<a href="#" active-nav ng-click="navigate(5)"><i class="zmdi zmdi-check-circle"></i>教练场管理</a>
-	                   	</li>
+	                    <!--<li ng-class="{active: page==5}">-->
+	                    	<!--<a href="#" active-nav ng-click="navigate(5)"><i class="zmdi zmdi-check-circle"></i>教练场管理</a>-->
+	                   	<!--</li>-->
 	                   	<li ng-class="{active: page==6}">
 	                    	<a href="#" active-nav ng-click="navigate(6)"><i class="zmdi zmdi-file-text"></i>文章管理</a>
 	                   	</li>
@@ -380,6 +379,7 @@
                     <li><a href="">Contact</a></li>
                 </ul>
             </footer> -->
+			<div id="MapView"></div>
 			<div scroll-top href="html" side="left" title="返回顶部"></div>
 		</main>
 
@@ -503,7 +503,7 @@
         <script src="../vendors/bower_components/flot.tooltip/js/jquery.flot.tooltip.min.js"></script>
         <script src="../vendors/bower_components/Flot/jquery.flot.resize.js"></script>
 
-        <script src="../vendors/bower_components/bootstrap/js/tm.pagination.js"></script>
+        <script src="../vendors/tm.pagination.js"></script>
         <script src="../node_modules/angular-sanitize/angular-sanitize.min.js"></script>
 		<script src="../node_modules/videogular/videogular.js"></script>
 		<script src="../node_modules/videogular-controls/vg-controls.js"></script>

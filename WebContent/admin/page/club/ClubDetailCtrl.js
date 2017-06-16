@@ -5,7 +5,7 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     sc.myInterval = 'none';
     sc.noWrapSlides = false;
     sc.pause = true;
-    sc.active = 0;
+    sc.active = 1;
     sc.format = "yyyy-MM-dd";
     sc.currentClub = new Object();
     sc.clubServe = new Object();
@@ -37,68 +37,79 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     sc.createPointLng = null;
     sc.createPointLat = null;
     sc.createPointAddress = null;
+    var map = null;
 
-    //初始化地图
-    var map = new AMap.Map('mapView',{
-        zoom: 10,
-        center: [113.12,23.02],//new AMap.LngLat(116.39,39.9)
-        scrollWheel : false
-    });
-    map.plugin(['AMap.ToolBar'],function(){
-        map.addControl(new AMap.ToolBar());
-    });
-    var marker = null;
+    sc.initMap = function () {
+        sc.lng = null;
+        sc.lat = null;
+        sc.marker = null;
+        sc.location = [113.12,23.02];
+        var club = angular.copy(ClubPageCtrl.clubData);
+        map = new AMap.Map('mapView1',{
+            resizeEnable: true,
+            zoom: 15,
+            center: sc.Location,
+            // scrollWheel : false,
+        });
+        map.plugin(['AMap.ToolBar'],function(){
+            map.addControl(new AMap.ToolBar());
+        });
+        //初始化地图
+        if(club.Longitude&&club.Latitude){
+            sc.lng = parseFloat(club.Longitude);
+            sc.lat = parseFloat(club.Latitude);
+            sc.location = [sc.lng,sc.lat];
+            map.setCenter(sc.location);
+            Marker(sc.lng,sc.lat);
+        }
+
+
+    }
+    var markerInfoContent = $('<div>\
+                                <div id="address"></div>\
+                                <div id="lng"></div>\
+                                <div id="lat"></div>\
+                              </div>');
+    var markerInfoWindow = new AMap.InfoWindow({
+        content: markerInfoContent[0],
+        offset: new AMap.Pixel(0,-25),
+        size: new AMap.Size(230,0)
+    })
+
 
     var Marker = function (lng,lat) {
-        marker = new AMap.Marker({
-            position: [lng,lat]
+        sc.marker = new AMap.Marker({
+            position: [lng,lat],
+            map:map
         });
-        marker.setMap(map);
+        sc.marker.setMap(map);
+        sc.marker.on('click',function (e) {
+            var position = e.target.getPosition();
+            clickMapEvent(position.lng,position.lat,markerInfoWindow,markerInfoContent);
+        })
     }
-    Marker(113.12,23.02);
 
-    var createPointInfowindowContent = $('<div>\
-                                            <div id="address"></div>\
-                                            <div id="lng"></div>\
-                                            <div id="lat"></div>\
-                                            <div class="p-t-10">\
-                                                <button id="readyPoint" class="btn btn-danger">确认标点</button>\
-                                            </div>\
-                                          </div>');
 
-    var createPointInfowindow = new AMap.InfoWindow({
-        content: createPointInfowindowContent[0],
-        offset: new AMap.Pixel(0, 0),
-        size:new AMap.Size(230,0)
-    })
 
-    createPointInfowindowContent.find('#readyPoint').on('click',function () {
-        map.clearMap();
-        Marker(sc.createPointLng,sc.createPointLat);
+    var clickMapEvent = function(lng,lat,infoWindow,infoContent){
+        sc.createPointLng = lng;
+        sc.createPointLat = lat;
+        infoWindow.open(map,new AMap.LngLat(lng,lat));
+        infoContent.find('#address').text('地址:'+'正在查询,请稍等。。。');
+        infoContent.find('#lng').text('经度:'+lng);
+        infoContent.find('#lat').text('经度:'+lat);
+        getAddress(lng,lat,infoContent);
+    }
 
-    })
-
-    marker.on('click',function (e) {
-        console.log(e)
-    })
-
-    map.on('click',function (e) {
-        sc.createPointLng=e.lnglat.getLng();
-        sc.createPointLat=e.lnglat.getLat();
-        sc.createPointAddress=null;
-        createPointInfowindow.open(map,new AMap.LngLat(sc.createPointLng,sc.createPointLat));
-        createPointInfowindowContent.find('#address').text('地址:'+'正在查询,请稍等。。。');
-        createPointInfowindowContent.find('#lng').text('经度:'+sc.createPointLng);
-        createPointInfowindowContent.find('#lat').text('经度:'+sc.createPointLat);
-
+    var getAddress = function (lng,lat,infoContent) {
+        var createPointAddress = null;
         AMap.service(["AMap.Geocoder"], function() { //加载地理编码
-            geocoder = new AMap.Geocoder({
+            var geoCoder = new AMap.Geocoder({
                 radius: 1000,
                 extensions: "all"
             });
-            // Marker(createPointLng,createPointLat);
             //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
-            geocoder.getAddress(new AMap.LngLat(sc.createPointLng,sc.createPointLat), function(status, result){
+            geoCoder.getAddress(new AMap.LngLat(lng,lat), function(status, result){
                 //根据服务请求状态处理返回结果
                 if(status=='error') {
                     alert("服务请求出错啦！ ");
@@ -107,14 +118,12 @@ var ClubDetailController = function($scope,appConfig,$timeout){
                     alert("无数据返回，请换个关键字试试～～");
                 }
                 else {
-                    console.log(result)
-                    sc.createPointAddress= result.regeocode.formattedAddress;
-
-                    createPointInfowindowContent.find('#address').text('地址:'+sc.createPointAddress);
+                    createPointAddress= result.regeocode.formattedAddress;
+                    infoContent.find('#address').text('地址:'+createPointAddress);
                 }
             });
         });
-    });
+    }
 
 //////////////////////////////////////////////////////end-map////////////////////////////////////////////////////////////
 
@@ -123,7 +132,6 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     $timeout(function () {
         var initTime = '2017-04-14 06:00';
         var d = new Date(initTime);
-        console.log(sc.appConfig)
         for(var i= 0; i < 29; i++){
             d.setMinutes(d.getMinutes()+30)
             var hour = (d.getHours()>9?d.getHours().toString():'0' + d.getHours());
@@ -159,7 +167,6 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     }
 
     sc.load = function(){
-        sc.address(ClubPageCtrl.clubData);
         sc.getClubDetail();
         sc.getClubServe();
         sc.getFairwayList();
@@ -260,40 +267,27 @@ var ClubDetailController = function($scope,appConfig,$timeout){
      */
     sc.saveClub = function () {
         var club = angular.copy(ClubPageCtrl.clubData);
-        if(sc.p){
-            club.Province = sc.p;
-        }
-        if(sc.c){
-            club.City = sc.c;
-        }
-        if(sc.a){
-            club.Area = sc.a;
-        }
-        if(sc.d){
-            club.ClubAddress = sc.d;
-        }
-        if(!sc.p || !sc.c || !sc.d){
-            swal("请确认地址是否填写正确!","","warning");
-        }else{
-            club.ClubName = sc.currentClub.ClubName;
-            club.TotalHole = sc.currentClub.TotalHole;
-            club.TotalStemNum = sc.currentClub.TotalStemNum;
-            club.ClubPhoneNumber = sc.currentClub.PhoneNum;
-            var url = appConfig.url + 'Club/saveClub';
-            var method = 'POST';
-            var data = club;
-            var promise = sc.httpDataUrl(url,method,data);
-            promise.then(function (data) {
-                // sc.processResult(data);
-            }),function(data){
-                sc.Load_Failed(data);
-            }
+        club.ClubName = sc.currentClub.ClubName;
+        club.TotalHole = sc.currentClub.TotalHole;
+        club.TotalStemNum = sc.currentClub.TotalStemNum;
+        club.ClubPhoneNumber = sc.currentClub.PhoneNum;
+        var url = appConfig.url + 'Club/saveClub';
+        var method = 'POST';
+        var data = club;
+        var promise = sc.httpDataUrl(url,method,data);
+        promise.then(function (data) {
+            // sc.processResult(data);
+        }),function(data){
+            sc.Load_Failed(data);
         }
     }
 
     sc.pageConfig = {
         currentPage: 1,
-        maxSize : 5,
+        itemsPerPage : 5,
+        onChange : function () {
+            sc.getClubServe();
+        }
     }
 
     /**
@@ -306,13 +300,14 @@ var ClubDetailController = function($scope,appConfig,$timeout){
         var params = {
             keyword : sc.serveKeyword,
             ClubID : club.ClubID,
-            rows : sc.pageConfig.maxSize,
+            rows : sc.pageConfig.itemsPerPage,
             pageNum : sc.pageConfig.currentPage
         }
         var promise = sc.httpParams(url,method,params);
         promise.then(function (data) {
             sc.clubServes = data.clubServes;
             sc.totalItems = data.count;
+            sc.pageConfig.totalItems = data.count;
         }),function (data) {
             sc.Load_Failed(data);
         }
@@ -493,6 +488,7 @@ var ClubDetailController = function($scope,appConfig,$timeout){
         var promise = sc.httpParams(url,method,params);
         promise.then(function (data) {
             sc.dateList=new Object();
+            sc.TotalOtherDate = 0;
             if(data.status != 'Error'&&data.data.length > 0){
                 sc.dateList = data.data;
                 sc.TotalOtherDate = data.count;
@@ -645,6 +641,7 @@ var ClubDetailController = function($scope,appConfig,$timeout){
             sc.clubServe = e;
             sc.rowInit();//初始化日期条数
             sc.odSearch('');
+            sc.loadLimitTime();
 
         }
     }
@@ -846,6 +843,9 @@ var ClubDetailController = function($scope,appConfig,$timeout){
     //
     // }
 
+    sc.today = new Date();
+    sc.limitTimeList = null;
+    sc.TotalLimitTime = 0;
     sc.currentLimitTime = null;
     /**
      * 添加限时活动
@@ -862,12 +862,125 @@ var ClubDetailController = function($scope,appConfig,$timeout){
         var endTime = sc.formatDT(bet,format) + " " + hour;
         sc.begin_start_time = startTime;
         sc.begin_end_time = endTime;
-        // sc.currentLimitTime.BeginStartTime = startTime ;
-        // sc.currentLimitTime.BeginEndTime = endTime;
+        sc.currentLimitTime.BeginStartTime = startTime ;
+        sc.currentLimitTime.BeginEndTime = endTime;
     }
 
-    sc.changeDate = function () {
-        var now
+    sc.submitLimitTimeForm =function ($valid) {
+        if($valid){
+            sc.currentLimitTime.ClubID = sc.clubServe.ClubID;
+            sc.currentLimitTime.ClubserveID = sc.clubServe.ClubserveID;
+            var url = appConfig.url + "Club/saveClubserveLimitTime";
+            var method = "POST";
+            var data = sc.currentLimitTime;
+            var promise = sc.httpDataUrl(url,method,data);
+            promise.then(function (data) {
+                sc.processResult(data);
+                if(data.status == 'Success'){
+                    sc.loadLimitTime();
+                    $("#addLimitTime").modal("hide");
+                }
+            }),function (data) {
+                sc.Load_Failed(data);
+            }
+        }
+    }
+
+    sc.LtPageConfig = {
+        itemsPerPage : 5,
+        currentPage : 1,
+        onChange : function () {
+            if(sc.clubServe){
+                sc.loadLimitTime();
+            }
+        }
+    }
+
+    sc.loadLimitTime = function () {
+        var url = appConfig.url + "Club/getbyClubserveID";
+        var method = "GET";
+        var params = {
+            ClubserveID : sc.clubServe.ClubserveID,
+            rows : sc.LtPageConfig.itemsPerPage,
+            pageNum : sc.LtPageConfig.currentPage
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.limitTimeList = new Object();
+            sc.TotalLimitTime = 0;
+            if(data.status != 'Error'&&data.data.length > 0){
+                sc.limitTimeList = data.data;
+                sc.TotalLimitTime= data.count;
+                sc.LtPageConfig.totalItems = data.count;
+            }
+        })
+    }
+
+    sc.checkAct = function (e) {
+        sc.currentLimitTime = angular.copy(e);
+        $("#limitTime_detail").modal("show");
+    }
+    sc.editAct = function (e) {
+        sc.currentLimitTime = angular.copy(e);
+        $("#addLimitTime").modal("show");
+    }
+
+    sc.result = {
+        bst : 0,
+        bet : 0,
+        st  : 0,
+        et  : 0,
+    }
+    
+    sc.checkLimitTime = function (time) {
+        var result = false;
+        var sTime = parseInt(time.substring(0,2)+time.substring(3,5));
+        if(630<=sTime&&sTime<=2030){
+            result = true;
+        }
+        return result;
+    }
+
+    sc.isStartTime = true;
+    sc.isEndTime = true;
+    sc.checkStartTime = function (time) {
+        sc.isStartTime = sc.checkLimitTime(time);
+    }
+
+    sc.checkEndTime = function (time) {
+        sc.isEndTime = sc.checkLimitTime(time);
+    }
+
+
+    sc.changeDate = function (e) {
+        switch(e){
+            case 1:
+                sc.result.bst = sc.CurrentDT(sc.today,sc.currentLimitTime.BeginStartTime);
+                break;
+            case 2:
+                sc.result.bet = sc.CurrentDT(sc.currentLimitTime.BeginStartTime,sc.currentLimitTime.BeginEndTime);
+                break;
+            case 3:
+                if(sc.currentLimitTime.StartTime){
+                    sc.result.st = sc.CurrentDT(sc.currentLimitTime.BeginEndTime,
+                        sc.currentLimitTime.Date + " " + sc.currentLimitTime.StartTime);
+                }
+                break;
+            case 4:
+                if(sc.currentLimitTime.Date){
+                    sc.result.st = sc.CurrentDT(sc.currentLimitTime.BeginEndTime,
+                        sc.currentLimitTime.Date + " " + sc.currentLimitTime.StartTime);
+                }
+                break;
+            case 5:
+                if(sc.currentLimitTime.Date){
+                    sc.result.et = sc.CurrentDT(sc.currentLimitTime.Date + " " + sc.currentLimitTime.StartTime,
+                        sc.currentLimitTime.Date + " " + sc.currentLimitTime.EndTime,'hour');
+                }
+                break;
+            default:
+                break;
+        }
     }
 
 

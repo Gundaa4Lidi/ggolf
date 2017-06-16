@@ -17,7 +17,7 @@ var ngTime = function() {
                 language:  'zh-CN',
                 weekStart: 0,
                 todayBtn:  1,
-                autoclose: 0,
+                autoclose: 1,
                 showMeridian: 1,
                 todayHighlight: 1,
                 startView: 2,

@@ -38,9 +38,15 @@ public class ClubScoreDAO extends GenericDAO<ClubScore> {
 		return null;
 	}
 	
-	public Collection<ClubScore> getCommentByClubID(String ClubID,String sqlString){
-		String sql = "select * from clubscore where ClubID='"+ClubID+"' "+sqlString+"";
+	public Collection<ClubScore> getCommentByClubID(String ClubID,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubscore where ClubID='"+ClubID+"' order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
+	}
+	
+	public int getCommentCount(String ClubID){
+		String sql = "select count(*) from clubscore where ClubID='"+ClubID+"'";
+		return super.count(sql);
 	}
 	
 	public ClubScore getClubScoreByUserID(String UserID,String ClubID){

@@ -99,8 +99,6 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "Province,"
 				+ "City,"
 				+ "Area,"
-				+ "Price,"
-				+ "DiscountPrice,"
 				+ "TotalStemNum,"
 				+ "TotalHole,"
 				+ "IsHot,"
@@ -110,8 +108,8 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,club.getClubID(),club.getClubName(),club.getClubPhoneNumber(),
 							club.getClubAddress(),photo,club.getLogo(),club.getClubType(),club.getProvince(),club.getCity(),
-							club.getArea(),club.getPrice(),club.getDiscountPrice(),club.getTotalStemNum(),
-							club.getTotalHole(),club.getIsHot(),club.getIsTop(),club.getLongitude(),club.getLatitude(),Time());
+							club.getArea(),club.getTotalStemNum(),club.getTotalHole(),club.getIsHot(),club.getIsTop(),
+							club.getLongitude(),club.getLatitude(),Time());
 	}
 	/**
 	 * 修改球场
@@ -143,8 +141,6 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "Province=?,"
 				+ "City=?,"
 				+ "Area=?,"
-				+ "Price=?,"
-				+ "DiscountPrice=?,"
 				+ "TotalStemNum=?,"
 				+ "TotalHole=?,"
 				+ "IsHot=?,"
@@ -155,9 +151,8 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "where ClubID=?";
 		return super.executeUpdate(sql, club.getClubName(),club.getClubPhoneNumber(),
 				club.getClubAddress(),club.getClubType(),photo,club.getLogo(),club.getProvince(),
-				club.getCity(),club.getArea(),club.getPrice(),club.getDiscountPrice(),
-				club.getTotalStemNum(),club.getTotalHole(),club.getIsHot(),club.getIsTop(),club.getLongitude(),
-				club.getLatitude(),Time(),club.getClubID());
+				club.getCity(),club.getArea(),club.getTotalStemNum(),club.getTotalHole(),
+				club.getIsHot(),club.getIsTop(),club.getLongitude(),club.getLatitude(),Time(),club.getClubID());
 	}
 	
 	public Club getClubByClubID(String clubID){

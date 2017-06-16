@@ -26,9 +26,11 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 	private static final String COLUMN_StartDate = "StartDate";
 	private static final String COLUMN_StartTime = "StartTime";
 	private static final String COLUMN_Names = "Names";
+	private static final String COLUMN_MemberCount = "MemberCount";
 	private static final String COLUMN_Tel = "Tel";
 	private static final String COLUMN_ServiceExplain = "ServiceExplain";
 	private static final String COLUMN_ChargeID = "ChargeID";
+	private static final String COLUMN_Marks = "Marks";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 	private static final String COLUMN_Activity = "Activity";
@@ -52,24 +54,23 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 		String StartDate = res.getString(COLUMN_StartDate);
 		String StartTime = res.getString(COLUMN_StartTime);
 		String Names = res.getString(COLUMN_Names);
+		String MemberCount = res.getString(COLUMN_MemberCount);
 		String Tel = res.getString(COLUMN_Tel);
 		String ServiceExplain = res.getString(COLUMN_ServiceExplain);
 		String ChargeID = res.getString(COLUMN_ChargeID);
+		String Marks = res.getString(COLUMN_Marks);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
-		String act = res.getString(COLUMN_Activity);
-		if(act!=null&&act.indexOf("\\|")!=-1){
-			String[] activities = act.split("\\|");
-			for(String activity:activities){
-				Activity a = new Activity();
-				String[] properties = activity.split(",");
-				a.setTime(properties[0]);
-				a.setAction(properties[1]);
-				Activities.add(a);
-			}
+		String[] activities = res.getString(COLUMN_Activity).split("\\|");
+		for(String activity:activities){
+			Activity a = new Activity();
+			String[] properties = activity.split(",");
+			a.setTime(properties[0]);
+			a.setAction(properties[1]);
+			Activities.add(a);
 		}
-		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,Tel,ServiceExplain,ChargeID,Created_TS,Updated_TS,Activities);
+		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,MemberCount,Tel,ServiceExplain,Marks,ChargeID,Created_TS,Updated_TS,Activities);
 	}
 
 }

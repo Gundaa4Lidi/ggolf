@@ -81,7 +81,10 @@ var ClubOrderController = function ($scope,appConfig) {
         var promise = sc.httpParams(url,method,params);
         promise.then(function (data) {
             sc.processResult(data);
-            sc.load();
+            if(data.status == 'Success'){
+                sc.load();
+            }
+
         }),function (data) {
             sc.Load_Failed(data);
         }

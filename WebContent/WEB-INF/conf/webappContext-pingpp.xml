@@ -7,9 +7,12 @@
 	<bean id="pingPPService" class="com.galaxy.ggolf.rest.PingPPService">
 		<constructor-arg ref="clubOrderDAO"/>
 		<constructor-arg ref="courseOrderDAO"/>
+		<constructor-arg ref="umengDAO"/>
 	</bean>
 	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
 	</bean>
 	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
+	</bean>
+	<bean id="umengDAO" class="com.galaxy.ggolf.dao.UmengDAO">
 	</bean>
 </beans>

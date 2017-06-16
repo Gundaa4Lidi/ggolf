@@ -4,7 +4,8 @@ public class ClubserveLimitTime {
 
     private String ClubserveLimitTimeID;
     private String Name;
-    private String ClubserveID;
+	private String ClubID;
+	private String ClubserveID;
     private String Price;
     private String StartTime;
     private String EndTime;
@@ -16,11 +17,12 @@ public class ClubserveLimitTime {
     private String Created_TS;
     private String Updated_TS;
     
-	public ClubserveLimitTime(String clubserveLimitTimeID,String name, String clubserveID, String price, String startTime,
+	public ClubserveLimitTime(String clubserveLimitTimeID, String name, String clubID, String clubserveID, String price, String startTime,
 			String endTime, String count, String date, String serviceExplain, String beginStartTime,
 			String beginEndTime, String created_TS, String updated_TS) {
 		ClubserveLimitTimeID = clubserveLimitTimeID;
 		Name = name;
+		ClubID = clubID;
 		ClubserveID = clubserveID;
 		Price = price;
 		StartTime = startTime;
@@ -46,6 +48,12 @@ public class ClubserveLimitTime {
 	}
 	public void setName(String name) {
 		Name = name;
+	}
+	public String getClubID() {
+		return ClubID;
+	}
+	public void setClubID(String clubID) {
+		ClubID = clubID;
 	}
 	public String getClubserveID() {
 		return ClubserveID;

@@ -47,15 +47,17 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "StartDate,"
 				+ "StartTime,"
 				+ "Names,"
+				+ "MemberCount,"
 				+ "Tel,"
 				+ "ServiceExplain,"
+				+ "Marks,"
 				+ "Created_TS,"
 				+ "Activity"
-				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,o.getOrderID(),o.getUserID(),o.getClubID(),o.getClubName(),o.getClubserveID(),
 				o.getClubserveName(),o.getClubserveLimitTimeID(),o.getClubservePriceID(),Submit_order,Time1(),
-				o.getDownPayment(),"0",o.getStartDate(),o.getStartTime(),o.getNames(),o.getTel(),
-				o.getServiceExplain(),Time(),Time()+",提交订单|");
+				o.getDownPayment(),"0",o.getStartDate(),o.getStartTime(),o.getNames(),o.getMemberCount(),o.getTel(),
+				o.getServiceExplain(),o.getMarks(),Time(),Time()+",提交订单|");
 	}
 	
 	public Collection<ClubOrder> getAll(){
@@ -126,14 +128,16 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 		return null;
 	}
 	
-	//TODO
-	public ClubOrder getValidOrderForNotPay(String OrderID){
-		String sql = "select * from `cluborder` where DeletedFlag is null and State and OrderID='"+OrderID+"'";
-		Collection<ClubOrder> result = super.executeQuery(sql);
-		if(result.size() > 0){
-			return (ClubOrder) result.toArray()[0];
-		}
-		return null;
+	/**
+	 * 修改留言
+	 * @param OrderID
+	 * @param Marks
+	 * @return
+	 */
+	public boolean updateMarks(String OrderID,String Marks){
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",修改留言|'), Marks = '"+Marks
+				+"',Updated_TS='"+Time()+"' where OrderID='"+OrderID+"'";
+		return super.executeUpdate(sql);
 	}
 	
 	/**

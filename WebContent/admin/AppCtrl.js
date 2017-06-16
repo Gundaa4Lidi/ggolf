@@ -52,7 +52,6 @@ app.controller("ClubOrderController",ClubOrderController);
 app.controller("CoachApplyController",CoachApplyController);
 app.controller("CourseApplyController",CourseApplyController);
 app.controller("CoachController",CoachController);
-app.controller("MyDatePickerController",MyDatePickerController);
 
 app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$timeout,$interval,appConfig){
 
@@ -106,32 +105,19 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 	   		},1000)
 	   	}else{
 	   		$scope.navigate(3);
-	   		
-	   		$scope.currentStaffHead = $window.sessionStorage.StaffHead;
-	   		
-	   		$scope.currentStaffID = $window.sessionStorage.StaffId;
-	   		
-	   		$scope.currentStaffName = $window.sessionStorage.Staffname;
-	   		
-	   		$scope.Position = $window.sessionStorage.Position;
-	   		
+
+            $scope.currentStaffHead = $window.sessionStorage.StaffHead;
+
+            $scope.currentStaffID = $window.sessionStorage.StaffId;
+
+            $scope.currentStaffName = $window.sessionStorage.Staffname;
+
+            $scope.Position = $window.sessionStorage.Position;
+
 	   		
 	   	}
 	}
 
-    // function fade(element) {
-    //     var op = 1;  // initial opacity
-    //     var timer = setInterval(function () {
-    //         if (op <= 0.1){
-    //             clearInterval(timer);
-    //             element.style.display = 'none';
-    //         }
-    //         element.style.opacity = op;
-    //         element.style.filter = 'alpha(opacity=' + op * 100 + ")";
-    //         op -= op * 0.1;
-    //     }, 10);
-    // }
- 
 	
 	$scope.navigate = function(e){
 		if(e==1.1){
@@ -152,9 +138,9 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 		if(e==4){
 			$scope.currentPage = "page/club/clubPage.html";
 		}
-		if(e==5){
-			$scope.currentPage = "page/course/coursePage.html";
-		}
+		// if(e==5){
+		// 	$scope.currentPage = "page/course/coursePage.html";
+		// }
 		if(e==6){
 			$scope.currentPage = "page/article/articlePage.html";
 		}
@@ -290,27 +276,6 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
         return dfd.promise;
     }
 
-    // //上传文件
-    // $rootScope.uploadService = function (files) {
-    // 	var dfd = $q.defer();
-    //     if (files && files.length) {
-    //         for (var i = 0; i < files.length; i++) {
-    //             var file = files[i];
-    //             Upload.upload({
-    //                 url: appConfig.url + 'file/upload',
-    //                 file: file
-    //             }).progress(function (evt) {
-    //                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-    //                 console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
-    //             }).success(function (data) {
-    //                 dfd.resolve(data)
-    //             }).error(function (data) {
-    //                 dfd.reject(data)
-    //             })
-    //         }
-    //         return dfd.promise;
-    //     }
-    // };
 
 
     /**
@@ -319,16 +284,34 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
      * @returns {string}
      * @constructor
      */
-	$rootScope.CurrentDT = function(DateTime){
-    	var t = new Date();
+	$rootScope.CurrentDT = function(DateTime,SecTime,status){
     	var d = new Date(DateTime);
+        var t = SecTime?new Date(SecTime):new Date();
         var dMonth = ((d.getMonth()+1)>9?(d.getMonth()+1).toString():'0' + (d.getMonth()+1));
         var dDay = (d.getDate()>9?d.getDate().toString():'0' + d.getDate());
         var dHour = (d.getHours()>9?d.getHours().toString():'0' + d.getHours());
         var dMin = (d.getMinutes()>9?d.getMinutes().toString():'0'+d.getMinutes());
         var dSec = (d.getSeconds()>9?d.getSeconds().toString():'0'+d.getSeconds());
         var result = "";
+        var dD = (t - d)/(1000*60*60*24);
+        var dH = (t - d)/(1000*60*60);
+        var dM = (t - d)/(1000*60);
+        var dS = (t - d)/1000;
         var disDay = Math.abs((t - d))/(1000*60*60*24);
+        var disHours = Math.abs((t - d))/(1000*60*60);
+        var disMin = Math.abs((t - d))/(1000*60);
+        var disSec = Math.abs((t - d))/1000;
+        var difTime = dD.toFixed(0) + "天" +dH.toFixed(0) + "小时" + dM.toFixed(0) + "分" + dS.toFixed(0) + "秒";
+        if(SecTime){
+            if(status=='all'){
+                return difTime;
+            }else if(status=='hour'){
+                console.log(dH)
+                return dH.toFixed(2);
+            }
+            console.log(dD)
+            return dD.toFixed(2);
+        }
 
         if(disDay >= 365){
             if(DateTime.lastIndexOf('.')!=-1){
@@ -341,19 +324,19 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 		}else if(disDay < 30 && disDay >=1){
         	result = disDay.toFixed(0) + "天前" + " " + dHour + ":" + dMin + ":" + dSec;
 		}else{
-			var disHours = Math.abs((t - d))/(1000*60*60);
+
 			if(disHours < 24 && disHours >= 1){
 				result = disHours.toFixed(0) + "小时前";
 			}else{
-				var disMin = Math.abs((t - d))/(1000*60);
+
 				if(disMin < 60 && disMin >= 1){
                     result = disMin.toFixed(0) + "分钟前";
                 }else{
-					var disMin = Math.abs((t - d))/1000;
-					if(disMin <= 30){
+
+					if(disSec <= 30){
 						result = "刚刚";
 					}else {
-						result = disMin.toFixed(0) + "秒前";
+						result = disSec.toFixed(0) + "秒前";
 					}
 				}
 			}
@@ -438,5 +421,48 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
         }
         return loadMore;
     }
+
+    var map = null;
+    var geolocation = null;
+
+    //加载地图，调用浏览器定位服务
+    map = new AMap.Map('mapView', {
+        resizeEnable: true
+    });
+    map.plugin('AMap.Geolocation', function() {
+        geolocation = new AMap.Geolocation({
+            enableHighAccuracy: true,//是否使用高精度定位，默认:true
+            timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+        });
+        map.addControl(geolocation);
+        geolocation.getCurrentPosition();
+        AMap.event.addListener(geolocation, 'complete', onComplete);//返回定位信息
+        AMap.event.addListener(geolocation, 'error', onError);      //返回定位出错信息
+    });
+    $rootScope.Location = [113.12,23.02];
+    //解析定位结果
+    function onComplete(data) {
+    	console.log(data);
+    	var lng = data.position.getLng();
+    	var lat = data.position.getLat();
+    	$rootScope.Location = [lng,lat];
+    }
+    //解析定位错误信息
+    function onError(data) {
+        console.log('定位失败');
+    }
+
+    $rootScope.GetDistance = function (dis) {
+        dis = parseFloat(dis);
+        var kDis = dis/1000;
+        var result = "";
+        if(kDis >= 1){
+            result = kDis.toFixed(0) + "km";
+        }else{
+            result = dis.toFixed(0) + "m";
+        }
+        return result;
+    }
+
 
 });

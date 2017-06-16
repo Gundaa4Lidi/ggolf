@@ -9,6 +9,7 @@ public class ClubserveLimitTimeRowMapper implements RowMapper<ClubserveLimitTime
 
 	private static final String COLUMN_ClubserveLimitTimeID = "ClubserveLimitTimeID";
 	private static final String COLUMN_Name = "Name";
+	private static final String COLUMN_ClubID = "ClubID";
 	private static final String COLUMN_ClubserveID = "ClubserveID";
 	private static final String COLUMN_Price = "Price";
 	private static final String COLUMN_StartTime = "StartTime";
@@ -25,6 +26,7 @@ public class ClubserveLimitTimeRowMapper implements RowMapper<ClubserveLimitTime
 
 		String ClubserveLimitTimeID = res.getString(COLUMN_ClubserveLimitTimeID);
 		String Name = res.getString(COLUMN_Name);
+		String ClubID = res.getString(COLUMN_ClubID);
 		String ClubserveID = res.getString(COLUMN_ClubserveID);
 		String Price = res.getString(COLUMN_Price);
 		String StartTime = res.getString(COLUMN_StartTime);
@@ -36,7 +38,7 @@ public class ClubserveLimitTimeRowMapper implements RowMapper<ClubserveLimitTime
 		String BeginEndTime = res.getString(COLUMN_BeginEndTime);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
-		return new ClubserveLimitTime(ClubserveLimitTimeID,Name,ClubserveID,Price,StartTime,EndTime,Count,Date,ServiceExplain,BeginStartTime,BeginEndTime,Created_TS,Updated_TS);
+		return new ClubserveLimitTime(ClubserveLimitTimeID,Name,ClubID,ClubserveID,Price,StartTime,EndTime,Count,Date,ServiceExplain,BeginStartTime,BeginEndTime,Created_TS,Updated_TS);
 	}
 
 }

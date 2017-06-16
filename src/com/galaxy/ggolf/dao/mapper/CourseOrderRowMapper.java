@@ -53,15 +53,13 @@ public class CourseOrderRowMapper implements RowMapper<CourseOrder> {
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		String act = res.getString(COLUMN_Activity);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
-		if(act.indexOf("\\|")!=-1){
-			String[] activities = act.split("\\|");
-			for(String activity:activities){
-				Activity a = new Activity();
-				String[] properties = activity.split(",");
-				a.setTime(properties[0]);
-				a.setAction(properties[1]);
-				Activities.add(a);
-			}
+		String[] activities = act.split("\\|");
+		for(String activity:activities){
+			Activity a = new Activity();
+			String[] properties = activity.split(",");
+			a.setTime(properties[0]);
+			a.setAction(properties[1]);
+			Activities.add(a);
 		}
 		return new CourseOrder(CourseOrderID,CoachID,CoachName,CourseID,CourseName,UserID,UserName,State,Type,TeachingMethod,ClassHour,DownPayment,StartDateTime,Tel,IsBatch,IsTaught,ServiceExplain,Created_TS,Updated_TS,Activities);
 	}

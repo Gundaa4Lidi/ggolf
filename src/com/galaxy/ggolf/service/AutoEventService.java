@@ -43,16 +43,16 @@ public class AutoEventService {
 	}
 	
 	public void startTask(){
-//		Runnable task = new MessageCloseRunner();
-//		Runnable task1 = new CourseCloseRunner();
-//		Runnable task2 = new CancelClubOrderRunner();
-//		Runnable task3 = new CancelCourseOrderRunner();
-//		Runnable task4 = new CoachTeachNoRunner();
-//		autoEventService.scheduleWithFixedDelay(task, 0, 60, TimeUnit.MINUTES);
-//		autoEventService.scheduleWithFixedDelay(task1, 0, 60, TimeUnit.MINUTES);
-//		autoEventService.scheduleWithFixedDelay(task2, 0, 60, TimeUnit.MINUTES);
-//		autoEventService.scheduleWithFixedDelay(task3, 0, 60, TimeUnit.MINUTES);
-//		autoEventService.scheduleWithFixedDelay(task4, 0, 60, TimeUnit.MINUTES);
+		Runnable task = new MessageCloseRunner();
+		Runnable task1 = new CourseCloseRunner();
+		Runnable task2 = new CancelClubOrderRunner();
+		Runnable task3 = new CancelCourseOrderRunner();
+		Runnable task4 = new CoachTeachNoRunner();
+		autoEventService.scheduleWithFixedDelay(task, 0, 60, TimeUnit.MINUTES);
+		autoEventService.scheduleWithFixedDelay(task1, 0, 60, TimeUnit.MINUTES);
+		autoEventService.scheduleWithFixedDelay(task2, 0, 60, TimeUnit.MINUTES);
+		autoEventService.scheduleWithFixedDelay(task3, 0, 60, TimeUnit.MINUTES);
+		autoEventService.scheduleWithFixedDelay(task4, 0, 60, TimeUnit.MINUTES);
 		
 	}
 	
@@ -95,7 +95,7 @@ public class AutoEventService {
 		@Override
 		public void run() {
 			try {
-				DateTime dateTime = new DateTime();
+				DateTime dateTime = new DateTime().plusMinutes(-30);;
 				clubOrderDAO.cancelOrders(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
 			} catch (Exception e) {
 				logger.error("Exception", e);
@@ -114,7 +114,7 @@ public class AutoEventService {
 		@Override
 		public void run() {
 			try {
-				DateTime dateTime = new DateTime();
+				DateTime dateTime = new DateTime().plusMinutes(-30);;
 				courseOrderDAO.cancelOrders(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
 			} catch (Exception e) {
 				logger.error("Exception", e);

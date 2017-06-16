@@ -11,13 +11,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.dao.mapper.RowMapper;
 import com.galaxy.ggolf.jdbc.CommonConfig;
-
+import org.springframework.util.StringUtils;
 
 
 public abstract class GenericDAO<T> {
@@ -273,7 +274,6 @@ public abstract class GenericDAO<T> {
 	/**
 	 * getId
 	 * 
-	 * @param sql
 	 * @return
 	 */
 	public int getId(String[] s) {
@@ -329,6 +329,19 @@ public abstract class GenericDAO<T> {
 		return false;
 	}
 	
+	public String getID(String prefix,int size) {
+		Random r = new Random();
+		long num = Math.abs(r.nextLong() % 1000000000000L);
+		String s = String.valueOf(num);
+		for (int i = 0; i < size - s.length(); i++) {
+			s = "0" + s;
+		}
+		if(!StringUtils.isEmpty(prefix)){
+			s = prefix + s;
+		}
+		logger.debug(s);
+		return s;
+	}
 	
 	public String getCustomID(String prefix,String main,String count){
 		String CustomID = "";

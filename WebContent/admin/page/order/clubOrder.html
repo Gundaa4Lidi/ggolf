@@ -92,7 +92,7 @@
                         <td width="13%" align="center">
                             <button type="button" class="btn btn-success btn-xs"
                                     href="#OrderDetail" data-toggle="modal" ng-click="checkOrder(order)">查看</button>
-                            <button type="button" class="btn btn-info btn-xs" ng-click="confirmBall(order)">球位确认</button>
+                            <button type="button" class="btn btn-info btn-xs" ng-if="order.State=='提交订单'" ng-click="confirmBall(order)">球位确认</button>
                             <button type="button" class="btn btn-xs" ng-if="order.Type=='球场现付'&&order.State=='确认球位'"
                                     data-toggle="modal" href="#PayCash" ng-click="checkOrder(order)">现金支付</button>
                         </td>

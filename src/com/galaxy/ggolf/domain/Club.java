@@ -13,8 +13,6 @@ public class Club {
     private String Province;  //省份
     private String City;  //城市
     private String Area;  //地区
-    private String Price; //价格
-    private String DiscountPrice; //优惠价
     private String TotalStemNum; //总杆数
     private String TotalHole; //总洞数
     private String IsHot; //是否热门
@@ -23,14 +21,17 @@ public class Club {
     private String Latitude;  //纬度
     private String Distance; //距离
     private String Created_TS; //创建时间
+    private String Updated_TS;//修改时间
     private Collection<ClubServe> clubServes;
     
-    
+    public Club() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	public Club(String clubID, String clubName, String clubPhoneNumber, String clubAddress, String clubType,
-			Collection<String> clubPhoto, String logo, String province, String city, String area, String price,
-			String discountPrice, String totalStemNum, String totalHole, String isHot, String isTop, String longitude,
-			String latitude, String created_TS) {
+			Collection<String> clubPhoto, String logo, String province, String city, String area, 
+			String totalStemNum, String totalHole, String isHot, String isTop, String longitude,
+			String latitude, String created_TS, String updated_TS) {
 		ClubID = clubID;
 		ClubName = clubName;
 		ClubPhoneNumber = clubPhoneNumber;
@@ -41,8 +42,6 @@ public class Club {
 		Province = province;
 		City = city;
 		Area = area;
-		Price = price;
-		DiscountPrice = discountPrice;
 		TotalStemNum = totalStemNum;
 		TotalHole = totalHole;
 		IsHot = isHot;
@@ -50,6 +49,7 @@ public class Club {
 		Longitude = longitude;
 		Latitude = latitude;
 		Created_TS = created_TS;
+		Updated_TS = updated_TS;
 	}
 	public String getClubID() {
 		return ClubID;
@@ -112,18 +112,6 @@ public class Club {
 	public void setArea(String area) {
 		Area = area;
 	}
-	public String getPrice() {
-		return Price;
-	}
-	public void setPrice(String price) {
-		Price = price;
-	}
-	public String getDiscountPrice() {
-		return DiscountPrice;
-	}
-	public void setDiscountPrice(String discountPrice) {
-		DiscountPrice = discountPrice;
-	}
 	public String getTotalStemNum() {
 		return TotalStemNum;
 	}
@@ -171,6 +159,12 @@ public class Club {
 	}
 	public void setCreated_TS(String created_TS) {
 		Created_TS = created_TS;
+	}
+	public String getUpdated_TS() {
+		return Updated_TS;
+	}
+	public void setUpdated_TS(String updated_TS) {
+		Updated_TS = updated_TS;
 	}
 	public Collection<ClubServe> getClubServes() {
 		return clubServes;

@@ -1,6 +1,7 @@
 var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,cities){
 	var sc = $scope;
 	var ClubPageCtrl = sc.$parent;
+	sc.parent = sc.$parent;
 	sc.currentItem = null;
     sc.currentClub = new Object();
     sc.clubList = null;
@@ -12,7 +13,12 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
     sc.rows = 20;
     sc.Rows = 0;
     sc.TotalClub = 0;
+    // sc.isHot = false;
+    // sc.isTop = false;
+    // sc.isClub = true;
     sc.loadMore = false;
+    sc.clubTypes = ['球场','练习场'];
+    sc.clubType = sc.clubTypes[0];
 
 	sc.loading = function(){
         if(sc.loadMore) {
@@ -20,13 +26,6 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
             sc.getClubList();
         }
 	}
-	// sc.$watch('Rows',function(e){
-	// 	if(e < sc.TotalClub){
-	// 		sc.loadMore = true;
-	// 	}else if(e >= sc.TotalClub){
-	// 		sc.loadMore = false;
-	// 	}
-	// })
 
 	sc.load=function(){
 		sc.getClubList();
@@ -58,33 +57,18 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 
 	sc.submitForm = function(isValid){
 		if(isValid){
-			if(sc.p){
-				sc.currentClub.Province = sc.p;
-			}
-			if(sc.c){
-				sc.currentClub.City = sc.c;
-			}
-			if(sc.a){
-                sc.currentClub.Area = sc.a;
-			}
-			if(sc.d){
-			    sc.currentClub.ClubAddress = sc.d;
-            }
-            if(!sc.p || !sc.c || !sc.d){
-			    swal("请确认地址是否填写正确!","","warning");
-            }else{
-                sc.currentClub.ClubType = '球场';
-                var url = appConfig.url + 'Club/saveClub';
-                var method = 'POST';
-                var data = sc.currentClub;
-                var promise = sc.httpDataUrl(url,method,data);
-                promise.then(function (data) {
-                    sc.processResult(data);
-                    $('#new-club').modal("hide");
-                    sc.getClubList();
-                }),function(data){
-                    sc.Load_Failed(data);
-                }
+		    console.log(sc.currentClub);
+            sc.currentClub.ClubType = sc.isClub?'球场':'练习场';
+            var url = appConfig.url + 'Club/saveClub';
+            var method = 'POST';
+            var data = sc.currentClub;
+            var promise = sc.httpDataUrl(url,method,data);
+            promise.then(function (data) {
+                sc.processResult(data);
+                $('#new-club').modal("hide");
+                sc.getClubList();
+            }),function(data){
+                sc.Load_Failed(data);
             }
 		}else{
 		    swal("表单验证失败","","warning");
@@ -97,7 +81,12 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 		var params = {
 			keyword : sc.keyword,
 			rows : sc.rows,
-			clubType : '球场'
+			clubType : ClubPageCtrl.isClub?'球场':'练习场',
+            IsHot : ClubPageCtrl.isHot?'1':'',
+            IsTop : ClubPageCtrl.isTop?'1':'',
+            lon : sc.Location[0],
+            lat : sc.Location[1]
+
 		};
 		var promise = sc.httpParams(url,method,params);
 		promise.then(function(data){
@@ -141,7 +130,7 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 
     sc.logoSave = function(e){
         sc.currentClub.Logo = e;
-        sc.openModal(false);
+        sc.openModal(2);
     }
 
     sc.logoSelect = function (files) {
@@ -150,7 +139,6 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
                 var file = files[i];
                 var reader = new FileReader();
                 reader.onload = function(evt) {
-                    console.log("1")
                     sc.$apply(function (sc) {
                         sc.logoImage = evt.target.result;
                         // console.log("类型："+typeof sc.logoImage,"值:"+sc.logoImage)
@@ -166,14 +154,13 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
         sc.currentClub.ClubPhoto = [];
         sc.currentClub.IsHot = '0';
         sc.currentClub.IsTop = '0';
-        sc.address();
         sc.openModal(2);
     }
 
     sc.openItem = function(e){
+        sc.currentClub = new Object();
         sc.currentClub = angular.copy(e);
-        console.log("IsHot:"+e.IsHot,"IsTop:"+e.IsTop);
-        sc.address(e);
+        // console.log("IsHot:"+e.IsHot,"IsTop:"+e.IsTop);
         $('#new-club').modal("show");
     }
 
@@ -271,32 +258,65 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
             sc.Load_Failed(data);
         }
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     sc.createPointLng = null;
     sc.createPointLat = null;
     sc.createPointAddress = null;
-
-    //初始化地图
-    var map = new AMap.Map('mapView',{
+    var  map = new AMap.Map('mapView',{
         resizeEnable: true,
-        zoom: 9,
-        center: [113.12,23.02],//new AMap.LngLat(116.39,39.9)
-        scrollWheel : false,
+        zoom: 16,
+        center: sc.Location,
+        // scrollWheel : false,
     });
     map.plugin(['AMap.ToolBar'],function(){
         map.addControl(new AMap.ToolBar());
     });
-    var marker = null;
+    map.on('click',function (e) {
+        var lng = e.lnglat.lng;
+        var lat = e.lnglat.lat;
+        clickMapEvent(lng,lat,createPointInfowindow,createPointInfowindowContent);
+    });
+
+    sc.initMap = function () {
+        sc.lng = null;
+        sc.lat = null;
+        sc.marker = null;
+        sc.location = [];
+        sc.addressKey = null;
+        map.setCenter(sc.Location);
+        //初始化地图
+        if(sc.currentClub.Longitude&&sc.currentClub.Latitude){
+            sc.lng = parseFloat(sc.currentClub.Longitude);
+            sc.lat = parseFloat(sc.currentClub.Latitude);
+            sc.location = [sc.lng,sc.lat];
+            map.setCenter(sc.location);
+            Marker(sc.lng,sc.lat);
+        }
+    }
+
 
     var Marker = function (lng,lat) {
-        marker = new AMap.Marker({
-            position: [lng,lat]
+        sc.marker = new AMap.Marker({
+            position: [lng,lat],
+            map:map
         });
-        marker.setMap(map);
+        sc.marker.setMap(map);
+        sc.marker.on('click',function (e) {
+            var position = e.target.getPosition();
+            clickMapEvent(position.lng,position.lat,markerInfoWindow,markerInfoContent);
+        })
     }
-    Marker(113.12,23.02);
+
+    var markerInfoContent = $('<div>\
+                                <div id="address"></div>\
+                                <div id="lng"></div>\
+                                <div id="lat"></div>\
+                              </div>');
+    var markerInfoWindow = new AMap.InfoWindow({
+        content: markerInfoContent[0],
+        offset: new AMap.Pixel(0,-25),
+        size: new AMap.Size(230,0)
+    })
 
     var createPointInfowindowContent = $('<div>\
                                             <div id="address"></div>\
@@ -325,33 +345,36 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
                 pageSize: 5,
                 pageIndex: 1,
                 map: map,
-                panel: "panel"
+                panel: "panel__map"
             });
             //关键字查询
-            placeSearch.search(sc.addressKey);
+            placeSearch.search(sc.addressKey,function (status,result) {
+                // console.log(status,result);
+            });
         });
     }
 
 
 
+    var clickMapEvent = function(lng,lat,infoWindow,infoContent){
+        sc.createPointLng = lng;
+        sc.createPointLat = lat;
+        infoWindow.open(map,new AMap.LngLat(lng,lat));
+        infoContent.find('#address').text('地址:'+'正在查询,请稍等。。。');
+        infoContent.find('#lng').text('经度:'+lng);
+        infoContent.find('#lat').text('纬度:'+lat);
+        getAddress(lng,lat,infoContent);
+    }
 
-    map.on('click',function (e) {
-        sc.createPointLng=e.lnglat.getLng();
-        sc.createPointLat=e.lnglat.getLat();
-        sc.createPointAddress=null;
-        createPointInfowindow.open(map,new AMap.LngLat(sc.createPointLng,sc.createPointLat));
-        createPointInfowindowContent.find('#address').text('地址:'+'正在查询,请稍等。。。');
-        createPointInfowindowContent.find('#lng').text('经度:'+sc.createPointLng);
-        createPointInfowindowContent.find('#lat').text('经度:'+sc.createPointLat);
-
+    var getAddress = function (lng,lat,infoContent) {
+        var createPointAddress = null;
         AMap.service(["AMap.Geocoder"], function() { //加载地理编码
-            geocoder = new AMap.Geocoder({
+            var geoCoder = new AMap.Geocoder({
                 radius: 1000,
                 extensions: "all"
             });
-            // Marker(createPointLng,createPointLat);
             //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
-            geocoder.getAddress(new AMap.LngLat(sc.createPointLng,sc.createPointLat), function(status, result){
+            geoCoder.getAddress(new AMap.LngLat(lng,lat), function(status, result){
                 //根据服务请求状态处理返回结果
                 if(status=='error') {
                     alert("服务请求出错啦！ ");
@@ -360,14 +383,54 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
                     alert("无数据返回，请换个关键字试试～～");
                 }
                 else {
-                    console.log(result)
-                    sc.createPointAddress= result.regeocode.formattedAddress;
-
-                    createPointInfowindowContent.find('#address').text('地址:'+sc.createPointAddress);
+                    createPointAddress= result.regeocode.formattedAddress;
+                    infoContent.find('#address').text('地址:'+createPointAddress);
                 }
             });
         });
-    });
+    }
+
+    sc.submitAddress = function () {
+        if(sc.marker){
+            var lng = sc.marker.getPosition().lng;
+            var lat = sc.marker.getPosition().lat;
+            sc.currentClub.Longitude = lng;
+            sc.currentClub.Latitude = lat;
+            var geoCoder = new AMap.Geocoder({
+                radius: 1000,
+                extensions: "all"
+            });
+            AMap.service(["AMap.Geocoder"], function() { //加载地理编码
+                geoCoder.getAddress(new AMap.LngLat(lng,lat), function(status, result){
+                    if(status=='error') {
+                        alert("服务请求出错啦！ ");
+                    }
+                    if(status=='no_data') {
+                        alert("无数据返回，请换个关键字试试～～");
+                    } else {
+                        // console.log(result)
+                        sc.geoCallBack(result);
+                        // createPointAddress= result.regeocode.formattedAddress;
+                    }
+                });
+            });
+        }
+    }
+
+    sc.geoCallBack = function (result) {
+        sc.currentClub.ClubAddress = result.regeocode.formattedAddress;
+        sc.currentClub.Province = result.regeocode.addressComponent.province;
+        sc.currentClub.City = result.regeocode.addressComponent.city;
+        sc.currentClub.Area = result.regeocode.addressComponent.district;
+        $timeout(function () {
+            $("#add_address").modal("hide");
+            sc.openItem(sc.currentClub);
+        },200)
+    }
+
+
+
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -928,3 +928,56 @@ th,td{
     height:100%;
     background-color:rgba(78,81,84,0.45);
 }
+.container__map{
+    background-color: silver;
+    width:100%;
+    position:relative;
+    display: inline-block;
+}
+.dummy__map{
+    margin-top: 50%;
+}
+.content__map{
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom: 0;
+}
+#panel__map {
+    position: absolute;
+    background-color: white;
+    max-height: 90%;
+    overflow-y: auto;
+    top: 10px;
+    right: 10px;
+    width: 280px;
+}
+
+.f-l{
+    font-size: large;
+}
+.f-lr{
+    font-size: larger;
+}
+.f-x-l{
+    font-size: x-large;
+}
+.f-xx-l{
+    font-size: xx-large;
+}
+.f-s{
+    font-size: small;
+}
+
+.f-x-s{
+    font-size: x-small;
+}
+
+.f-xx-s{
+    font-size: xx-small;
+}
+.border_3_s_b{
+    border-right: 3px solid cornflowerblue;
+}
+

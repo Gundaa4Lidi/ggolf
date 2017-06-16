@@ -19,15 +19,14 @@ public class ClubRowMapper implements RowMapper<Club> {
 	public static final String COLUMN_Province = "Province";
 	public static final String COLUMN_City = "City";
 	public static final String COLUMN_Area = "Area";
-	public static final String COLUMN_Price = "Price";
-	public static final String COLUMN_DiscountPrice = "DiscountPrice";
 	public static final String COLUMN_TotalStemNum = "TotalStemNum";
 	public static final String COLUMN_TotalHole = "TotalHole";
 	public static final String COLUMN_IsHot = "IsHot";
 	public static final String COLUMN_IsTop = "IsTop";
-	public static final String COLUMN_Longitude = "Longitude";
-	public static final String COLUMN_Latitude = "Latitude";
+	public static final String COLUMN_Longitude = "longitude";
+	public static final String COLUMN_Latitude = "latitude";
 	public static final String COLUMN_Created_TS = "Created_TS";
+	public static final String COLUMN_Updated_TS = "Updated_TS";
 	
 	
 	@Override
@@ -46,8 +45,6 @@ public class ClubRowMapper implements RowMapper<Club> {
 	    String Province = res.getString(COLUMN_Province);
 	    String City = res.getString(COLUMN_City);
 	    String Area = res.getString(COLUMN_Area);
-	    String Price = res.getString(COLUMN_Price);
-	    String DiscountPrice = res.getString(COLUMN_DiscountPrice);
 	    String TotalStemNum = res.getString(COLUMN_TotalStemNum);
 	    String TotalHole = res.getString(COLUMN_TotalHole);
 	    String IsHot = res.getString(COLUMN_IsHot);
@@ -55,7 +52,8 @@ public class ClubRowMapper implements RowMapper<Club> {
 	    String Longitude = res.getString(COLUMN_Longitude);
 	    String Latitude = res.getString(COLUMN_Latitude);
 	    String Created_TS = res.getString(COLUMN_Created_TS);
-        return new Club(ClubID,ClubName,ClubPhoneNumber,ClubAddress,ClubType,clubPhotos,Logo,Province,City,Area,Price,DiscountPrice,TotalStemNum,TotalHole,IsHot,IsTop,Longitude,Latitude,Created_TS);
+	    String Updated_TS = res.getString(COLUMN_Updated_TS);
+        return new Club(ClubID,ClubName,ClubPhoneNumber,ClubAddress,ClubType,clubPhotos,Logo,Province,City,Area,TotalStemNum,TotalHole,IsHot,IsTop,Longitude,Latitude,Created_TS,Updated_TS);
 	}
 
 }

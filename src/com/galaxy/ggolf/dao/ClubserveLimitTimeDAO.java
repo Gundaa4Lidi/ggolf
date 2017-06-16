@@ -23,6 +23,7 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 		return super.getId(s);
 	}
 	
+	//创建限时活动
 	public boolean create(ClubserveLimitTime clt){
 		if(clt.getClubserveLimitTimeID()!=null){
 			String lt = "LT";
@@ -33,6 +34,7 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 			String sql = "insert into clubservelimittime("
 					+ "ClubserveLimitTimeID,"
 					+ "Name,"
+					+ "ClubID,"
 					+ "ClubserveID,"
 					+ "Price,"
 					+ "StartTime,"
@@ -42,18 +44,18 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 					+ "BeginStartTime,"
 					+ "BeginEndTime,"
 					+ "ServiceExplain,"
-					+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?) ";
-			return super.executeUpdate(sql,clt.getClubserveLimitTimeID(),clt.getName(),clt.getClubserveID(),clt.getPrice(),
-					clt.getStartTime(),clt.getEndTime(),clt.getCount(),clt.getDate(),
+					+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+			return super.executeUpdate(sql,clt.getClubserveLimitTimeID(),clt.getName(),clt.getClubID(),
+					clt.getClubserveID(),clt.getPrice(),clt.getStartTime(),clt.getEndTime(),clt.getCount(),clt.getDate(),
 					clt.getBeginStartTime(),clt.getBeginEndTime(),clt.getServiceExplain(),Time());
 		}
 		return false;
 	}
 	
+	//修改限时活动
 	public boolean update(ClubserveLimitTime clt){
 		String sql = "update clubservelimittime set "
 				+ "Name=?,"
-				+ "ClubserveID=?,"
 				+ "Price=?,"
 				+ "StartTime=?,"
 				+ "EndTime=?,"
@@ -63,11 +65,12 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 				+ "BeginEndTime=?,"
 				+ "ServiceExplain=?,"
 				+ "Updated_TS=? where ClubserveLimitTimeID=?";
-		return super.executeUpdate(sql,clt.getName(),clt.getClubserveID(),clt.getPrice(),clt.getStartTime(),
+		return super.executeUpdate(sql,clt.getName(),clt.getPrice(),clt.getStartTime(),
 				clt.getEndTime(),clt.getCount(),clt.getDate(),clt.getBeginStartTime(),clt.getBeginStartTime(),
 				clt.getServiceExplain(),Time(),clt.getClubserveLimitTimeID());
 	}
 	
+	//查看是否时间冲突
 	public ClubserveLimitTime getLimitTimeByClubserveID(String ClubserveID,String Date){
 		String sql = "select * from clubservelimittime where DeletedFlag is null and "
 				+ "Date='"+Date+"' and ClubserveID='"+ClubserveID+"' ";
@@ -78,6 +81,7 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 		return null;
 	}
 	
+	//查看限时编号的活动信息
 	public ClubserveLimitTime getByClubserveLimitTimeID(String ClubserveLimitTimeID){
 		String sql = "select * from clubservelimittime where DeletedFlag is null and "
 				+ "ClubserveLimitTimeID='"+ClubserveLimitTimeID+"'";
@@ -88,15 +92,61 @@ public class ClubserveLimitTimeDAO extends GenericDAO<ClubserveLimitTime> {
 		return null;
 	}
 	
-	public Collection<ClubserveLimitTime> getbyClubserveID(String ClubserveID){
-		String sql = "select * from clubservelimittime where DeletedFlag is null and ClubserveID='"+ClubserveID+"'";
+	//获取供应商下的限时活动
+	public Collection<ClubserveLimitTime> getbyClubserveID(String ClubserveID,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubservelimittime where DeletedFlag is null and "
+				+ "ClubserveID='"+ClubserveID+"' order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	}
 	
+	//获取供应商下的限时活动数量
+	public int getCountbyClubserveID(String ClubserveID){
+		String sql = "select count(*) from clubservelimittime where DeletedFlag is null and "
+				+ "ClubserveID='"+ClubserveID+"'";
+		return super.count(sql);
+	}
 	
+	//删除
 	public boolean delete(String ClubserveLimitTimeID){
 		String sql = "update clubservelimittime set DeletedFlag='Y' where ClubserveLimitTimeID='"+ClubserveLimitTimeID+"'";
 		return super.executeUpdate(sql);
 	}
+	
+	//修改限时活动的抢购数量
+	public boolean realCount(String ClubserveLimitTimeID,String realCount){
+		String sql = "update clubservelimittime set Count='"+realCount+"' where DeletedFlag is null and ClubserveLimitTimeID='"+ClubserveLimitTimeID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	//获取已开抢的限时活动
+	public Collection<ClubserveLimitTime> getForTime(String dateTime,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubservelimittime where DeletedFlag is null and "
+				+ "BeginStartTime <= '"+dateTime+"' and BeginEndTime > '"+dateTime+"' "
+				+ "order by Created_TS desc "+limit+"";
+		return super.executeQuery(sql);
+	}
+	//获取已开抢的限时活动数量
+	public int getForTimeCount(String dateTime){
+		String sql = "select count(*) from clubservelimittime where DeletedFlag is null and "
+				+ "BeginStartTime <= '"+dateTime+"' and BeginEndTime > '"+dateTime+"'";
+		return super.count(sql);
+	}
+	//获取未开抢的限时活动
+	public Collection<ClubserveLimitTime> getForNotOpen(String dateTime,String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from clubservelimittime where DeletedFlag is null and "
+				+ "BeginStartTime > '"+dateTime+"' order by Created_TS desc "+limit+"";
+		return super.executeQuery(sql);
+	}
+	//获取未开抢的限时活动数量
+	public int getCountForNotOpen(String dateTime){
+		String sql = "select count(*) from clubservelimittime where DeletedFlag is null and "
+				+ "BeginStartTime > '"+dateTime+"'";
+		return super.count(sql);
+	}
+	
+	
 
 }

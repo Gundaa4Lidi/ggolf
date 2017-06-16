@@ -23,6 +23,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.galaxy.ggolf.dao.ClubScoreDAO;
 import com.galaxy.ggolf.dao.ClubServeDAO;
@@ -41,6 +42,7 @@ import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.OtherDate;
 import com.galaxy.ggolf.domain.PriceForTime;
 import com.galaxy.ggolf.domain.User;
+import com.galaxy.ggolf.dto.ClubAndLimitTime;
 import com.galaxy.ggolf.dto.ClubData;
 import com.galaxy.ggolf.dto.ClubServeData;
 import com.galaxy.ggolf.dto.GenericData;
@@ -97,7 +99,7 @@ public class ClubService extends BaseService {
 			Club club = super.fromGson(data,Club.class);
 			this.manager.saveClub(club);
 			ClubDetail clubDetail = new ClubDetail(club.getClubID(), club.getClubName(), club.getTotalHole(),
-					club.getTotalStemNum(), club.getClubPhoneNumber(), club.getClubPhoto());
+					club.getTotalStemNum(), club.getClubPhoneNumber(),club.getClubAddress(), club.getClubPhoto());
 			this.clubDetailManager.saveClubDetail(clubDetail);
 			return getSuccessResponse();
 		} catch (GalaxyLabException ex) {
@@ -148,6 +150,10 @@ public class ClubService extends BaseService {
 						@FormParam("rows") String rows,
 						@FormParam("pageNum") String pageNum, 
 						@FormParam("clubType") String clubType,
+						@FormParam("IsHot") String IsHot,
+						@FormParam("IsTop") String IsTop,
+						@FormParam("lon") String lon,
+						@FormParam("lat") String lat,
 						@Context HttpHeaders headers){
 		try {
 			String sqlString = "";
@@ -165,13 +171,22 @@ public class ClubService extends BaseService {
 						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
 						+ keyword 
 						+"%' or Area like '%"
-						+ keyword +"%')";
+						+ keyword +"%') ";
 			}
-			if(clubType != null && !clubType.equalsIgnoreCase("null")){
-				sqlString += "and ClubType= '"+clubType+"'";
+			if(!StringUtils.isEmpty(clubType) && !clubType.equalsIgnoreCase("null")){
+				sqlString += "and ClubType= '"+clubType+"' ";
+			}
+			if(!StringUtils.isEmpty(IsHot)&&!IsHot.equalsIgnoreCase("null")){
+				sqlString += "and IsHot='"+IsHot+"' ";
+			}
+			if(!StringUtils.isEmpty(IsTop) && !IsTop.equalsIgnoreCase("null")){
+				sqlString += "and IsTop='"+IsTop+"' ";
 			}
 			Collection<Club> data = this.manager.getSearchClub(sqlString, rows, pageNum);
 			int pageCount = this.manager.getSearchCount(sqlString);
+			if(!StringUtils.isEmpty(lon)&&!lon.equalsIgnoreCase("null")&&!StringUtils.isEmpty(lat)&&!lat.equalsIgnoreCase("null")){
+				data = SortUtil.sortForDistanceOrPrice("0", false, lon, lat, data);
+			}
 			ClubData clubData = new ClubData(pageCount,data);
 			return getResponse(clubData);
 			
@@ -189,7 +204,11 @@ public class ClubService extends BaseService {
 	 */
 	@GET
 	@Path("/getCountByKeyword")
-	public String getCountByKeyword(@FormParam("keyword") String keyword, @Context HttpHeaders headers){
+	public String getCountByKeyword(@FormParam("keyword") String keyword, 
+									@FormParam("clubType") String clubType,
+									@FormParam("IsHot") String IsHot,
+									@FormParam("IsTop") String IsTop,
+									@Context HttpHeaders headers){
 		try {
 			String sqlString = "";
 			if(keyword!=null&&!keyword.equalsIgnoreCase("null")){
@@ -206,7 +225,16 @@ public class ClubService extends BaseService {
 						+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
 						+ keyword 
 						+"%' or Area like '%"
-						+ keyword +"%')";
+						+ keyword +"%') ";
+			}
+			if(clubType != null && !clubType.equalsIgnoreCase("null")){
+				sqlString += "and ClubType= '"+clubType+"' ";
+			}
+			if(!StringUtils.isEmpty(IsHot)&&!IsHot.equalsIgnoreCase("null")){
+				sqlString += "and IsHot='"+IsHot+"' ";
+			}
+			if(!StringUtils.isEmpty(IsTop) && !IsTop.equalsIgnoreCase("null")){
+				sqlString += "and IsTop='"+IsTop+"' ";
 			}
 			int count = this.manager.getSearchCount(sqlString);
 			return getResponse(count);
@@ -661,9 +689,9 @@ public class ClubService extends BaseService {
 				}
 			}
 			if(flag.equals("0")){
-				clubs = SortUtil.sortForDistanceOrPrice("0", lon, lat, clubs);
+				clubs = SortUtil.sortForDistanceOrPrice("0",true, lon, lat, clubs);
 			}else if(flag.equals("1")){
-				clubs = SortUtil.sortForDistanceOrPrice("1", null, null, clubs);
+				clubs = SortUtil.sortForDistanceOrPrice("1",true, null, null, clubs);
 			}
 			GenericData<Club> result = new GenericData<Club>(count,clubs);
 			return getResponse(result);
@@ -794,7 +822,7 @@ public class ClubService extends BaseService {
 		try {
 			ClubserveLimitTime clt = super.fromGson(data, ClubserveLimitTime.class);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			if(clt.getClubserveLimitTimeID()!=null&&!clt.getClubserveLimitTimeID().equals("")&&!clt.getClubserveLimitTimeID().equalsIgnoreCase("null")){
+			if(!StringUtils.isEmpty(clt.getClubserveLimitTimeID())&&!clt.getClubserveLimitTimeID().equalsIgnoreCase("null")){
 				if(!this.clubserveLimitTimeDAO.update(clt)){
 					throw new GalaxyLabException("Error in update ClubserveLimitTime");
 				}
@@ -821,8 +849,8 @@ public class ClubService extends BaseService {
 				if(!this.clubserveLimitTimeDAO.create(clt)){
 					throw new GalaxyLabException("Error in create ClubserveLimitTime");
 				}
-				return getSuccessResponse();
 			}
+			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -838,9 +866,13 @@ public class ClubService extends BaseService {
 	@GET
 	@Path("/getbyClubserveID")
 	public String getbyClubserveID(@FormParam("ClubserveID") String ClubserveID,
+			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
 			@Context HttpHeaders headers){
 		try {
-			Collection<ClubserveLimitTime> result = this.clubserveLimitTimeDAO.getbyClubserveID(ClubserveID);
+			Collection<ClubserveLimitTime> data = this.clubserveLimitTimeDAO.getbyClubserveID(ClubserveID,rows,pageNum);
+			int count = this.clubserveLimitTimeDAO.getCountbyClubserveID(ClubserveID);
+			GenericData<ClubserveLimitTime> result = new GenericData<ClubserveLimitTime>(count, data);
 			return getResponse(result);
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -861,6 +893,66 @@ public class ClubService extends BaseService {
 		try {
 			ClubserveLimitTime result = this.clubserveLimitTimeDAO.getByClubserveLimitTimeID(ClubserveLimitTimeID);
 			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 查询当前时间的限时抢购
+	 * @param rows
+	 * @param pageNum
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/privilegeLimitTime")
+	public String privilegeLimitTime(@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
+			@FormParam("isUsed") String isUsed,
+			@Context HttpHeaders headers){
+		try {
+			String dateTime = this.clubServeDAO.Time();
+			if(!isUsed.isEmpty()&&!isUsed.equalsIgnoreCase("null")){
+				Collection<ClubserveLimitTime> cltimes = new ArrayList<ClubserveLimitTime>();
+				int count = 0;
+				if(isUsed.equals("0")){//未开抢的限时活动
+					cltimes = this.clubserveLimitTimeDAO.getForNotOpen(dateTime, rows, pageNum);
+					count = this.clubserveLimitTimeDAO.getCountForNotOpen(dateTime);
+				}else if(isUsed.equals("1")){//已开抢的限时活动
+					cltimes = this.clubserveLimitTimeDAO.getForTime(dateTime,rows,pageNum);
+					count = this.clubserveLimitTimeDAO.getForTimeCount(dateTime);
+				}
+				Collection<ClubAndLimitTime> data = new ArrayList<ClubAndLimitTime>();
+				if(!cltimes.isEmpty()&&cltimes.size()>0){
+					Map<String,Club> cMap = new HashMap<String,Club>();
+					Club club = new Club();
+					for(ClubserveLimitTime clt : cltimes){
+						if(cMap.containsKey(clt.getClubID())){
+							club = cMap.get(clt.getClubID());
+						}else{
+							club = this.manager.getClub(clt.getClubID());
+							if(club!=null){
+								cMap.put(clt.getClubID(),club);
+							}
+						}
+						if(club!=null){
+							ClubAndLimitTime calt = new ClubAndLimitTime(club.getClubID(), club.getClubName(), club.getClubPhoneNumber(),
+									club.getClubAddress(), club.getClubType(), club.getClubPhoto(), club.getLogo(), club.getProvince(),
+									club.getCity(), club.getArea(), club.getTotalStemNum(), club.getTotalHole(), club.getIsHot(),
+									club.getIsTop(), club.getLongitude(), club.getLatitude(), club.getDistance(), clt.getClubserveLimitTimeID(),
+									clt.getName(), clt.getClubserveID(), clt.getPrice(), clt.getStartTime(), clt.getEndTime(),
+									clt.getCount(), clt.getDate(), clt.getServiceExplain(), clt.getBeginStartTime(), clt.getBeginEndTime(),
+									clt.getCreated_TS(), clt.getUpdated_TS());
+							data.add(calt);
+						}
+					}
+				}
+				GenericData<ClubAndLimitTime> result = new GenericData<ClubAndLimitTime>(count,data);
+				return getResponse(result);
+				
+			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -940,16 +1032,9 @@ public class ClubService extends BaseService {
 			@FormParam("rows") String rows,
 			@Context HttpHeaders headers){
 		try {
-			int page = 1;
-			String sqlString = "";
-			if(pageNum!=null&&!pageNum.equalsIgnoreCase("null")&&!pageNum.equals("")){
-				page = Integer.parseInt(pageNum);
-			}
-			if(rows!=null&&!rows.equalsIgnoreCase("null")&&!rows.equals("")){
-				int Rows = Integer.parseInt(rows);
-				sqlString = "limit "+ ((page - 1) * Rows) + " , " + Rows + " ";
-			}
-			Collection<ClubScore> result = this.clubScoreDAO.getCommentByClubID(ClubID, sqlString);
+			Collection<ClubScore> data = this.clubScoreDAO.getCommentByClubID(ClubID, rows, pageNum);
+			int count = this.clubScoreDAO.getCommentCount(ClubID);
+			GenericData<ClubScore> result = new GenericData<ClubScore>(count, data);
 			return getResponse(result);
 		} catch (Exception e) {
 			logger.error("Error occured",e);

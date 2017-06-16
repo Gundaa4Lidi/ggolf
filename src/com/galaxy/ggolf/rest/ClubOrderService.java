@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,17 @@ import org.slf4j.LoggerFactory;
 import com.galaxy.ggolf.dao.ClubDAO;
 import com.galaxy.ggolf.dao.ClubOrderDAO;
 import com.galaxy.ggolf.dao.ClubServeDAO;
+import com.galaxy.ggolf.dao.ClubserveLimitTimeDAO;
+import com.galaxy.ggolf.dao.UmengDAO;
 import com.galaxy.ggolf.domain.ClubOrder;
 import com.galaxy.ggolf.domain.ClubServe;
+import com.galaxy.ggolf.domain.ClubserveLimitTime;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.Umeng;
 import com.galaxy.ggolf.dto.ClubOrderData;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.tools.PingPPUtil;
+import com.galaxy.ggolf.tools.PushUtil;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.model.Charge;
 import com.pingplusplus.model.ChargeCollection;
@@ -50,13 +56,17 @@ public class ClubOrderService extends BaseService {
 	private ClubOrderDAO orderDAO;
 	private ClubDAO clubDAO;
 	private ClubServeDAO clubServeDAO;
-	
+	private ClubserveLimitTimeDAO clubserveLimitTimeDAO;
+	private UmengDAO umengDAO;
 	
 	public ClubOrderService(ClubOrderDAO orderDAO,ClubDAO clubDAO,
-			ClubServeDAO clubServeDAO) {
+			ClubServeDAO clubServeDAO,ClubserveLimitTimeDAO clubserveLimitTimeDAO,
+			UmengDAO umengDAO) {
 		this.orderDAO = orderDAO;
 		this.clubDAO = clubDAO;
 		this.clubServeDAO = clubServeDAO;
+		this.clubserveLimitTimeDAO = clubserveLimitTimeDAO;
+		this.umengDAO = umengDAO;
 	}
 	
 	/**
@@ -178,24 +188,36 @@ public class ClubOrderService extends BaseService {
 		try {
 			logger.info("订单数据------{}",data);
 			ClubOrder order = super.fromGson(data, ClubOrder.class);
-			if(order.getClubserveID()!=null){
+			if(!StringUtils.isEmpty(order.getClubserveID())){
 				ClubServe cs = this.clubServeDAO.getClubServe(order.getClubserveID());
+				String prefix = "CLD";
+				String orderID = this.orderDAO.getID(prefix,12);
+				order.setOrderID(orderID);
 				order.setClubID(cs.getClubID());
 				order.setClubName(cs.getClubName());
 				order.setClubserveName(cs.getName());
-				if(!this.orderDAO.createOrder(order)){
+				if(!StringUtils.isEmpty(order.getClubserveLimitTimeID())){
+					ClubserveLimitTime clt = this.clubserveLimitTimeDAO.getByClubserveLimitTimeID(order.getClubserveLimitTimeID());
+					if(clt!=null){
+						int realCount = Integer.parseInt(clt.getCount());
+						if(realCount == 0){
+							return getErrormessage("已抢光");
+						}else{
+							if(this.orderDAO.createOrder(order)){
+								realCount--;
+								this.clubserveLimitTimeDAO.realCount(order.getClubserveLimitTimeID(), realCount+"");
+							}else{
+								return getErrormessage("创建限时活动订单失败");
+							}
+						}
+					}else{
+						return getErrormessage("没有这个限时活动");
+					}
+				}else if(!this.orderDAO.createOrder(order)){
 					throw new GalaxyLabException("Error in create cluborder");
 				}
-//				String channel = "alipay";
-//				if(order.getType().equals("支付宝支付")){
-//					channel = "alipay";
-//				}else if(order.getType().equals("微信支付")){
-//					channel = "wx";
-//				}
-//				String clientIp = "127.0.0.1";
-//				Charge c = sendPingppOrder(order.getOrderID(), order.getDownPayment(), channel, clientIp, "1", "12544", "13202845411");
-//				return getResponse(c);
-				return getSuccessResponse();
+				ClubOrder cluborder = this.orderDAO.getOrderByOrderID(orderID);
+				return getResponse(cluborder);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -224,8 +246,30 @@ public class ClubOrderService extends BaseService {
 			if(StateType.equals("2")){
 				if(!this.orderDAO.confirmBall(OrderID)){
 					throw new GalaxyLabException("Error in confirm for ball");
+				}else{
+					ClubOrder co = this.orderDAO.getOrderByOrderID(OrderID);
+					Umeng umeng = this.umengDAO.getByUserID(co.getUserID());
+					if(umeng!=null){
+						PushUtil push = new PushUtil(CommonConfig.Umeng_AppKey,CommonConfig.Umeng_AppMaster_Secret);
+						String token = umeng.getUmeng_Token();
+						int long_token = token.length();
+						String ticker = "确认球位";
+						String title = "确认球位";
+						String text = "已确认球位,点击进入支付界面";
+						String after_open = "go_app";
+						String display_type = "notification";
+						String production_mode = "false";
+						logger.info("发送中");
+						if(long_token == CommonConfig.Umeng_Android_Byte){
+							push.sendAndroidUnicast(token, ticker, title, text, after_open, display_type, production_mode, null, null);
+							logger.info("发送成功");
+						}else if(long_token == CommonConfig.Umeng_IOS_Byte){
+							push.sendIOSUnicast(token, text, production_mode, null, null);
+						}
+					}
 				}
 			}
+			return getSuccessResponse();
 //			if(StateType.equals("3")){
 //				if(!this.orderDAO.onlineBooking(OrderID)){
 //					throw new GalaxyLabException("Error in online booking ");
@@ -241,42 +285,55 @@ public class ClubOrderService extends BaseService {
 		}
 		return getErrorResponse();
 	}
-
 	
-	
-	
-	public Charge sendPingppOrder(String orderID,
-			String price,
-			String channel,
-			String clientIp,
-			String subject,
-			String body,
-			String phoneNum){
+	@POST
+	@Path("/updateMark")
+	public String updateMark(@FormParam("OrderID") String OrderID,
+			@FormParam("Marks") String Marks,
+			@Context HttpHeaders headers){
 		try {
-			Pingpp.apiKey = CommonConfig.PingPP_Apikey;
-			String path = "D:\\workspace\\GGolfz\\ggolf\\res\\my_rsa_private_key.pem";
-			Pingpp.privateKeyPath = path;
-			double orderPrice = Double.parseDouble(price) * 100;
-			Map<String, Object> chargeParams = new HashMap<String, Object>();
-			chargeParams.put("order_no",  orderID);
-//			chargeParams.put("Authorization",CommonConfig.PingPP_Apikey);
-			chargeParams.put("amount", orderPrice);
-			Map<String, String> app = new HashMap<String, String>();
-			app.put("id", CommonConfig.PingPP_AppID);
-			chargeParams.put("app", app);
-			chargeParams.put("channel",  channel);
-			chargeParams.put("currency", "cny");
-			chargeParams.put("client_ip",  clientIp);
-			chargeParams.put("subject",  subject);
-			chargeParams.put("body",  body);
-			Map<String, String> initialMetadata = new HashMap<String, String>();
-			initialMetadata.put("color", "red");
-			initialMetadata.put("phone_number", phoneNum);
-			chargeParams.put("metadata", initialMetadata);
-			return Charge.create(chargeParams);
+			if(!this.orderDAO.updateMarks(OrderID, Marks)){
+				return getErrormessage("留言失败.");
+			}
+			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
-			return null;
 		}
+		return getErrorResponse();
 	}
+	
+//	public Charge sendPingppOrder(String orderID,
+//			String price,
+//			String channel,
+//			String clientIp,
+//			String subject,
+//			String body,
+//			String phoneNum){
+//		try {
+//			Pingpp.apiKey = CommonConfig.PingPP_Apikey;
+//			String path = "D:\\workspace\\GGolfz\\ggolf\\res\\my_rsa_private_key.pem";
+//			Pingpp.privateKeyPath = path;
+//			double orderPrice = Double.parseDouble(price) * 100;
+//			Map<String, Object> chargeParams = new HashMap<String, Object>();
+//			chargeParams.put("order_no",  orderID);
+////			chargeParams.put("Authorization",CommonConfig.PingPP_Apikey);
+//			chargeParams.put("amount", orderPrice);
+//			Map<String, String> app = new HashMap<String, String>();
+//			app.put("id", CommonConfig.PingPP_AppID);
+//			chargeParams.put("app", app);
+//			chargeParams.put("channel",  channel);
+//			chargeParams.put("currency", "cny");
+//			chargeParams.put("client_ip",  clientIp);
+//			chargeParams.put("subject",  subject);
+//			chargeParams.put("body",  body);
+//			Map<String, String> initialMetadata = new HashMap<String, String>();
+//			initialMetadata.put("color", "red");
+//			initialMetadata.put("phone_number", phoneNum);
+//			chargeParams.put("metadata", initialMetadata);
+//			return Charge.create(chargeParams);
+//		} catch (Exception e) {
+//			logger.error("Error occured",e);
+//			return null;
+//		}
+//	}
 }
