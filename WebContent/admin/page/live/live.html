@@ -1,0 +1,160 @@
+<div ng-controller="LiveController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content" >
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="搜索相关直播信息" ng-model="keyword">
+                </form>
+            </div>
+
+            <!--<div class="action-header__item action-header__add">-->
+            <!--<a href="" class="btn btn-danger btn-sm" ng-click="addFee()">新增配置</a>-->
+            <!--</div>-->
+        </div>
+
+        <div class="main__container" style="max-width: 1600px;">
+            <header class="main__title">
+                <h1 style="font-family: '黑体'">直播管理</h1>
+            </header>
+            <div class="row" >
+                <div class="col-md-2">
+                    <select ng-model="filterDay" class="form-control" ng-change="load()" style="background: white"
+                            ng-options="day.value as day.key for day in filterDays"></select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" ng-click="filterDay=0;keyword='';">清空筛选</button>
+                </div>
+            </div>
+            <hr>
+
+            <div class="card">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="15%">主播头像</th>
+                        <th width="15%">主播名称</th>
+                        <th width="15%">房间编号</th>
+                        <th width="15%">房间主题</th>
+                        <th width="15%">课程标题</th>
+                        <th width="15%">最近浏览</th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="live in LiveList | filter: keyword" >
+                        <td width="15%">
+                            <img ng-src="{{live.CreatorPhoto}}" err-src="../img/user_empty.png"
+                                 class="img-circle border_3_s_c" width="80px" height="80px" alt="">
+                        </td>
+                        <td width="15%">
+                        	<span class="support-list">{{live.CreatorName}}</span>
+                       	</td>
+                       	<td width="15%">
+                        	<span class="support-list">{{live.RoomID}}</span>
+                       	</td>
+                       	<td width="15%">
+                        	<span class="support-list">{{live.RoomName}}</span>
+                       	</td>
+                       	<td width="15%">
+                        	<span class="support-list">{{live.CourseName}}</span>
+                       	</td>
+                        <td width="15%">
+                            <span ng-repeat="user in live.Users | limitTo:5" class="support-list">
+                                <a href="" tooltips tooltip-side="top" tooltip-template="{{user.name}}">
+                                    <img ng-src="{{user.head_portrait}}" err-src="../img/user_empty.png"
+                                         class="img-circle border_3_s_c" width="40px" height="40px" alt="">
+                                </a>
+                            </span>
+                            <span class="support-list" ng-show="live.Users.length>5">
+                                <a href="" ng-click="checkUsers(live.Users)" class="a_tip" tooltips tooltip-side="top" tooltip-template="查看更多">
+                                    <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                                </a>
+                            </span>
+                        </td>
+                        <td width="10%" align="center">
+                      	 	<span class="support-list">
+                      	 		<button type="button" class="btn btn-success btn-xs"
+                                    href="#OrderDetail" data-toggle="modal" ng-click="checkLive(live);setLIndex($index)">查看</button>
+                      	 	</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="LiveDetail" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!--<div class="modal-header">-->
+                    <!--<button type="button" class="close" data-dismiss="modal"-->
+                            <!--aria-hidden="true">&times;</button>-->
+                    <!--<h4 class="modal-title">明细</h4>-->
+                <!--</div>-->
+                <div class="modal-body text-center">
+                    <div class="view-contact__img">
+                        <img ng-src="{{currentLive.CreatorPhoto}}" err-src="../img/user_empty.png"
+                             class="img-circle" width="150" height="150"  alt="">
+                    </div>
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">主播</th><td width="60%">{{currentLive.CreatorName}}</td></tr>
+                        <tr><th width="40%">房间编号</th><td width="60%">{{currentLive.RoomID}}</td></tr>
+                        <tr><th width="40%">房间主题</th><td width="60%">{{currentLive.RoomName}}</td></tr>
+                        <tr><th width="40%">课程标题</th><td width="60%">{{currentLive.CourseName}}</td></tr>
+                    </table>
+
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">时间</th><th width="50%">事件</th><th width="10%">ID</th></tr>
+                        <tr ng-repeat="event in currentLive.LiveEvent | limitTo: row: pageNum">
+                            <td width="40%">{{event.Time}}</td>
+                            <td width="50%">{{event.Action}}</td>
+                            <td width="10%">{{event.UserID}}</td>
+                        </tr>
+                    </table>
+                    <tm-pagination conf="eventPageConfig" ng-show="eventPageConfig.totalItems > row"></tm-pagination>
+                </div>
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="check_users" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">最近浏览的用户,共{{currentUsers.length}}人</h4>
+                </div>
+                <div class="modal-body">
+                	<div class="row">
+                		<div class="col col-sm-12">
+                            <span ng-repeat="user in currentUsers | limitTo: uRow: uPageNum" style="margin: 0 5px;">
+                                <a href="" tooltips tooltip-side="top" tooltip-template="{{user.name}}">
+                                   <img ng-src="{{user.head_portrait}}" err-src="../img/user_empty.png"
+                                        class="img-circle" width="80" height="80"  alt="">
+                                </a>
+                            </span>
+                		</div>
+                        <div class="col col-sm-12 text-center" ng-show="userPageConfig.totalItems > uRow">
+                            <tm-pagination conf="userPageConfig"></tm-pagination>
+                        </div>
+                	</div>
+                </div>
+                <div class="modal-footer text-center modal-footer--bordered">
+                    <button type="button" class="btn btn-link" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>

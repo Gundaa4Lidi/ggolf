@@ -52,19 +52,24 @@ app.controller("ClubOrderController",ClubOrderController);
 app.controller("CoachApplyController",CoachApplyController);
 app.controller("CourseApplyController",CourseApplyController);
 app.controller("CoachController",CoachController);
+app.controller("LiveController",LiveController);
+app.controller("CourseOrderController",CourseOrderController);
 
 app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$timeout,$interval,appConfig){
 
 	$rootScope.appConfig = appConfig;
-
-	$rootScope.myDatePicker = "page/datePicker/myDatePicker.html";
+	$scope.NewNotify = 0;//新的为查阅通知
+	$scope.TotalNotify = 0;//全部通知
+	$scope.NotifyList = [];//通知列表
+    $scope.currentNotify = null;//当前通知
+    $scope.isNotifyLoad = false;
 
 	$rootScope.processResult = function(data) {
-		console.log(data)
+		// console.log(data)
 		if (data.status == 'Success' || data.status == '200') {
             swal({
                 title: "操作成功",
-                type: "success",
+                type: "success", 
             })
 		} else if(data.status == 'Error'){
 			swal({
@@ -79,7 +84,7 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 		}
 	}
 	$rootScope.errorResult = function(response){
-		console.log(response)
+		// console.log(response)
 		swal("网络异常\n"+response.status,response.statusText,"warning");
 	}
 
@@ -88,7 +93,7 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 	}
 	
 	$scope.load = function(){
-		console.log($window.sessionStorage.token)
+		// console.log($window.sessionStorage.token)
 		var s = 1;
 	   	if($window.sessionStorage.token==null||$window.sessionStorage.token=="null"){
 	   		$interval(function(){
@@ -114,10 +119,101 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 
             $scope.Position = $window.sessionStorage.Position;
 
+	        $interval(function () {
+	            $scope.getNewOrderCount();
+	        },5000);
+
 	   		
 	   	}
 	}
 
+	$scope.notifyPageConfig = {
+        currentPage : 1,
+        itemsPerPage : 5,
+        onChange : function () {
+            $scope.getNewOrder();
+        }
+    }
+    /**
+     * 获取新的订单数据
+     */
+	$scope.getNewOrder = function () {
+        var url = appConfig.url + "ClubOrder/getNewOrder";
+        var method = "GET";
+        var params = {
+            pageNum : $scope.notifyPageConfig.currentPage,
+            rows : $scope.notifyPageConfig.itemsPerPage
+        }
+        var promise = $scope.httpParams(url,method,params);
+        promise.then(function (data) {
+            if(data.status != 'Error'){
+                $scope.isNotifyLoad = true;
+                $scope.NotifyList = data.data;
+                $scope.TotalNotify = data.count;
+                $scope.notifyPageConfig.totalItems = data.count;
+                $timeout(function () {
+                    $scope.isNotifyLoad = false;
+                },1000);
+            }else{
+                $scope.TotalNotify = 0;
+                $scope.NewNotify = 0;
+            }
+        }),function (data) {
+            $scope.Load_Failed(data);
+        }
+    }
+
+    /**
+     * 获取新增但未查阅订单的数量
+     */
+    $scope.getNewOrderCount = function () {
+        var url = appConfig.url + "ClubOrder/getNewOrderCount";
+        var method = "GET";
+        var params = {};
+        var promise = $scope.httpParams(url,method,params);
+        promise.then(function (data) {
+            if(data.status != 'Error'){
+                if(data!=$scope.NewNotify){
+                    $scope.NewNotify = data;
+                    $scope.getNewOrder();
+                }
+            }
+        }),function (data) {
+            $scope.Load_Failed(data);
+        }
+    }
+
+    /**
+     * 设置为已查阅当前通知
+     * @param orderID
+     * @constructor
+     */
+    $scope.setRead = function (e) {
+        $scope.currentNotify = angular.copy(e);
+        if($scope.currentNotify.IsRead == '0'){
+            var url = appConfig.url + "ClubOrder/IsRead";
+            var method = "POST";
+            var params = {
+                OrderID : $scope.currentNotify.OrderID
+            }
+            var promise = $scope.httpParams(url,method,params);
+            promise.then(function (data) {
+                if(data.status == 'Success'){
+                    $scope.getNewOrderCount();
+
+                }
+            }),function (data) {
+                $scope.Load_Failed(data);
+            }
+
+        }
+        $scope.navigate(7.1);
+        $scope.$broadcast('loadClubOrder','loadClubOrder');
+    }
+
+    $scope.STOP = function () {
+        event.stopPropagation();
+    }
 	
 	$scope.navigate = function(e){
 		if(e==1.1){
@@ -144,9 +240,12 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 		if(e==6){
 			$scope.currentPage = "page/article/articlePage.html";
 		}
-		if(e==7){
+		if(e==7.1){
 			$scope.currentPage = "page/order/clubOrder.html";
 		}
+		if(e==7.2){
+		    $scope.currentPage = "page/order/courseOrder.html";
+        }
 		if(e==8){
 			$scope.currentPage = "page/files/files.html";
 		}

@@ -184,6 +184,8 @@
 		<script src="page/apply/CoachApplyCtrl.js"></script>
 		<script src="page/apply/CourseApplyCtrl.js"></script>
 		<script src="page/user/CoachCtrl.js"></script>
+		<script src="page/live/LiveCtrl.js"></script>
+		<script src="page/order/CourseOrderCtrl.js"></script>
 
 		<!-- 保持在其他controller的下面 -->
         <script src="AppCtrl.js"></script>
@@ -201,59 +203,44 @@
             <a href="index.html" class="header-alt__logo hidden-xs">高尔夫后台管理系统</a>
 
             <ul class="header-alt__menu">
-                <li>
-                    <a href="" data-rmd-action="block-open" data-rmd-target=".header-alt__search-wrap" data-rmd-backdrop-class="backdrop--search">
-                        <i class="zmdi zmdi-search"></i>
-                    </a>
-                </li>
                 <li class="dropdown">
                     <a href="" data-toggle="dropdown"><i class="zmdi zmdi-notifications"></i></a>
+					<span class="notify_num" ng-show="NewNotify>0" ng-bind="NewNotify"></span>
 
                     <div class="dropdown-menu dropdown-menu--lg pull-right">
-                        <div class="list-group__header">
-                            NOTIFICATIONS
+						<div class="list-group__header">
+                        	 消息通知
                         </div>
-                        <div class="list-group">
-                            <a class="list-group-item media" href="">
-                                <div class="pull-right">
-                                    <img class="list-group__img img-circle" width="40" height="40" src="../img/demo/people/1.jpg" alt="">
-                                </div>
-                                <div class="media-body list-group__text">
-                                    <strong>David Belle</strong>
-                                    <small>Cum sociis natoque penatibus et magnis dis parturient montes</small>
-                                </div>
-                            </a>
-                            
-                            <a href="" class="view-more">View all</a>
+                        <div class="list-group" ng-show="isNotifyLoad" >
+							<div class="table-loading" activity-view no-relative="true" is-active="true"></div>
+							<div class="col col-md-12 text-center m-t-20">
+								<h3>加载中...</h3>
+							</div>
                         </div>
-                    </div>
-                </li>
-                <li class="dropdown">
-                    <a href="" data-toggle="dropdown"><i class="zmdi zmdi-email"></i></a>
-
-                    <div class="dropdown-menu dropdown-menu--lg pull-right">
-                        <div class="list-group">
-                            <div class="list-group__header">
-                                MESSAGES
-                            </div>
-                            <a class="list-group-item media" href="">
+                        <div class="list-group" ng-show="!isNotifyLoad" >
+							<a class="list-group-item media" href="" ng-click="setRead(notify)" ng-repeat="notify in NotifyList">
                                 <div class="pull-left">
-                                    <img class="list-group__img img-circle" width="40" height="40" src="../img/demo/people/1.jpg" alt="">
+									<img class="list-group__img img-circle" width="50" height="50" ng-src="{{notify.UserPhoto}}" alt="" err-src="../img/user_empty.png">
+									<div ng-show="notify.IsRead=='0'">
+										<i class="fa fa-circle position_circle" aria-hidden="true"></i>
+									</div>
+                                    <!--<img class="list-group__img img-circle"  src="../img/demo/people/1.jpg" alt="">-->
                                 </div>
                                 <div class="media-body list-group__text">
-                                    <strong>David Belle</strong>
-                                    <small>Cum sociis natoque penatibus et magnis dis parturient montes</small>
+                                    <strong ng-show="notify.Type=='club'">提交一张球场订单</strong>
+                                    <small style="font-size: 14px;white-space: pre-wrap;">订单号为:{{notify.OrderID}},请确认球位</small>
                                 </div>
                             </a>
-                           
+							<div class="col col-md-12 text-center" ng-show="TotalNotify==0">
+								<h3>暂无通知信息</h3>
+							</div>
 
-                            <a class="view-more" href="">View all</a>
+							<div class="col col-md-12 text-center"  ng-show="TotalNotify>5">
+								<tm-pagination conf="notifyPageConfig" ng-click="STOP()"></tm-pagination>
+							</div>
                         </div>
+                       
                     </div>
-                </li>
-                <li class="hidden-xs">
-                    <a href="../index.shtml"><i class="zmdi zmdi-home"></i></a>
-                    
                 </li>
                 <li class="header-alt__profile dropdown">
                     <a href="" data-toggle="dropdown">
@@ -265,19 +252,10 @@
                     	<li><p style="padding:10px 20px;">职位：{{Position}}</p></li>
                     	<li><a href="#update-head" data-toggle="modal"><i class="fa fa-user-circle-o fa-fw" aria-hidden="true"></i>修改头像</a></li>
                         <li><a href="#update-password" data-toggle="modal"><i class="fa fa-lock fa-fw" aria-hidden="true"></i>修改密码</a></li>
-                        <li><a href=""><i class="fa fa-cog fa-fw" aria-hidden="true"></i>账号设置</a></li>
                         <li><a href="" ng-click="logOff()"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>登出</a></li>
                     </ul>
                 </li>
             </ul>
-
-            <div class="header-alt__search-wrap">
-                <form class="header-alt__search">
-                    <input type="text" placeholder="Search...">
-
-                    <i class="zmdi zmdi-long-arrow-left" data-rmd-action="block-close" data-rmd-target=".header-alt__search-wrap"></i>
-                </form>
-            </div>
         </header>
 
         <main id="main">
@@ -288,7 +266,7 @@
                 <nav ui-nav class="navi">
                 	<ul class="nav article-menu">
 	                    <li ng-class="{active: page==1.1 || page==1.2}">
-	                    	<a href="#" active-nav><i class="zmdi zmdi-home"></i>用户管理</a>
+	                    	<a href="#" active-nav><i class="zmdi zmdi-accounts"></i>用户管理</a>
 	                    	<ul class="nav article-menu">
 	                    		<li>
                             		<a href  active-nav ng-click="navigate(1.1)">
@@ -303,7 +281,7 @@
 	                    	</ul>
 	                   	</li>
 	                    <li ng-class="{active: page==2.1 || page==2.2}">
-	                    	<a href="#" active-nav ><i class="zmdi zmdi-chart"></i>消息管理</a>
+	                    	<a href="#" active-nav ><i class="zmdi zmdi-comment-more"></i>消息管理</a>
 	                    	<ul class="nav article-menu">
 	                    		<li>
                             		<a href  active-nav ng-click="navigate(2.1)">
@@ -318,10 +296,10 @@
 	                    	</ul>
 	                   	</li>
 	                    <li ng-class="{active: page==3}">
-	                    	<a href="#" active-nav ng-click="navigate(3)"><i class="zmdi zmdi-view-list"></i>管理员</a>
+	                    	<a href="#" active-nav ng-click="navigate(3)"><i class="zmdi zmdi-account"></i>管理员</a>
 	                   	</li>
 	                    <li ng-class="{active: page==4}">
-	                    	<a href="#" active-nav ng-click="navigate(4)"><i class="zmdi zmdi-assignment "></i>球场管理</a>
+	                    	<a href="#" active-nav ng-click="navigate(4)"><i class="zmdi zmdi-nature "></i>球场管理</a>
 	                   	</li>
 	                    <!--<li ng-class="{active: page==5}">-->
 	                    	<!--<a href="#" active-nav ng-click="navigate(5)"><i class="zmdi zmdi-check-circle"></i>教练场管理</a>-->
@@ -329,20 +307,32 @@
 	                   	<li ng-class="{active: page==6}">
 	                    	<a href="#" active-nav ng-click="navigate(6)"><i class="zmdi zmdi-file-text"></i>文章管理</a>
 	                   	</li>
-	                   	<li ng-class="{active: page==7}">
-	                    	<a href="#" active-nav ng-click="navigate(7)"><i class="zmdi zmdi-account-box"></i>订单管理</a>
+	                   	<li ng-class="{active: page==7.1 || page == 7.2}">
+	                    	<a href="#" active-nav ng-click="navigate(7)"><i class="zmdi zmdi-view-list"></i>订单管理</a>
+							<ul class="nav article-menu">
+								<li>
+									<a href active-nav ng-click="navigate(7.1)">
+										<span class="font-bold">球场订单</span>
+									</a>
+								</li>
+								<li>
+									<a href active-nav ng-click="navigate(7.2)">
+										<span class="font-bold">课程订单</span>
+									</a>
+								</li>
+							</ul>
 	                   	</li>
 	                   	<li ng-class="{active: page==8}">
-	                    	<a href="#" active-nav ng-click="navigate(8)"><i class="zmdi zmdi-calendar"></i>档案管理</a>
+	                    	<a href="#" active-nav ng-click="navigate(8)"><i class="zmdi zmdi-file-plus"></i>档案管理</a>
 	                   	</li>
 	                   	<li ng-class="{active: page==9}">
-	                    	<a href="#" active-nav ng-click="navigate(9)"><i class="zmdi zmdi-help"></i>数据管理</a>
+	                    	<a href="#" active-nav ng-click="navigate(9)"><i class="zmdi zmdi-cast-connected"></i>数据管理</a>
 	                   	</li>
 	                   	<!--<li ng-class="{active: page==10}">-->
 	                    	<!--<a href="#" active-nav ng-click="navigate(10)"><i class="zmdi zmdi-check-circle"></i>申请管理</a>-->
 	                   	<!--</li>-->
 						<li ng-class="{active: page==10.1 || page==10.2}">
-							<a href="#" active-nav ><i class="zmdi zmdi-check-circle"></i>申请管理</a>
+							<a href="#" active-nav ><i class="zmdi zmdi-search-in-file"></i>申请管理</a>
 							<ul class="nav article-menu">
 								<li>
 									<a href  active-nav ng-click="navigate(10.1)">
@@ -357,10 +347,10 @@
 							</ul>
 						</li>
 	                   	<li ng-class="{active: page==11}">
-	                    	<a href="#" active-nav ng-click="navigate(11)"><i class="zmdi zmdi-time"></i>评论管理</a>
+	                    	<a href="#" active-nav ng-click="navigate(11)"><i class="zmdi zmdi-comments"></i>评论管理</a>
 	                   	</li>
 	                   	<li ng-class="{active: page==12}">
-	                    	<a href="#" active-nav ng-click="navigate(12)"><i class="zmdi zmdi-time"></i>直播管理</a>
+	                    	<a href="#" active-nav ng-click="navigate(12)"><i class="zmdi zmdi-tv-alt-play"></i>直播管理</a>
 	                   	</li>
 	                </ul>
                 </nav>
@@ -379,7 +369,6 @@
                     <li><a href="">Contact</a></li>
                 </ul>
             </footer> -->
-			<div id="MapView"></div>
 			<div scroll-top href="html" side="left" title="返回顶部"></div>
 		</main>
 
@@ -475,14 +464,6 @@
         <!-- Waves button ripple effects -->
         <script src="../vendors/bower_components/Waves/dist/waves.min.js"></script>
 
-        <!-- Calendar -->
-        <!--
-	        <script src="../vendors/bower_components/moment/min/moment-with-locales.min.js"></script>
-	        <script src="../vendors/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
- 		-->
-        <!-- Select 2 - Custom Selects -->
-
-        <!-- SweetAlert - Custom Alerts -->
         <script src="../vendors/bower_components/sweetalert/dist/sweetalert.min.js"></script>
         <script src="../node_modules/ng-sweet-alert/ng-sweet-alert.js"></script>
 

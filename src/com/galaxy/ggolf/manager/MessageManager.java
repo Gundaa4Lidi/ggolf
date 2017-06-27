@@ -10,6 +10,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.apache.cxf.common.util.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,9 +85,6 @@ public class MessageManager {
 					+ keyword 
 					+ "%') ";
 		}
-		if(pageNum == null){
-			pageNum = "1";
-		}
 		Collection<Message> message = this.messageDAO.getAll(sqlString, rows, pageNum);
 		int count = this.messageDAO.getCount(sqlString);
 		UserMessageData userMessageData = new UserMessageData(message, count);
@@ -103,10 +101,10 @@ public class MessageManager {
 	 */
 	public UserMessageData getSearch(String Type,String keyword, String rows)throws Exception{
 		String sqlString = "";
-		if(Type!=null&&Type.equalsIgnoreCase("null")){
+		if(!StringUtils.isEmpty(Type)&&Type.equalsIgnoreCase("null")){
 			sqlString += "and Type='"+Type+"'";
 		}
-		if(keyword!=null&&keyword.equalsIgnoreCase("null")){
+		if(!StringUtils.isEmpty(keyword)&&keyword.equalsIgnoreCase("null")){
 			sqlString += "and"
 					+ "(SenderID like '%"
 					+ keyword 
@@ -150,7 +148,7 @@ public class MessageManager {
 	public MessageGroupData groupSearch(String Type, String keyword, String rows, int days)throws Exception{
 		String sqlString = "";
 		int row = Integer.parseInt(rows);
-		if(Type!=null&&!Type.equalsIgnoreCase("null")){
+		if(!StringUtils.isEmpty(Type)&&!Type.equalsIgnoreCase("null")){
 			if(Type.equalsIgnoreCase(CommonConfig.MSG_TYPE_SYS)){
 				sqlString += "and Type='"+Type+"'";
 			}else if(Type.equalsIgnoreCase(CommonConfig.MSG_TYPE_NOTSYS)){
@@ -190,19 +188,18 @@ public class MessageManager {
 					for(Message ms : result){
 						if(ms.getType().equalsIgnoreCase(CommonConfig.MSG_TYPE_DYNAMIC)
 								||ms.getType().equalsIgnoreCase(CommonConfig.MSG_TYPE_SYS)){
-//							String comRows = "5";
-//							Collection<Comment> com = commentDAO.getCommentByApp(comRows, "", ms.getMsgID(), ms.getType());
-//							int count = this.commentDAO.getCountByApp("", ms.getMsgID(), ms.getType());
+							Collection<Comment> com = new ArrayList<Comment>();
+							int count = this.commentDAO.getCountByApp("", ms.getMsgID(), ms.getType());
+							CommentData cd = new CommentData(count, com);
+							ms.setCommentData(cd);//添加评论
 //							if(com!=null&&com.size()>0){
-//								CommentData cd = new CommentData(count, com);
-//								ms.setCommentData(cd);//添加评论
 //							}
 							Collection<User> likeUsers = this.userDAO.getLikeList(ms.getMsgID(), CommonConfig.THEME_TYPE_D);
-							if(likeUsers!=null&&likeUsers.size() > 0){
-								int likeCount = this.likeDAO.getCountByThemeID(ms.getMsgID(), CommonConfig.THEME_TYPE_D);
-								LikeData ld = new LikeData(likeCount, likeUsers);
-								ms.setLikeData(ld);//添加点赞
-							}
+							int likeCount = this.likeDAO.getCountByThemeID(ms.getMsgID(), CommonConfig.THEME_TYPE_D);
+							LikeData ld = new LikeData(likeCount, likeUsers);
+							ms.setLikeData(ld);//添加点赞
+//							if(likeUsers!=null&&likeUsers.size() > 0){
+//							}
 						}
 					}
 					row -=result.size();
@@ -227,7 +224,7 @@ public class MessageManager {
 	public CommentData getCommentByMsgID(String rows,String MsgID,String Type)throws Exception{
 		Collection<Comment> com = commentDAO.getCommentByApp(rows, "", MsgID, Type);
 		for(Comment c : com){
-			int likeCount = this.likeDAO.getCountByThemeID(c.getCommentID(), c.getAction());
+			int likeCount = this.likeDAO.getCountByThemeID(c.getCommentID(), CommonConfig.THEME_TYPE_CT);
 			c.setLikeCount(likeCount);
 		}
 		int count = this.commentDAO.getCountByApp("", MsgID, Type);
@@ -286,7 +283,7 @@ public class MessageManager {
 	public boolean updateMessage(Message ms)throws Exception{
 		boolean result = false;
 		Message msg = this.messageDAO.getBy(ms.getMsgID());
-		if(ms.getReleaseOrNot()!=null &&msg.getReleaseOrNot().equalsIgnoreCase("Y")){
+		if(msg.getReleaseOrNot()!=null &&msg.getReleaseOrNot().equalsIgnoreCase("Y")){
 			return result;
 		}
 		String sqlString = "";
@@ -321,8 +318,10 @@ public class MessageManager {
 		if(ms.getType()!=null&&!ms.getType().equalsIgnoreCase("null")){
 			sqlString = sqlString + "Type='"+ms.getType()+"',";
 		}
-		if((ms.getClub().equals("球场")||ms.getClub().equals("练习场"))&&ms.getType().equals("约球")){
-			sqlString = sqlString + "Club='"+ms.getClub()+"'";
+		if(!StringUtils.isEmpty(ms.getClub())&&!ms.getClub().equalsIgnoreCase("null")){
+			if((ms.getClub().equals("球场")||ms.getClub().equals("练习场"))&&ms.getType().equals("约球")){
+				sqlString = sqlString + "Club='"+ms.getClub()+"'";
+			}
 		}
 		if(ms.getLongitude()!=null&&!ms.getLongitude().equalsIgnoreCase("null")){
 			sqlString = sqlString + "Longitude='"+ms.getLongitude()+"',";
@@ -336,7 +335,7 @@ public class MessageManager {
 		if(ms.getSite()!=null&&!ms.getSite().equalsIgnoreCase("null")){
 			sqlString = sqlString + "Site='"+ms.getSite()+"',";
 		}
-		if(ms.getReleaseOrNot()!=null && ms.getReleaseOrNot().equalsIgnoreCase("null")){
+		if(ms.getReleaseOrNot()!=null && !ms.getReleaseOrNot().equalsIgnoreCase("null")){
 			sqlString = sqlString + "ReleaseOrNot='"+ms.getReleaseOrNot()+"',";
 		}
 		if(this.messageDAO.updateMsg(ms, sqlString)){//修改信息表
@@ -392,9 +391,6 @@ public class MessageManager {
 					+ "%' or date_format(`Created_TS`,'%Y-%m-%d') like '%"
 					+ keyword
 					+ "%')";
-		}
-		if(pageNum == null){
-			pageNum = "1";
 		}
 		Collection<Message> message = this.messageDAO.getMessageByUserID(UserID, sqlString, rows, pageNum);
 		int count = this.messageDAO.getCountByUserID(UserID,sqlString);
@@ -461,7 +457,7 @@ public class MessageManager {
 		List<Message> msgs = (List<Message>) msgList;
 		if(msgs.size()>0){
 			for(Message msg : msgs){
-				if(msg.getLongitude()!=null && msg.getLatitude()!=null){
+				if(!StringUtils.isEmpty(msg.getLongitude())&&!StringUtils.isEmpty(msg.getLatitude())){
 					double lon2 = Double.parseDouble(msg.getLongitude());//用户的经度
 					double lat2 = Double.parseDouble(msg.getLatitude());//用户的纬度
 					double distance = LocationUtil.GetDistance(lon1, lat1, lon2, lat2);//获取距离

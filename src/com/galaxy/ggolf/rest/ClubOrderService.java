@@ -1,11 +1,8 @@
 package com.galaxy.ggolf.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.text.html.HTML;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -25,18 +22,17 @@ import com.galaxy.ggolf.dao.ClubOrderDAO;
 import com.galaxy.ggolf.dao.ClubServeDAO;
 import com.galaxy.ggolf.dao.ClubserveLimitTimeDAO;
 import com.galaxy.ggolf.dao.UmengDAO;
+import com.galaxy.ggolf.dao.UserDAO;
 import com.galaxy.ggolf.domain.ClubOrder;
 import com.galaxy.ggolf.domain.ClubServe;
 import com.galaxy.ggolf.domain.ClubserveLimitTime;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Umeng;
+import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.ClubOrderData;
-import com.galaxy.ggolf.jdbc.CommonConfig;
-import com.galaxy.ggolf.tools.PingPPUtil;
-import com.galaxy.ggolf.tools.PushUtil;
-import com.pingplusplus.Pingpp;
-import com.pingplusplus.model.Charge;
-import com.pingplusplus.model.ChargeCollection;
+import com.galaxy.ggolf.dto.GenericData;
+import com.galaxy.ggolf.dto.NewOrderData;
+import com.galaxy.ggolf.push.PushManager;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -50,6 +46,7 @@ public class ClubOrderService extends BaseService {
 	private static final String Online_booking = "在线预订";
 	private static final String Finish_booking = "完成预订";
 	private static final String Refund_apply = "退款申请";
+	private static final String Refund_applying = "退款处理中";
 	private static final String Refund_success = "退款成功";
 	private static final String Refund_field = "退款失败";
 	
@@ -58,15 +55,17 @@ public class ClubOrderService extends BaseService {
 	private ClubServeDAO clubServeDAO;
 	private ClubserveLimitTimeDAO clubserveLimitTimeDAO;
 	private UmengDAO umengDAO;
+	private UserDAO userDAO;
 	
 	public ClubOrderService(ClubOrderDAO orderDAO,ClubDAO clubDAO,
 			ClubServeDAO clubServeDAO,ClubserveLimitTimeDAO clubserveLimitTimeDAO,
-			UmengDAO umengDAO) {
+			UmengDAO umengDAO,UserDAO userDAO) {
 		this.orderDAO = orderDAO;
 		this.clubDAO = clubDAO;
 		this.clubServeDAO = clubServeDAO;
 		this.clubserveLimitTimeDAO = clubserveLimitTimeDAO;
 		this.umengDAO = umengDAO;
+		this.userDAO = userDAO;
 	}
 	
 	/**
@@ -143,7 +142,8 @@ public class ClubOrderService extends BaseService {
 			@FormParam("StateType") String StateType,
 			@FormParam("UserID") String UserID,
 			@FormParam("pageNum") String pageNum,
-			@FormParam("rows") String rows){
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
 		try {
 			String sqlString = "";
 			if(days > 0){
@@ -169,6 +169,78 @@ public class ClubOrderService extends BaseService {
 			Collection<ClubOrder> clubOrders = this.orderDAO.getOrderByUserID(UserID, pageNum, rows, sqlString);
 			ClubOrderData clubOrderData = new ClubOrderData(count, clubOrders);
 			return getResponse(clubOrderData);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取新增订单
+	 * @param pageNum
+	 * @param rows
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getNewOrder")
+	public String getNewOrder(@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
+		try {
+			Collection<ClubOrder> clubOrder = this.orderDAO.getNewOrder(rows, pageNum);
+			int count = this.orderDAO.getNewOrderCount();
+			int realCount = this.orderDAO.getNewOrderRealCount();
+			Collection<NewOrderData> data = new ArrayList<NewOrderData>();
+			if(clubOrder.size()>0){
+				for(ClubOrder co : clubOrder){
+					User user = this.userDAO.getUserByUserID(co.getUserID());
+					if(user!=null){
+						NewOrderData od = new NewOrderData(user.getUserID(),user.getName(),
+								user.getHead_portrait(),"club",co.getOrderID(),co.getIsRead(),co.getCreated_TS());
+						data.add(od);
+					}
+				}
+			}
+			GenericData<NewOrderData> result = new GenericData<NewOrderData>(count, realCount, data);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取新增但未查阅订单的数量
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getNewOrderCount")
+	public String getNewOrderCount(
+			@Context HttpHeaders headers){
+		try {
+			int realCount = this.orderDAO.getNewOrderRealCount();
+			return getResponse(realCount);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 设置订单已查阅
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/IsRead")
+	public String IsRead(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			this.orderDAO.IsRead(OrderID);
+			return getSuccessResponse();
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
@@ -203,11 +275,15 @@ public class ClubOrderService extends BaseService {
 						if(realCount == 0){
 							return getErrormessage("已抢光");
 						}else{
-							if(this.orderDAO.createOrder(order)){
-								realCount--;
-								this.clubserveLimitTimeDAO.realCount(order.getClubserveLimitTimeID(), realCount+"");
+							realCount -= Integer.parseInt(order.getMemberCount());
+							if(realCount >= 0){
+								if(this.orderDAO.createOrder(order)){
+									this.clubserveLimitTimeDAO.realCount(order.getClubserveLimitTimeID(), realCount+"");
+								}else{
+									return getErrormessage("创建限时活动订单失败");
+								}
 							}else{
-								return getErrormessage("创建限时活动订单失败");
+								return getErrormessage("人数已超出上限");
 							}
 						}
 					}else{
@@ -250,42 +326,24 @@ public class ClubOrderService extends BaseService {
 					ClubOrder co = this.orderDAO.getOrderByOrderID(OrderID);
 					Umeng umeng = this.umengDAO.getByUserID(co.getUserID());
 					if(umeng!=null){
-						PushUtil push = new PushUtil(CommonConfig.Umeng_AppKey,CommonConfig.Umeng_AppMaster_Secret);
-						String token = umeng.getUmeng_Token();
-						int long_token = token.length();
-						String ticker = "确认球位";
-						String title = "确认球位";
-						String text = "已确认球位,点击进入支付界面";
-						String after_open = "go_app";
-						String display_type = "notification";
-						String production_mode = "false";
-						logger.info("发送中");
-						if(long_token == CommonConfig.Umeng_Android_Byte){
-							push.sendAndroidUnicast(token, ticker, title, text, after_open, display_type, production_mode, null, null);
-							logger.info("发送成功");
-						}else if(long_token == CommonConfig.Umeng_IOS_Byte){
-							push.sendIOSUnicast(token, text, production_mode, null, null);
-						}
+						PushManager.sendConfirm_ball(umeng.getUmeng_Token(),co.getOrderID());
 					}
 				}
 			}
 			return getSuccessResponse();
-//			if(StateType.equals("3")){
-//				if(!this.orderDAO.onlineBooking(OrderID)){
-//					throw new GalaxyLabException("Error in online booking ");
-//				}
-//			}
-//			if(StateType.equals("4")){
-//				if(!this.orderDAO.finishBooking(OrderID,ch.getChannel())){
-//					throw new GalaxyLabException("Error in finish booking");
-//				}
-//			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
 		}
 		return getErrorResponse();
 	}
 	
+	/**
+	 * 添加留言
+	 * @param OrderID
+	 * @param Marks
+	 * @param headers
+	 * @return
+	 */
 	@POST
 	@Path("/updateMark")
 	public String updateMark(@FormParam("OrderID") String OrderID,
@@ -301,6 +359,93 @@ public class ClubOrderService extends BaseService {
 		}
 		return getErrorResponse();
 	}
+	
+	/**
+	 * 申请退款
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/applyRefund")
+	public String applyRefund(@FormParam("OrderID") String OrderID,
+			@FormParam("Description") String description,
+			@Context HttpHeaders headers){
+		try {
+			ClubOrder co = this.orderDAO.getOrderByOrderID(OrderID);
+			if(co!=null&&co.getState().equals(Finish_booking)){
+				if(!this.orderDAO.applyRefund(OrderID,description)){
+					return getErrormessage("申请退款失败");
+				}
+				return getSuccessResponse();
+			}else{
+				return getErrormessage("订单不存在或未完成支付!");
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 拒绝申请退款
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/rejectRefund")
+	public String rejectRefund(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			if(this.orderDAO.refundResult(Refund_field, OrderID)){
+				return getSuccessResponse();
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取对应球场订单信息
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getByClubOrderID")
+	public String getByClubOrderID(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			ClubOrder order = this.orderDAO.getOrderByOrderID(OrderID);
+			return getResponse(order);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 现金支付
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/CashPayment")
+	public String CashPayment(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			if(this.orderDAO.cashPayment(OrderID)){
+				return getSuccessResponse();
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
 	
 //	public Charge sendPingppOrder(String orderID,
 //			String price,

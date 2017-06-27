@@ -57,7 +57,10 @@ public class CommentManager {
 		this.coachScoreDAO = coachScoreDAO;
 		
 	}
-	
+
+	public CommentManager(CommentDAO commentDAO, LikeDAO likeDAO, ClubDAO clubDAO, ArticleDAO articleDAO, MessageDAO messageDAO, UserDAO userDAO) {
+	}
+
 	/**
 	 * 获取全部评论
 	 * @param keyword
@@ -91,7 +94,7 @@ public class CommentManager {
 				if(result.size() <= row && row > 0){
 					
 					for(Comment com1 : result){
-						int likeCount = this.likeDAO.getCountByThemeID(com1.getCommentID(), com1.getAction());
+						int likeCount = this.likeDAO.getCountByThemeID(com1.getCommentID(), CommonConfig.THEME_TYPE_CT);
 						com1.setLikeCount(likeCount);
 						if(com1.getAction().equalsIgnoreCase("reply")){
 							
@@ -168,7 +171,7 @@ public class CommentManager {
 		Collection<Comment> comment = this.commentDAO.getCommentByRoot(rows, sqlString, RootID, RootType);
 		if(comment!=null && comment.size() > 0){
 			for(Comment com : comment){
-				int likeCount = this.likeDAO.getCountByThemeID(com.getCommentID(), com.getAction());
+				int likeCount = this.likeDAO.getCountByThemeID(com.getCommentID(), CommonConfig.THEME_TYPE_CT);
 				com.setLikeCount(likeCount);
 				int replyRows = this.commentDAO.getCountByReply(com.getUserID(), com.getCommentID());
 				if(replyRows > 0){
@@ -216,7 +219,7 @@ public class CommentManager {
 		}
 		Collection<Comment> comment = this.commentDAO.getCommentByApp(rows, sqlString, RootID, RootType);
 		for(Comment com : comment){
-			int likeCount = this.likeDAO.getCountByThemeID(com.getCommentID(), com.getAction());
+			int likeCount = this.likeDAO.getCountByThemeID(com.getCommentID(), CommonConfig.THEME_TYPE_CT);
 			com.setLikeCount(likeCount);
 		}
 		int count = this.commentDAO.getCountByApp(sqlString,RootID,RootType);

@@ -4,12 +4,12 @@
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
                 <form>
-                    <input type="text" placeholder="Search activity log..." ng-model="keyword"
+                    <input type="text" placeholder="搜索相关评论" ng-model="keyword"
                            ng-change="getCommentList()">
                 </form>
             </div>
             <div class="action-header__item action-header__item--sort hidden-xs">
-                <span class="action-header__small">Sort by : </span>
+                <span class="action-header__small">筛选 : </span>
                 <select ui-select2="filterDaySelect" ng-model="filterDay" class="form-control"
                         ng-change="getCommentList()"
                         ng-options="day.value as day.key for day in filterDays"></select>

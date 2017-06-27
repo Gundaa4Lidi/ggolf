@@ -11,6 +11,7 @@
 		<constructor-arg ref="clubServe"/>
 		<constructor-arg ref="clubserveLimitTimeDAO"/>
 		<constructor-arg ref="umengDAO"/>
+		<constructor-arg ref="userDAO"/>
 	</bean>
 	
 	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
@@ -22,5 +23,7 @@
 	<bean id="clubserveLimitTimeDAO" class="com.galaxy.ggolf.dao.ClubserveLimitTimeDAO">
 	</bean>
 	<bean id="umengDAO" class="com.galaxy.ggolf.dao.UmengDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
 	</bean>
 </beans>

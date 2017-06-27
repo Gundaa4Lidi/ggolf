@@ -30,6 +30,10 @@ public class Message {
 	private CommentData commentData;
 	private LikeData likeData;
 	
+	public Message() {
+		
+	}
+	
 	public Message(String msgID, String senderID, String senderName, String senderPhoto, String title, String details,
 			Collection<String> photoList, String video, String period, String status, String type, String club, String longitude,
 			String latitude, String radius, String site, String releaseOrNot, String created_TS, String updated_TS,

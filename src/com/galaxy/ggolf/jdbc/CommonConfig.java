@@ -108,13 +108,13 @@ public interface CommonConfig {
 	
 	public static final String PingPP_Apikey = "sk_test_WTOCKKejbzv90K4uXDvnrn9S";
 	
-//	public static final String Umeng_AppKey = "593df0d2677baa188600054a";
+	public static final String Umeng_AD_AppKey = "593df0d2677baa188600054a";
 	
-//	public static final String Umeng_AppMaster_Secret = "an8wabbklncalsao6iojzdg5z0bjires";
+	public static final String Umeng_AD_AppMaster_Secret = "an8wabbklncalsao6iojzdg5z0bjires";
 	
-	public static final String Umeng_AppKey = "5902f50daed17963de001284";
+	public static final String Umeng_IOS_AppKey = "5902f50daed17963de001284";
 	
-	public static final String Umeng_AppMaster_Secret = "9nhfbkmys265obvicehhlnj54z3joztb";
+	public static final String Umeng_IOS_AppMaster_Secret = "9nhfbkmys265obvicehhlnj54z3joztb";
 	
 	public static final int Umeng_Android_Byte = 44;
 	
@@ -124,6 +124,37 @@ public interface CommonConfig {
 	
 	public static final String Umeng_HTTPS_SEND = "https://msgapi.umeng.com/api/send?sign=mysign";
 	
+	public static final String Send_Broadcast = "broadcast";
+	
+	public static final String Send_Unicast = "unicast";
+
+	public static final String Send_Listcast = "listcast";
+	
+	public static final String Send_Groupcast = "groupcast";
+	
+	public static final String Send_Filecast = "filecast";
+	
+	public static final String Send_Customizedcast = "customizedcast";
+	
+	//自定义推送返回状态码
+	public static final String Broadcast_Success = "100";
+	public static final String Broadcast_Error_Andrid = "101";
+	public static final String Broadcast_Error_IOS = "102";
+	public static final String Broadcast_Error = "103";
+	public static final String Unicast_Success = "200";
+	public static final String Unicast_Error_Android = "201";
+	public static final String Unicast_Error_IOS = "202";
+	public static final String Unicast_Error = "203";
+	public static final String	Filecast_Success = "300";
+	public static final String	Filecast_Error_Android = "301";
+	public static final String	Filecast_Error_IOS = "302";
+	public static final String	Filecast_Error = "303";
+	public static final String	Filecast_Error_Token = "304";
+	
+	//超级管理员信息
+	public static final String SuperAdminName = "超级管理员";
+	public static final String SuperAdminID = "1234";
+	public static final String SuperAdminHead = "http://192.168.1.107:8085/GGolfz/rest/file/download/staff_SH_SH@1234.png?t=20170313_150314";
 	
 	
 }

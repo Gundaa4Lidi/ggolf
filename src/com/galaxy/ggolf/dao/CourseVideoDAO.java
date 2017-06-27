@@ -1,5 +1,6 @@
 package com.galaxy.ggolf.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.galaxy.ggolf.dao.mapper.CourseVideoRowMapper;
@@ -24,9 +25,10 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 				+ "RoomID,"
 				+ "Password,"
 				+ "RoomName,"
-				+ "Created_TS)values(?,?,?,?,?,?)";
-		return super.executeUpdate(sql,cv.getCreatorID(),cv.getRoomID(),cv.getCourseID(),
-				cv.getPassword(),cv.getRoomName(),Time());
+				+ "Created_TS,"
+				+ "LiveEvent)values(?,?,?,?,?,?,?)";
+		return super.executeUpdate(sql,cv.getCreatorID(),cv.getCourseID(),cv.getRoomID(),
+				cv.getPassword(),cv.getRoomName(),Time(),Time()+",房主创建直播间,"+cv.getCreatorID()+"|");
 	}
 	
 	/**
@@ -36,7 +38,8 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public boolean updatePassword(String pwd,String CourseID){
-		String sql = "update coursevideo set Password='"+pwd+"' Updated_TS='"+Time()+"' WHERE DeletedFlag is null and CourseID='"+CourseID+"'";
+		String sql = "update coursevideo set Password='"+pwd+"',`LiveEvent` = concat('"+Time()+",修改房间密码,00|',`LiveEvent`),"
+				+ " Updated_TS='"+Time()+"' WHERE DeletedFlag is null and CourseID='"+CourseID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -47,18 +50,32 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public boolean updateRoomName(String roomName,String UID){
-		String sql = "update coursevideo set RoomName='"+roomName+"',Updated_TS='"+Time()+"' WHERE DeletedFlag is null and UID='"+UID+"'";
+		String sql = "update coursevideo set RoomName='"+roomName+"',`LiveEvent` = concat('"+Time()+",修改房间主题为:"+roomName+",00|',`LiveEvent`),"
+				+ "Updated_TS='"+Time()+"' WHERE DeletedFlag is null and UID='"+UID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 用户进入房间的记录
+	 * @param UserName
+	 * @param UserID
+	 * @param UID
+	 * @return
+	 */
+	public boolean intoRoom(String UserName, String UserID, String UID){
+		String sql = "update coursevideo set `LiveEvent` = concat('"+Time()+","+UserName+"进入房间,"+UserID+"|',`LiveEvent`),"
+				+ "Updated_TS='"+Time()+"' where DeletedFlag is null and UID='"+UID+"'";
 		return super.executeUpdate(sql);
 	}
 	
 	
 	/**
 	 * 删除房间
-	 * @param UID
+	 * @param RoomID
 	 * @return
 	 */
-	public boolean delete(String UID){
-		String sql = "update coursevideo set DeletedFlag='Y' Updated_TS='"+Time()+"' WHER UID='"+UID+"'";
+	public boolean delete(String RoomID){
+		String sql = "update coursevideo set DeletedFlag='Y', Updated_TS='"+Time()+"' where RoomID='"+RoomID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -70,8 +87,9 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	public Collection<CourseVideo> getVideoByCoachID(String CoachID){
 		String sql = "select * from coursevideo where DeletedFlag is null and  CreatorID='"+CoachID+"' and ("
 				+ "select count(*) from coachcourse where DeletedFlag is null"
-				+ " and CoachID='"+CoachID+"' and IsVideo='1' and IsOpen='1' and Verify='1')>0 ";
-		return super.executeQuery(sql);
+				+ " and CoachID='"+CoachID+"' and IsVideo='1' and Verify='1')>0 "
+				+ "order by Created_TS desc";
+		return GetCVList(super.executeQuery(sql));
 	}
 	
 	/**
@@ -80,9 +98,7 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 	 * @return
 	 */
 	public CourseVideo getByCourseID(String CourseID){
-		String sql = "select * from coursevideo where DeletedFlag is null and CourseID=("
-				+ "select CourseID from coachcourse where DeletedFlag is null"
-				+ " and CourseID='"+CourseID+"' and IsVideo='1' and IsOpen='1' and Verify='1') ";
+		String sql = "select * from coursevideo where DeletedFlag is null and CourseID='"+CourseID+"'";
 		Collection<CourseVideo> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (CourseVideo) result.toArray()[0];
@@ -90,5 +106,58 @@ public class CourseVideoDAO extends GenericDAO<CourseVideo> {
 		return null;
 	}
 	
+	/**
+	 * 查看直播间信息
+	 * @param UID
+	 * @return
+	 */
+	public CourseVideo getByUID(String UID){
+		String sql = "select * from coursevideo where DeletedFlag is null and UID='"+UID+"'";
+		Collection<CourseVideo> result = super.executeQuery(sql);
+		if(result.size() > 0){
+			return GETCV((CourseVideo) result.toArray()[0]);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据条件获取直播间
+	 * @param sqlString
+	 * @param rows
+	 * @return
+	 */
+	public Collection<CourseVideo> getBySearch(String sqlString,String rows,String pageNum){
+		String limit= super.limit(pageNum, rows);
+		String sql = "select * from coursevideo where DeletedFlag is null "+sqlString+" order by Created_TS desc "+limit+"";
+		return GetCVList(super.executeQuery(sql));
+	}
+	
+	/**
+	 * 获取所有直播间数量
+	 * @param sqlString
+	 * @return
+	 */
+	public int getBySearchCount(String sqlString){
+		String sql = "select count(*) from coursevideo where DeletedFlag is null "+sqlString+"";
+		return super.count(sql);
+	}
+	
+	private CourseVideo GETCV(CourseVideo cv){
+		cv = new CourseVideo(cv.getUID(), cv.getCreatorID(), cv.getCourseID(),
+				cv.getRoomID(), cv.getRoomName(), cv.getCreated_TS(),
+				cv.getUpdated_TS(), cv.getLiveEvent());
+		return cv;
+	}
+	
+	private Collection<CourseVideo> GetCVList(Collection<CourseVideo> list){
+		Collection<CourseVideo> cvList = new ArrayList<CourseVideo>();
+		CourseVideo cv = new CourseVideo();
+		for(CourseVideo c : list){
+			cv = GETCV(c);
+			cvList.add(cv);
+		}
+		return cvList;
+		
+	}
 
 }

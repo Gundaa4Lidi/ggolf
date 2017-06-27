@@ -22,6 +22,7 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 	private static final String COLUMN_CreateTime = "CreateTime";
 	private static final String COLUMN_Type = "Type";
 	private static final String COLUMN_DownPayment = "DownPayment";
+	private static final String COLUMN_OtherPayment = "OtherPayment";
 	private static final String COLUMN_PayBillorNot = "PayBillorNot";
 	private static final String COLUMN_StartDate = "StartDate";
 	private static final String COLUMN_StartTime = "StartTime";
@@ -29,8 +30,11 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 	private static final String COLUMN_MemberCount = "MemberCount";
 	private static final String COLUMN_Tel = "Tel";
 	private static final String COLUMN_ServiceExplain = "ServiceExplain";
-	private static final String COLUMN_ChargeID = "ChargeID";
 	private static final String COLUMN_Marks = "Marks";
+	private static final String COLUMN_IsRead = "IsRead";
+	private static final String COLUMN_ChargeID = "ChargeID";
+	private static final String COLUMN_Refund = "Refund";
+	private static final String COLUMN_Description = "Description";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 	private static final String COLUMN_Activity = "Activity";
@@ -50,6 +54,7 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 		String CreateTime = res.getString(COLUMN_CreateTime);
 		String Type = res.getString(COLUMN_Type);
 		String DownPayment = res.getString(COLUMN_DownPayment);
+		String OtherPayment = res.getString(COLUMN_OtherPayment);
 		String PayBillorNot = res.getString(COLUMN_PayBillorNot);
 		String StartDate = res.getString(COLUMN_StartDate);
 		String StartTime = res.getString(COLUMN_StartTime);
@@ -57,8 +62,11 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 		String MemberCount = res.getString(COLUMN_MemberCount);
 		String Tel = res.getString(COLUMN_Tel);
 		String ServiceExplain = res.getString(COLUMN_ServiceExplain);
-		String ChargeID = res.getString(COLUMN_ChargeID);
 		String Marks = res.getString(COLUMN_Marks);
+		String IsRead = res.getString(COLUMN_IsRead);
+		String ChargeID = res.getString(COLUMN_ChargeID);
+		String Refund = res.getString(COLUMN_Refund);
+		String Description = res.getString(COLUMN_Description);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		ArrayList<Activity> Activities  = new ArrayList<Activity>();
@@ -70,7 +78,7 @@ public class OrderRowMapper implements RowMapper<ClubOrder> {
 			a.setAction(properties[1]);
 			Activities.add(a);
 		}
-		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,PayBillorNot,StartDate,StartTime,Names,MemberCount,Tel,ServiceExplain,Marks,ChargeID,Created_TS,Updated_TS,Activities);
+		return new ClubOrder(UID,OrderID,UserID,ClubID,ClubName,ClubserveID,ClubserveName,ClubserveLimitTimeID,ClubservePriceID,State,CreateTime,Type,DownPayment,OtherPayment,PayBillorNot,StartDate,StartTime,Names,MemberCount,Tel,ServiceExplain,Marks,IsRead,ChargeID,Refund,Description,Created_TS,Updated_TS,Activities);
 	}
 
 }

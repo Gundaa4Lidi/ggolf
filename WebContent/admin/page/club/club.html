@@ -4,7 +4,7 @@
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
                 <form>
-                    <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="getClubList()">
+                    <input type="text" placeholder="搜索相关球场" ng-model="$parent.keyword" ng-change="getClubList();changeClubConfig(1)">
                 </form>
             </div>
 
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="load-more" ng-show="TotalClub > 0">
-                <a href="" ng-click="loading()"><i ng-if="loadMore" class="zmdi zmdi-refresh-alt"></i> {{loadMore?'加载更多':'没有更多了'}}</a>
+                <a href="" ng-click="loading();changeClubConfig(2)"><i ng-if="loadMore" class="zmdi zmdi-refresh-alt"></i> {{loadMore?'加载更多':'没有更多了'}}</a>
             </div>
         </div>
         <div class="main__container" align="center" ng-show="TotalClub<=0">

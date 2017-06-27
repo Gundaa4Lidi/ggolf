@@ -9,4 +9,9 @@ var appConfig = {
      */
     REG_PHONE : '/(^(\\d{3,4}-)?\\d{7,8})$|(1[34578]\\d{9})$/',
     REG_AryNum : '/^([1-9]\\d*(\\.\\d*)?|0\\.\\d*[1-9])$/',
+    PUSH_BROADCAST : "Broadcast",
+    PUSH_UNICAST : "unicast",
+    PUSH_FILECAST : "filecast",
+    PUSH_GROUPCAST : "groupcast",
+    PUSH_LISTCAST : "listcasst",
 }

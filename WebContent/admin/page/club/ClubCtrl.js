@@ -10,7 +10,7 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
     sc.noWrapSlides = false;
     sc.pause = true;
     sc.active = 0;
-    sc.rows = 20;
+    // sc.rows = 20;
     sc.Rows = 0;
     sc.TotalClub = 0;
     // sc.isHot = false;
@@ -26,6 +26,24 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
             sc.getClubList();
         }
 	}
+	sc.ClubConfig = {
+	    keyword : sc.keyword,
+        rows : sc.rows
+    }
+
+    sc.changeClubConfig = function (flag) {
+        switch(flag){
+            case 1:
+                sc.ClubConfig.keyword = sc.keyword;
+                break;
+            case 2:
+                sc.ClubConfig.rows = sc.rows;
+                break;
+            default:
+                break;
+        }
+        sc.$emit('ClubConfig',sc.ClubConfig);
+    }
 
 	sc.load=function(){
 		sc.getClubList();
@@ -79,8 +97,8 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 		var url = appConfig.url + 'Club/getClubByKeyword';
 		var method = 'GET';
 		var params = {
-			keyword : sc.keyword,
-			rows : sc.rows,
+			keyword : ClubPageCtrl.keyword,
+			rows : ClubPageCtrl.rows,
 			clubType : ClubPageCtrl.isClub?'球场':'练习场',
             IsHot : ClubPageCtrl.isHot?'1':'',
             IsTop : ClubPageCtrl.isTop?'1':'',
@@ -92,11 +110,12 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
 		promise.then(function(data){
 			sc.clubList = data.data;
 			sc.TotalClub = data.count;
-			sc.Rows = sc.rows;
+			sc.Rows = ClubPageCtrl.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalClub);
 		}),function(data){
 			sc.Load_Failed(data);
 		}
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalClub);
+
 	}
 
 

@@ -4,20 +4,11 @@
 	    <div class="action-header-alt">
 	        <div class="action-header__item action-header__item--search">
 	            <form>
-	                <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="search()">
+	                <input type="text" placeholder="搜索相关用户信息" ng-model="keyword" ng-change="search()">
 	            </form>
 	        </div>
 	
-<!-- 	        <div class="action-header__item action-header__add">
-	            <a href="new-contact.html" class="btn btn-danger btn-sm">New Contact</a>
-	        </div>
- -->	
 	        <div class="action-header__item action-header__item--sort hidden-xs">
-	            <!--<span class="action-header__small">Sort by :</span>-->
-	
-	            <!--<select ui-select2 ng-model="sortord" class="form-control"  data-placeholder="选择搜索类型" >-->
-	            	<!--<option ng-repeat="item in selectOptions" selected="{{item}}">{{item.title}}</option>-->
-	            <!--</select>-->
 	        </div>
 	    </div>
 	
@@ -25,41 +16,6 @@
 	        <header class="main__title">
 	            <h1>用户列表</h1>
 	        </header>
-			<!--<md-content layout-padding ng-cloak>-->
-				<!--<div layout-gt-xs="row">-->
-					<!--<div flex-gt-xs>-->
-						<!--<h4>Standard date-picker</h4>-->
-						<!--<md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date"></md-datepicker>-->
-					<!--</div>-->
-
-					<!--<div flex-gt-xs>-->
-						<!--<h4>Disabled date-picker</h4>-->
-						<!--<md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date" disabled></md-datepicker>-->
-					<!--</div>-->
-				<!--</div>-->
-
-				<!--<div layout-gt-xs="row">-->
-					<!--<div flex-gt-xs>-->
-						<!--<h4>Opening the calendar when the input is focused</h4>-->
-						<!--<md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date"-->
-									   <!--md-open-on-focus></md-datepicker>-->
-					<!--</div>-->
-
-					<!--<div flex-gt-xs>-->
-						<!--<h4>Date-picker that goes straight to the year view</h4>-->
-						<!--<md-datepicker ng-model="ctrl.myDate" md-current-view="year"-->
-									   <!--md-placeholder="Enter date"></md-datepicker>-->
-					<!--</div>-->
-				<!--</div>-->
-
-				<!--<div layout-gt-xs="row">-->
-					<!--<div flex-gt-xs>-->
-						<!--<h4>Custom calendar trigger</h4>-->
-						<!--<md-datepicker ng-model="ctrl.myDate" md-placeholder="Enter date"-->
-									   <!--md-is-open="ctrl.isOpen"></md-datepicker>-->
-						<!--<md-button class="md-primary md-raised" ng-click="ctrl.isOpen = true">Open</md-button>-->
-					<!--</div>-->
-				<!--</div>-->
 			<!--</md-content>-->
 	        <div class="row">
 	            <div class="col-md-12">
@@ -101,8 +57,8 @@
 	                        <div class="actions list-group__actions">
 	                            <div class="dropdown">
 	                                <a href="" data-toggle="dropdown"><i class="zmdi zmdi-more-vert"></i></a>
-	                                <ul class="dropdown-menu pull-right">
-	                                	<li ng-if="item.isCoach!='1'"><a href="#apply-open-coach" data-toggle="modal" ng-click="ApplyCoach(item)">申请开通教练</a></li>
+	                                <ul class="dropdown-menu pull-right" ng-if="item.isCoach!='1'">
+	                                	<li><a href="#apply-open-coach" data-toggle="modal" ng-click="ApplyCoach(item)">申请开通教练</a></li>
 	                                   <!--  <li><a href="#update-to-user" data-toggle="modal" ng-click="editUser(item)">修改</a></li> -->
 	                                </ul>
 	                            </div>
@@ -375,25 +331,6 @@
 							<td>{{currentItemD.CustomTag}}</td>
 						</tr>
 					</table>
-	                <!-- <div class="m-t-25">
-	                    <h4>Mallinda Hollaway</h4>
-	                    <small>421 Walnut St. Hartford, CT 06106, United States</small>
-	                </div>
-	
-	                <div class="m-t-25">
-	                    <small>Email Address</small>
-	                    <div class="text-strong m-t-5">mallinda-h@gmail.com</div>
-	                </div>
-	
-	                <div class="m-t-25">
-	                    <small>Mobile Phone</small>
-	                    <div class="text-strong m-t-5">(203) 991-4171</div>
-	                </div>
-	
-	                <div class="m-t-25">
-	                    <small>Home Phone</small>
-	                    <div class="text-strong m-t-5">(902) 093-3923</div>
-	                </div> -->
 	            </div>
 	
 	            <div class="modal-footer text-center modal-footer--bordered">

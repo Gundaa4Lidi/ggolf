@@ -105,8 +105,10 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
      * 加载5条评论
      */
     sc.loading = function(){
-        sc.rows +=5;
-        sc.getComment();
+        if(sc.loadMore){
+            sc.rows +=5;
+            sc.getComment();
+        }
     }
     /**
      * 取消回复
@@ -166,10 +168,11 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
             sc.commentData = data;
             sc.TotalComment = data.CommentCount;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalComment);
         }),function(data){
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalComment);
+
 
     }
 
@@ -183,7 +186,7 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
         var data = {
             UserID : $window.sessionStorage.StaffId,
             ThemeID : e.CommentID,
-            Type : e.Action
+            Type : 'CT'
         }
         var promise = sc.httpDataUrl(url,method,data);
         promise.then(function(data){
@@ -295,5 +298,10 @@ var UserMsgDataController = function($scope,$rootScope,$window,Upload,$timeout,a
         }
 
     }
+
+    sc.star = true;
+    sc.$watch('star',function (data) {
+        console.log(data);
+    })
 
 }

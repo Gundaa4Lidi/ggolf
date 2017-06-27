@@ -1,0 +1,163 @@
+<div ng-controller="CourseOrderController" data-ng-init="load()">
+    <div page-loader is-loading="true"></div>
+    <section id="main__content" >
+        <div class="action-header-alt">
+            <div class="action-header__item action-header__item--search">
+                <form>
+                    <input type="text" placeholder="搜索相关课程订单信息" ng-model="keyword" ng-change="load()">
+                </form>
+            </div>
+
+            <!--<div class="action-header__item action-header__add">-->
+            <!--<a href="" class="btn btn-danger btn-sm" ng-click="addFee()">新增配置</a>-->
+            <!--</div>-->
+        </div>
+
+        <div class="main__container" style="max-width: 1600px;">
+            <header class="main__title">
+                <h1 style="font-family: '黑体'">课程订单管理</h1>
+            </header>
+            <div class="row" >
+                <div class="col-md-2">
+                    <select ng-model="filterDay" class="form-control" ng-change="load()" style="background: white"
+                            ng-options="day.value as day.key for day in filterDays"></select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="payment_method" style="background: white">
+                        <option value="" selected="selected">支付方式</option>
+                        <option value="alipay">支付宝APP</option>
+                        <option value="alipay_pc_direct">支付宝PC</option>
+                        <option value="wx">微信APP</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" ng-model="order_status" style="background: white">
+                        <option value="" selected="selected">订单状态</option>
+                        <option value="1">提交订单</option>
+                        <option value="2">待付款</option>
+                        <option value="3">完成预订</option>
+                        <option value="0">取消订单</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-warning" ng-click="payment_method=''; order_status =''; filterDay=0">清空筛选</button>
+                </div>
+            </div>
+            <hr>
+
+            <div class="card">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th width="9%">订单编号</th>
+                        <th width="7%">教练姓名</th>
+                        <th width="9%">课程标题</th>
+                        <th width="9%">教学方式</th>
+                        <th width="6%">订单状态</th>
+                        <th width="9%">订单时间</th>
+                        <th width="8%">支付方式</th>
+                        <th width="9%">课程费用</th>
+                        <th width="6%">上课时间</th>
+                        <th width="6%">打球时间</th>
+                        <th width="6%">学员姓名</th>
+                        <th width="6%">联系电话</th>
+                        <th width="10%"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="order in CourseOrderList | filter: payment_method | filter: order_status">
+                        <td width="9%">{{order.CourseOrderID}}</td>
+                        <td width="7%">{{order.CoachName}}</td>
+                        <td width="9%">{{order.CourseTitle}}</td>
+                        <td width="9%">
+                            <p class="mdc-text-green" ng-if="order.TeachingMethod=='0'">现场教学</p>
+                            <p class="mdc-text-blue" ng-if="order.TeachingMethod=='1'">直播教学</p>
+                        </td>
+                        <td width="6%">
+                            <p ng-if="order.State==='1'" style="color: green;">提交订单</p>
+                            <p ng-if="order.State==='2'" style="color: #0a6ebd;">待付款</p>
+                            <p ng-if="order.State==='3'&&order.IsBatch==='1'" style="color: blue;">购买完成</p>
+                            <p ng-if="order.State==='3'&&order.IsBatch!=='1'" style="color: blue;">预约完成</p>
+                            <p ng-if="order.State==='0'" style="color: red;">取消订单</p>
+                        </td>
+                        <td width="9%">{{order.CreateTime}}</td>
+                        <td width="8%">
+                            <p ng-if="order.Type==='alipay'" style="color: #0e84ff;">支付宝APP</p>
+                            <p ng-if="order.Type==='alipay_pc_direct'" style="color: #0e84ff;">支付宝PC</p>
+                            <p ng-if="order.Type==='wx'" style="color: green;">微信APP</p>
+                        </td>
+                        <td width="9%">
+                            <p>
+                                <span style="color: orange;font-size: 16px;" ><i class="fa fa-jpy" aria-hidden="true"></i>{{order.DownPayment}}</span>
+                                <span style="color: orange;font-size: 12px;" ng-if="order.IsBatch=='0'">/小时</span>
+                                <span style="color: orange;font-size: 12px;" ng-if="order.IsBatch=='1'">{{order.ClassHour}}课时</span>
+                            </p>
+                            <p ng-if="order.Refund=='退款处理中'" style="color: #2273f0;">处理中</p>
+                            <p ng-if="order.Refund=='退款成功'" style="color: #19974c;">退款成功</p>
+                            <p ng-if="order.Refund=='退款失败'" style="color: #e72627;">退款失败</p>
+                        </td>
+                        <td width="6%">{{order.StartDate}}</td>
+                        <td width="6%">{{order.StartTime}}</td>
+                        <td width="6%">{{order.Names}}</td>
+                        <td width="6%">{{order.Tel}}</td>
+                        <td width="10%" align="center">
+                            <button type="button" class="btn btn-success btn-xs"
+                                    href="#OrderDetail" data-toggle="modal" ng-click="checkCourseOrder(order)">查看</button>
+                            <button ng-if="order.Refund=='退款申请'" type="button" class="btn btn-success btn-xs" ng-click="applyRefund(order)">退款申请</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade" id="OrderDetail" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">明细</h4>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">学员姓名</th><td width="60%">{{currentOrder.UserName}}</td></tr>
+                        <tr><th width="40%">联系电话</th><td width="60%">{{currentOrder.Tel}}</td></tr>
+                        <tr><th width="40%">课程费用</th>
+                            <td>
+                                <span><i class="fa fa-jpy" aria-hidden="true"></i>{{currentOrder.DownPayment}}</span>
+                                <span ng-if="currentOrder.IsBatch=='0'">/小时</span>
+                                <span ng-if="currentOrder.IsBatch=='1'">{{currentOrder.ClassHour}}课时</span>
+                            </td>
+                        </tr>
+                        <tr><th width="40%">订单日期</th><td width="60%">{{currentOrder.Created_TS}}</td></tr>
+                        <tr><th width="40%">上课时间</th><td width="60%">{{currentOrder.StartDateTime}}</td></tr>
+                        <tr><th width="40%">支付方式</th><td width="60%">{{currentOrder.Type}}</td></tr>
+                        <tr><th width="40%">教学方式</th>
+                            <td>
+                                <p class="mdc-text-green" ng-show="currentOrder.TeachingMethod=='0'">现场教学</p>
+                                <p class="mdc-text-blue" ng-show="currentOrder.TeachingMethod=='1'">直播教学</p>
+                            </td>
+                        </tr>
+                        <tr><th width="40%">课程描述</th><td width="60%">{{currentOrder.ServiceExplain}}</td></tr>
+                    </table>
+
+                    <table class="table table-bordered table-hover">
+                        <tr><th width="40%">时间</th><th width="60%">操作</th></tr>
+                        <tr ng-repeat="activity in currentOrder.Activities">
+                            <td width="40%">{{activity.time}}</td>
+                            <td width="60%">{{activity.action}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>

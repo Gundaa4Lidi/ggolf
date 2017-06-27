@@ -12,7 +12,6 @@ public class MessageDAO extends GenericDAO<Message> {
 
 	public MessageDAO() {
 		super(new MessageRowMapper());
-		// TODO Auto-generated constructor stub
 	}
 	//创建信息
 	public boolean create(Message ms){
@@ -23,6 +22,7 @@ public class MessageDAO extends GenericDAO<Message> {
 				+ "Title,"
 				+ "Details,"
 				+ "PhotoList,"
+				+ "Video,"
 				+ "Period,"
 				+ "Status,"
 				+ "Type,"
@@ -32,13 +32,13 @@ public class MessageDAO extends GenericDAO<Message> {
 				+ "Radius,"
 				+ "Site,"
 				+ "ReleaseOrNot,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		String photoList = "";
 		if(ms.getPhotoList()!=null && ms.getPhotoList().size() > 0){
 			photoList = new ListUtil().ListToString(ms.getPhotoList());
 		}
 		return super.sqlUpdate(sql, ms.getMsgID(),ms.getSenderID(),ms.getSenderName(),ms.getSenderPhoto(),ms.getTitle(),
-				ms.getDetails(),photoList,ms.getPeriod(),ms.getStatus(),ms.getType(),ms.getClub(),ms.getLongitude(),
+				ms.getDetails(),photoList,ms.getVideo(),ms.getPeriod(),ms.getStatus(),ms.getType(),ms.getClub(),ms.getLongitude(),
 				ms.getLatitude(),ms.getRadius(),ms.getSite(),ms.getReleaseOrNot(),Time());
 	}
 	
@@ -80,10 +80,11 @@ public class MessageDAO extends GenericDAO<Message> {
 	
 	//获取用户收到的信息列表(分页,关键字搜索)
 	public Collection<Message> getMessageByUserID(String userID, String sqlString, String rows, String pageNum){
+		String limit = super.limit(pageNum, rows);
 		String sql = "select * from message where DeletedFlag is null and MsgID in(select MsgID from notifyList where UserID='"+userID+"')"
 				+ " or SenderID='"+userID+"' "+ sqlString 
-				+" order by Created_TS desc limit"
-				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " ," + Integer.parseInt(rows)+"";
+				+" order by Created_TS desc "+limit+"";
+//				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " ," + Integer.parseInt(rows)+"";
 		return super.executeQuery(sql);
 	}
 	
@@ -97,8 +98,9 @@ public class MessageDAO extends GenericDAO<Message> {
 	
 	//获取全部信息
 	public Collection<Message> getAll(String sqlString, String rows, String pageNum){
-		String sql = "select * from message where DeletedFlag is null "+sqlString+" order by Created_TS desc limit"
-				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " ," + Integer.parseInt(rows)+"";
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from message where DeletedFlag is null "+sqlString+" order by Created_TS desc "+limit+"";
+//				+ ((Integer.parseInt(pageNum) - 1) * Integer.parseInt(rows)) + " ," + Integer.parseInt(rows)+"";
 		return super.executeQuery(sql);
 	}
 	
@@ -135,9 +137,10 @@ public class MessageDAO extends GenericDAO<Message> {
 	
 	//获取时间分组
 	public Collection<Message> getDTGroup(String sqlString,String rows){
+		String limit = super.limit(null, rows);
 		String sql = "select * from message where DeletedFlag is null"
 				+ " "+sqlString+" GROUP BY date_format(`Created_TS`,'%Y-%m-%d')"
-				+ " order by Created_TS desc limit 0 , "+Integer.parseInt(rows)+"";
+				+ " order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	}
 	

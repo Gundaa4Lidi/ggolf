@@ -36,6 +36,7 @@ import com.galaxy.ggolf.domain.PhoneCode;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.domain.UserDetail;
 import com.galaxy.ggolf.dto.FollowCount;
+import com.galaxy.ggolf.dto.LikeData;
 import com.galaxy.ggolf.dto.TokenResponse;
 import com.galaxy.ggolf.dto.UserData;
 import com.galaxy.ggolf.dto.UserRanData;
@@ -905,10 +906,12 @@ public class UserService extends BaseService {
 			String result = "";
 			if(this.likeDAO.getLikeByUserID(like.getUserID(), like.getThemeID(), like.getType())!=null){
 				result = "您已点赞!";
-				return getResponse(result);
+				return getErrormessage(result);
 			}else{
 				if(this.likeDAO.create(like)){
-					return getSuccessResponse();
+					int count = this.likeDAO.getCountByThemeID(like.getThemeID(), like.getType());
+//					Collection<Likes> likes = this.likeDAO.getByThemeID(like.getThemeID(), like.getType());
+					return getResponse(count);
 				}
 			}
 		} catch (Exception e) {

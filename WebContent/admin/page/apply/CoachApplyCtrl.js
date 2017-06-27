@@ -59,10 +59,11 @@ var CoachApplyController = function ($scope,appConfig) {
             sc.TotalMessage = data.count;
             sc.coachApplyList = data.coachs;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
         }),function (data) {
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
+
     }
 
     sc.isVerify = function (e) {
@@ -78,7 +79,6 @@ var CoachApplyController = function ($scope,appConfig) {
             closeOnConfirm : false,
             closeOnCancel : false
         },function (isConfirm) {
-            console.log(isConfirm)
             if(isConfirm){
                 sc.VerifyCoach(1);
             }else{

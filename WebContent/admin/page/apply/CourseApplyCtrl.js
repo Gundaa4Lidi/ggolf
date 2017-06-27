@@ -72,10 +72,11 @@ var CourseApplyController = function ($scope,appConfig) {
             sc.TotalMessage = data.count;
             sc.courseApplyList = data.courses;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
         }),function (data) {
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
+
     }
 
     /**

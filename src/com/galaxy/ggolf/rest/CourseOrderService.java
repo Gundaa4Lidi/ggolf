@@ -1,5 +1,6 @@
 package com.galaxy.ggolf.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ws.rs.FormParam;
@@ -16,10 +17,15 @@ import org.slf4j.LoggerFactory;
 import com.galaxy.ggolf.dao.CoachCourseDAO;
 import com.galaxy.ggolf.dao.CoachScoreDAO;
 import com.galaxy.ggolf.dao.CourseOrderDAO;
+import com.galaxy.ggolf.dao.UserDAO;
+import com.galaxy.ggolf.domain.ClubOrder;
 import com.galaxy.ggolf.domain.CoachCourse;
 import com.galaxy.ggolf.domain.CourseOrder;
 import com.galaxy.ggolf.domain.GalaxyLabException;
+import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.CourseOrderData;
+import com.galaxy.ggolf.dto.GenericData;
+import com.galaxy.ggolf.dto.NewOrderData;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -27,17 +33,24 @@ import com.galaxy.ggolf.dto.CourseOrderData;
 public class CourseOrderService extends BaseService {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private static final String Refund_apply = "退款申请";
+	private static final String Refund_applying = "退款处理中";
+	private static final String Refund_success = "退款成功";
+	private static final String Refund_field = "退款失败";
 	
 	private final CourseOrderDAO courseOrderDAO;
 	private final CoachCourseDAO coachCourseDAO;
 	private final CoachScoreDAO coachScoreDAO;
+	private final UserDAO userDAO;
 	
 	public CourseOrderService(CourseOrderDAO courseOrderDAO,
 			 CoachCourseDAO coachCourseDAO,
-			 CoachScoreDAO coachScoreDAO) {
+			 CoachScoreDAO coachScoreDAO,
+			 UserDAO userDAO) {
 		this.courseOrderDAO = courseOrderDAO;
 		this.coachCourseDAO = coachCourseDAO;
 		this.coachScoreDAO = coachScoreDAO;
+		this.userDAO = userDAO;
 	}
 	
 //	@POST
@@ -79,10 +92,9 @@ public class CourseOrderService extends BaseService {
 				if(courseOrder!=null){
 					return getErrormessage("已购买该时段的课程,无需再重新购买");
 				}else{
-					String orderID = courseOrderDAO.getOrderID()+"";
-					String prefix = "CO";
-					String main = "00000000";
-					String CourseOrderID = this.courseOrderDAO.getCustomID(prefix, main, orderID);
+//					String orderID = courseOrderDAO.getOrderID()+"";
+					String prefix = "COD";
+					String CourseOrderID = this.courseOrderDAO.getID(prefix, 12);
 					co.setCourseOrderID(CourseOrderID);
 					if(!this.courseOrderDAO.create(co)){
 						throw new GalaxyLabException("Error in create course order");
@@ -259,4 +271,143 @@ public class CourseOrderService extends BaseService {
 		return sqlString;
 	}
 	
+	
+	/**
+	 * 获取新增订单
+	 * @param pageNum
+	 * @param rows
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getNewOrder")
+	public String getNewOrder(@FormParam("pageNum") String pageNum,
+			@FormParam("rows") String rows,
+			@Context HttpHeaders headers){
+		try {
+			Collection<CourseOrder> courseOrder = this.courseOrderDAO.getNewOrder(rows, pageNum);
+			int count = this.courseOrderDAO.getNewOrderCount();
+			int realCount = this.courseOrderDAO.getNewOrderRealCount();
+			Collection<NewOrderData> data = new ArrayList<NewOrderData>();
+			if(courseOrder.size()>0){
+				for(CourseOrder co : courseOrder){
+					User user = this.userDAO.getUserByUserID(co.getUserID());
+					if(user!=null){
+						NewOrderData od = new NewOrderData(user.getUserID(),user.getName(),
+								user.getHead_portrait(),"course",co.getCourseOrderID(),co.getIsRead(),co.getCreated_TS());
+						data.add(od);
+					}
+				}
+			}
+			GenericData<NewOrderData> result = new GenericData<NewOrderData>(count, realCount, data);
+			return getResponse(result);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取新增但未查阅订单的数量
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getNewOrderCount")
+	public String getNewOrderCount(
+			@Context HttpHeaders headers){
+		try {
+			String sqlString = "and State='1' ";
+			int realCount = this.courseOrderDAO.getOrderCount(sqlString);
+			return getResponse(realCount);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 设置订单已查阅
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/IsRead")
+	public String IsRead(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			this.courseOrderDAO.IsRead(OrderID);
+			return getSuccessResponse();
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 获取对应课程订单信息
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/getByCourseOrderID")
+	public String getByCourseOrderID(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			CourseOrder order = this.courseOrderDAO.getOrderByOrderID(OrderID);
+			return getResponse(order);
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 申请退款
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/applyRefund")
+	public String applyRefund(@FormParam("OrderID") String OrderID,
+			@FormParam("Description") String description,
+			@Context HttpHeaders headers){
+		try {
+			CourseOrder co = this.courseOrderDAO.getOrderByOrderID(OrderID);
+			if(co!=null&&co.getState().equals("3")){
+				if(!this.courseOrderDAO.applyRefund(OrderID,description)){
+					return getErrormessage("申请退款失败");
+				}
+				return getSuccessResponse();
+			}else{
+				return getErrormessage("订单不存在或未完成支付!");
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+	
+	/**
+	 * 拒绝申请退款
+	 * @param OrderID
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/rejectRefund")
+	public String rejectRefund(@FormParam("OrderID") String OrderID,
+			@Context HttpHeaders headers){
+		try {
+			if(this.courseOrderDAO.refundResult(Refund_field, OrderID)){
+				return getSuccessResponse();
+			}
+		} catch (Exception e) {
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
 }

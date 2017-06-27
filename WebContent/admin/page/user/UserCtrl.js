@@ -54,10 +54,11 @@ var UserController = function($scope,$rootScope,$http,$window,$q,$timeout,Upload
             sc.Users = data.userList;
             sc.TotalUser = data.count;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalUser);
         }),function(data){
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalUser);
+
     }
 
 	// sc.selectOptions = [

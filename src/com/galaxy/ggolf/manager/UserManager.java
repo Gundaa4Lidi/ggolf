@@ -20,7 +20,7 @@ import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.domain.UserLogRec;
 import com.galaxy.ggolf.tools.LocationUtil;
 import com.spatial4j.core.shape.Rectangle;
-
+import org.springframework.util.StringUtils;
 
 
 public class UserManager {
@@ -333,7 +333,7 @@ public class UserManager {
 		if(userList.size()>0){
 			users = (ArrayList<User>) userList;
 			for(User user : users){
-				if(user.getLongitude()!=null && user.getLatitude()!=null){
+				if(!StringUtils.isEmpty(user.getLongitude()) && !StringUtils.isEmpty(user.getLatitude())){
 					double lon2 = Double.parseDouble(user.getLongitude());//用户的经度
 					double lat2 = Double.parseDouble(user.getLatitude());//用户的纬度
 					double distance = LocationUtil.GetDistance(lon1, lat1, lon2, lat2);//获取距离

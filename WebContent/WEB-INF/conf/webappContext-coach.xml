@@ -14,11 +14,11 @@
 		<constructor-arg ref="courseTimeDAO"/>
 		<constructor-arg ref="courseVideoDAO"/>
 		<constructor-arg ref="courseOrderDAO"/>
+		<constructor-arg ref="umengDAO"/>
+		<constructor-arg ref="messageManager"/>
 	</bean>
 	
 	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
-	</bean>
-	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
 	</bean>
 	<bean id="coachScoreDAO" class="com.galaxy.ggolf.dao.CoachScoreDAO">
 	</bean>
@@ -32,5 +32,24 @@
 	</bean>
 	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
 	</bean>
+	<bean id="umengDAO" class="com.galaxy.ggolf.dao.UmengDAO">
+	</bean>
 	
+	<bean id="messageManager" class="com.galaxy.ggolf.manager.MessageManager">
+		<constructor-arg ref="messageDAO" />
+		<constructor-arg ref="notifyListDAO"/>
+		<constructor-arg ref="userDAO"/>
+		<constructor-arg ref="commentDAO"/>
+		<constructor-arg ref="likeDAO"/>
+	</bean>
+	<bean id="messageDAO" class="com.galaxy.ggolf.dao.MessageDAO">
+	</bean>
+	<bean id="notifyListDAO" class="com.galaxy.ggolf.dao.NotifyListDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="commentDAO" class="com.galaxy.ggolf.dao.CommentDAO">
+	</bean>
+	<bean id="likeDAO" class="com.galaxy.ggolf.dao.LikeDAO">
+	</bean>
 </beans>

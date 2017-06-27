@@ -13,6 +13,10 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	private static final String Confirm_ball = "确认球位"; 
 	private static final String Online_booking = "在线预订";
 	private static final String Finish_booking = "完成预订";
+	private static final String Refund_apply = "退款申请";
+	private static final String Refund_applying = "退款处理中";
+	private static final String Refund_success = "退款成功";
+	private static final String Refund_field = "退款失败";
 	
 	public ClubOrderDAO() {
 		super(new OrderRowMapper());
@@ -43,6 +47,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "State,"
 				+ "CreateTime,"
 				+ "DownPayment,"
+				+ "OtherPayment,"
 				+ "PayBillorNot,"
 				+ "StartDate,"
 				+ "StartTime,"
@@ -51,13 +56,14 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 				+ "Tel,"
 				+ "ServiceExplain,"
 				+ "Marks,"
+				+ "IsRead,"
 				+ "Created_TS,"
 				+ "Activity"
-				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ ")values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.executeUpdate(sql,o.getOrderID(),o.getUserID(),o.getClubID(),o.getClubName(),o.getClubserveID(),
 				o.getClubserveName(),o.getClubserveLimitTimeID(),o.getClubservePriceID(),Submit_order,Time1(),
-				o.getDownPayment(),"0",o.getStartDate(),o.getStartTime(),o.getNames(),o.getMemberCount(),o.getTel(),
-				o.getServiceExplain(),o.getMarks(),Time(),Time()+",提交订单|");
+				o.getDownPayment(),o.getOtherPayment(),"0",o.getStartDate(),o.getStartTime(),o.getNames(),o.getMemberCount(),o.getTel(),
+				o.getServiceExplain(),o.getMarks(),"0",Time(),Time()+",订单提交|");
 	}
 	
 	public Collection<ClubOrder> getAll(){
@@ -98,9 +104,9 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @return
 	 */
 	public Collection<ClubOrder> getClubOrder(String sqlString,String rows){
+		String limit = super.limit(null, rows);
 		String sql = "select * from cluborder where DeletedFlag is null "+sqlString+""
-				+ "order by Created_TS desc limit "
-				+ "0 , " + Integer.parseInt(rows) + " ";
+				+ "order by Created_TS desc "+limit+" ";
 		return super.executeQuery(sql);
 	}
 	
@@ -111,6 +117,68 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public int getOrderCount(String sqlString){
 		String sql = "select count(*) from cluborder where DeletedFlag is null "+sqlString+"";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 新增订单
+	 * @param rows
+	 * @param pageNum
+	 * @return
+	 */
+	public Collection<ClubOrder> getNewOrder(String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from cluborder where DeletedFlag is null and State='"+Submit_order+"' "
+				+ "order by Created_TS desc "+limit+"";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 新增订单的数量
+	 * @return
+	 */
+	public int getNewOrderCount(){
+		String sql = "select count(*) from cluborder where DeletedFlag is null and State='"+Submit_order+"'";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 新增订单未查阅的数量
+	 * @return
+	 */
+	public int getNewOrderRealCount(){
+		String sql = "select count(*) from cluborder where DeletedFlag is null and State='"+Submit_order+"' and IsRead='0' ";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 新增退款订单
+	 * @param rows
+	 * @param pageNum
+	 * @return
+	 */
+	public Collection<ClubOrder> getNewRefund(String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"'"
+				+ " order by Created_TS desc "+limit+"";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 新增退款订单的数量
+	 * @return
+	 */
+	public int getNewRefundCount(){
+		String sql = "select count(*) from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"'";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 新增退款订单为查阅的数量
+	 * @return
+	 */
+	public int getNewRefundRealCount(){
+		String sql = "select count(*) from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"' and IsRead='0'";
 		return super.count(sql);
 	}
 	
@@ -135,19 +203,28 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @return
 	 */
 	public boolean updateMarks(String OrderID,String Marks){
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",修改留言|'), Marks = '"+Marks
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",添加留言|'), Marks = '"+Marks
 				+"',Updated_TS='"+Time()+"' where OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
+	/**
+	 * 设置已读
+	 * @param OrderID
+	 * @return
+	 */
+	public boolean IsRead(String OrderID){
+		String sql = "update `cluborder` set IsRead = '1', Updated_TS='"+Time()+"' where IsRead='0' and OrderID='"+OrderID+"'";
+		return super.executeUpdate(sql);
+	}
 	/**
 	 * 客服确认球位
 	 * @param OrderID
 	 * @return
 	 */
 	public boolean confirmBall(String OrderID){
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",确认球位|'), State = '"+Confirm_ball
-				+"',Updated_TS='"+Time()+"' where State = '"+Submit_order+"' and OrderID='"+OrderID+"'";
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",球位确认|'), State = '"+Confirm_ball
+				+"', IsRead='1', Updated_TS='"+Time()+"' where State = '"+Submit_order+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -157,7 +234,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @return
 	 */
 	public boolean onlineBooking(String OrderID){
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",在线预订|'), State = '"+Online_booking
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",在线支付|'), State = '"+Online_booking
 				+"', Updated_TS='"+Time()+"' where State = '"+Confirm_ball+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
@@ -172,10 +249,45 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 		if(chargeID!=null){
 			ChargeID = "ChargeID='"+chargeID+"',";
 		}
-		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'),Type='"+Type+"',PayBillorNot='1', State = '"+Finish_booking+"',"+ChargeID+" Updated_TS='"+Time()+"' where State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",预订成功|'),Type='"+Type+"',"
+				+ " State = '"+Finish_booking+"',"+ChargeID+" Updated_TS='"+Time()+"' where"
+				+ " State = '"+Online_booking+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
+	/**
+	 * 现金支付
+	 * @param orderID
+	 * @return
+	 */
+	public boolean cashPayment(String orderID){
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",现金支付|'),PayBillorNot='1',Updated_TS='"+Time()+"' "
+				+ "where State='"+Finish_booking+"' and OtherPayment is not null and OrderID='"+orderID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 申请退款
+	 * @param OrderID
+	 * @return
+	 */
+	public boolean applyRefund(String OrderID,String description){
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",申请退款|'), Refund ='"+Refund_apply
+				+"',Description='"+description+"', IsRead='0', Updated_TS='"+Time()+"' where State='"+Finish_booking+"' and OrderID='"+OrderID+"'";
+		return super.executeUpdate(sql);
+	}
+	
+	/**
+	 * 退款结果
+	 * @param result
+	 * @param OrderID
+	 * @return
+	 */
+	public boolean refundResult(String result,String OrderID){
+		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+","+result+"|'), Refund ='"+result
+				+"', Updated_TS='"+Time()+"' where Refund='"+Refund_apply+"' and OrderID='"+OrderID+"'";
+		return super.executeUpdate(sql);
+	}
 	
 	/**
 	 * 手动取消订单
@@ -183,8 +295,9 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * @return
 	 */
 	public boolean cancel(String OrderID){
-		String sql = "update `cluborder` set Activity = concat(Activity,'"+Time()+",取消订单|'),"
-				+ "State='"+Cancel_order+"',Updated_TS='"+Time()+"' where State != '"+Finish_booking+"' and State != '"+Cancel_order+"' and OrderID='"+OrderID+"'";
+		String sql = "update `cluborder` set Activity = concat(Activity,'"+Time()+",订单取消|'),"
+				+ "State='"+Cancel_order+"',Updated_TS='"+Time()+"' where State!="
+				+ "'"+Finish_booking+"' and State!='"+Cancel_order+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -196,7 +309,7 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 */
 	public boolean cancelOrders(String dateTime)throws Exception{
 		String sql = "update `cluborder` set `Activity` = concat(`Activity`,'"+Time()+",下单30分钟没有付款取消订单|'), State = '"+Cancel_order
-				+"',Updated_TS='"+Time()+"' where State != '"+Finish_booking+"' and State != '"+Cancel_order+"' and Created_TS<'"+dateTime+"'";
+				+"',Updated_TS='"+Time()+"' where State!='"+Finish_booking+"' and State!='"+Cancel_order+"' and Created_TS<'"+dateTime+"'";
 		return super.executeUpdate(sql);
 	}
 	

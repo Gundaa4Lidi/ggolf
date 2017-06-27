@@ -18,6 +18,7 @@ public class ClubOrder {
 	private String CreateTime;
 	private String Type;
 	private String DownPayment;
+	private String OtherPayment;
 	private String PayBillorNot;
 	private String StartDate;
 	private String StartTime;
@@ -26,7 +27,10 @@ public class ClubOrder {
 	private String Tel;
 	private String ServiceExplain;
 	private String Marks;
+	private String IsRead;
 	private String ChargeID;
+	private String Refund;
+	private String Description;
 	private String Created_TS;
 	private String Updated_TS;
 	private Collection<Activity> Activities;
@@ -34,8 +38,8 @@ public class ClubOrder {
 	
 	public ClubOrder(String uID, String orderID, String userID, String clubID, String clubName, String clubserveID,
 			String clubserveName, String clubserveLimitTimeID, String clubservePriceID, String state, String createTime,
-			String type, String downPayment, String payBillorNot, String startDate, String startTime, String names,String memberCount,
-			String tel, String serviceExplain,String marks, String chargeID, String created_TS, String updated_TS, Collection<Activity> activities) {
+			String type, String downPayment, String otherPayment, String payBillorNot, String startDate, String startTime, String names,String memberCount,
+			String tel, String serviceExplain,String marks,String isRead, String chargeID, String refund,String description, String created_TS, String updated_TS, Collection<Activity> activities) {
 		UID = uID;
 		OrderID = orderID;
 		UserID = userID;
@@ -49,6 +53,7 @@ public class ClubOrder {
 		CreateTime = createTime;
 		Type = type;
 		DownPayment = downPayment;
+		OtherPayment = otherPayment;
 		PayBillorNot = payBillorNot;
 		StartDate = startDate;
 		StartTime = startTime;
@@ -57,13 +62,22 @@ public class ClubOrder {
 		Tel = tel;
 		ServiceExplain = serviceExplain;
 		Marks = marks;
+		IsRead = isRead;
 		ChargeID = chargeID;
+		Refund = refund;
+		Description = description;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 		Activities = activities;
 	}
 
 
+	public String getRefund() {
+		return Refund;
+	}
+	public void setRefund(String refund) {
+		Refund = refund;
+	}
 	public String getUID() {
 		return UID;
 	}
@@ -142,6 +156,12 @@ public class ClubOrder {
 	public void setDownPayment(String downPayment) {
 		DownPayment = downPayment;
 	}
+	public String getOtherPayment() {
+		return OtherPayment;
+	}
+	public void setOtherPayment(String otherPayment) {
+		OtherPayment = otherPayment;
+	}
 	public String getPayBillorNot() {
 		return PayBillorNot;
 	}
@@ -213,6 +233,18 @@ public class ClubOrder {
 	}
 	public void setMarks(String marks) {
 		Marks = marks;
+	}
+	public String getIsRead() {
+		return IsRead;
+	}
+	public void setIsRead(String isRead) {
+		IsRead = isRead;
+	}
+	public String getDescription() {
+		return Description;
+	}
+	public void setDescription(String description) {
+		Description = description;
 	}
 
 

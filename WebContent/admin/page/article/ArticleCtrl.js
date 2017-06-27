@@ -5,10 +5,10 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
     sc.Articles = new Object();
 	sc.Categories = new Object();
 	sc.articleTypes = new Object();
-	sc.currentCategory = new Object();
-	sc.currentType = new Object();
-	sc.currentSubject = new Object();
-	sc.currentArticle = new Object();
+	// sc.currentCategory = new Object();
+	// sc.currentType = new Object();
+	// sc.currentSubject = new Object();
+	// sc.currentArticle = new Object();
 	sc.coverImage = new Object();
 	sc.recycles = new Object();
 	sc.TypeTitle = new Object();
@@ -25,7 +25,8 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
     sc.searchClean = function () {
         sc.currentType = new Object();
         sc.currentSubject = new Object();
-        sc.getSearch();
+        // sc.isRelease = ArticlePageCtrl.IsRelease[0].id;
+        sc.keyword = "";
         sc.load();
     }
 
@@ -34,10 +35,41 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 		indexT : 0
 	}
 
-    sc.rows = 10;
+    // sc.rows = 10;
     sc.Rows = 0;
     sc.loadMore = false;
     sc.TotalArticle = 0;
+    // sc.IsRelease = [
+    //     {key:"全部",id:"0"},
+    //     {key:"已发布文章",id:"1"}
+    // ]
+    //
+    // sc.isRelease = sc.IsRelease[0].id;
+    sc.relSelectOpt = {
+        width : "130",
+    }
+
+    sc.ArtConfig = {
+        keyword : sc.keyword,
+        rows : sc.rows,
+        isRelease : sc.isRelease,
+        currentCategory : sc.currentCategory,
+        currentType : sc.currentType,
+        currentSubject : sc.currentSubject,
+        currentArticle : sc.currentArticle
+    }
+
+    sc.changeArtConfig = function () {
+        sc.ArtConfig.keyword = sc.keyword;
+        sc.ArtConfig.rows = sc.rows;
+        sc.ArtConfig.isRelease = sc.isRelease;
+        sc.ArtConfig.currentCategory = sc.currentCategory;
+        sc.ArtConfig.currentType = sc.currentType;
+        sc.ArtConfig.currentSubject = sc.currentSubject;
+        sc.ArtConfig.currentArticle = sc.currentArticle;
+        sc.$emit('ArtConfig',sc.ArtConfig);
+    }
+
 
     sc.loading = function(){
         if(sc.loadMore) {
@@ -46,14 +78,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         }
     }
 
-    // sc.$watch('Rows',function(newValue){
-    //     if(newValue < sc.TotalArticle){
-    //         sc.loadMore = true;
-    //     }else if(newValue >= sc.TotalArticle){
-    //         sc.loadMore = false;
-    //     }
-    // })
-	
+
 	sc.selectSub = function(sub){
 		if(sub=='0'){
 			sc.Sub = "头条";
@@ -65,10 +90,11 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	sc.selectKey = function(key){
 		sc.currentType.TypeKey = key;
 	}
+
 	
 	sc.load = function() {
         sc.getArticleTree();
-        // sc.getSearch();
+        sc.getSearch();
 	
 	}
     sc.addCategory = function(e){
@@ -187,16 +213,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
             sc.Load_Failed(data);
         }
     }
-    sc.IsRelease = [
-        {key:"全部",id:"0"},
-        {key:"已发布文章",id:"1"}
-    ]
 
-    sc.isRelease = sc.IsRelease[0].id;
-
-    sc.relSelectOpt = {
-        width : "130",
-    }
 
     // sc.pageOptions = {
     //     currentPage : 1,
@@ -208,6 +225,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 
 
     sc.getSearch = function () {
+        sc.changeArtConfig();
         var typeId = null;
         var subjectId = null;
         var at = sc.currentType;
@@ -233,11 +251,12 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
             sc.Articles = data.articles;
             sc.TotalArticle = data.count;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalArticle);
             // sc.pageOptions.totalItems = data.count;
         }),function (data) {
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalArticle);
+
     }
 
 

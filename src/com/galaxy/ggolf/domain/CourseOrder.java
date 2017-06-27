@@ -21,6 +21,11 @@ public class CourseOrder {
 	private String Tel;
 	private String IsBatch;
 	private String IsTaught;
+	private String IsRead;
+	private String Marks;
+	private String ChargeID;
+	private String Refund;
+	private String Description;
 	private String ServiceExplain;
 	private String Created_TS;
 	private String Updated_TS;
@@ -28,8 +33,9 @@ public class CourseOrder {
 	
 	public CourseOrder(String courseOrderID, String coachID, String coachName, String courseID, String courseTitle,
 			String userID, String userName, String state, String type, String teachingMethod, String classHour,
-			String downPayment, String startDateTime, String tel, String isBatch, String isTaught, String serviceExplain,
-			String created_TS, String updated_TS, Collection<com.galaxy.ggolf.dto.Activity> activity) {
+			String downPayment, String startDateTime, String tel, String isBatch, String isTaught, String isRead,
+			String marks, String chargeID, String refund, String description, String serviceExplain, String created_TS, String updated_TS,
+			Collection<Activity> activity) {
 		CourseOrderID = courseOrderID;
 		CoachID = coachID;
 		CoachName = coachName;
@@ -46,11 +52,17 @@ public class CourseOrder {
 		Tel = tel;
 		IsBatch = isBatch;
 		IsTaught = isTaught;
+		IsRead = isRead;
+		Marks = marks;
+		ChargeID = chargeID;
+		Refund = refund;
+		Description = description;
 		ServiceExplain = serviceExplain;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 		Activity = activity;
 	}
+	
 	public String getCourseOrderID() {
 		return CourseOrderID;
 	}
@@ -69,17 +81,17 @@ public class CourseOrder {
 	public void setCoachName(String coachName) {
 		CoachName = coachName;
 	}
-	public String getCourseTitle() {
-		return CourseTitle;
-	}
-	public void setCourseTitle(String courseTitle) {
-		CourseTitle = courseTitle;
-	}
 	public String getCourseID() {
 		return CourseID;
 	}
 	public void setCourseID(String courseID) {
 		CourseID = courseID;
+	}
+	public String getCourseTitle() {
+		return CourseTitle;
+	}
+	public void setCourseTitle(String courseTitle) {
+		CourseTitle = courseTitle;
 	}
 	public String getUserID() {
 		return UserID;
@@ -147,6 +159,36 @@ public class CourseOrder {
 	public void setIsTaught(String isTaught) {
 		IsTaught = isTaught;
 	}
+	public String getIsRead() {
+		return IsRead;
+	}
+	public void setIsRead(String isRead) {
+		IsRead = isRead;
+	}
+	public String getMarks() {
+		return Marks;
+	}
+	public void setMarks(String marks) {
+		Marks = marks;
+	}
+	public String getChargeID() {
+		return ChargeID;
+	}
+	public void setChargeID(String chargeID) {
+		ChargeID = chargeID;
+	}
+	public String getRefund() {
+		return Refund;
+	}
+	public void setRefund(String refund) {
+		Refund = refund;
+	}
+	public String getDescription() {
+		return Description;
+	}
+	public void setDescription(String description) {
+		Description = description;
+	}
 	public String getServiceExplain() {
 		return ServiceExplain;
 	}
@@ -171,8 +213,6 @@ public class CourseOrder {
 	public void setActivity(Collection<Activity> activity) {
 		Activity = activity;
 	}
-	
-	
 	
 	
 	

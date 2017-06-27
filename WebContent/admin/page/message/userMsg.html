@@ -4,16 +4,16 @@
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
                 <form>
-                    <input type="text" ng-model="keyword" placeholder="搜索相关内容" ng-change="searchChange()">
+                    <input type="text" ng-model="$parent.keyword" placeholder="搜索相关内容" ng-change="searchChange();changeConfig(1)">
                 </form>
             </div>
             <div class="action-header__item action-header__add">
                 <a href="#new-message" data-toggle="modal" class="btn btn-danger btn-sm" ng-click="addMsg()">新增消息</a>
             </div>
             <div class="action-header__item action-header__item--sort hidden-xs">
-                <span class="action-header__small">Sort by : </span>
-                <select ui-select2="filterDaySelect" ng-model="filterDay" class="form-control" ng-change="searchChange()"
-                        ng-options="day.value as day.key for day in filterDays"></select>
+                <span class="action-header__small">筛选 : </span>
+                <select ui-select2="filterDaySelect" ng-model="$parent.filterDay" class="form-control" ng-change="searchChange();changeConfig(3)"
+                        ng-options="day.value as day.key for day in $parent.filterDays"></select>
             </div>
 
         </div>
@@ -41,11 +41,6 @@
                                     <a href="">{{msg.SenderName}}</a>
                                     <small style="font-size: 16px">{{msg.Details}}</small>
                                     <div class="row">
-                                        <!--<div class="col-sm-9">-->
-                                            <!--<a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">-->
-                                                <!--<img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="65px" width="65px">-->
-                                            <!--</a>-->
-                                        <!--</div>-->
                                         <div class="col-sm-9" ng-if="msg.PhotoList.length == 1">
                                             <a href="{{photo}}" lightgallery ng-repeat="photo in msg.PhotoList">
                                                 <img ng-src="{{photo}}" err-src='../img/club/1.jpg' alt="" height="120px">
@@ -65,12 +60,14 @@
                                 </div>
 
                                 <div class="activity-log__attrs">
-                                    <span>{{msg.Type}}</span>
-                                    <!--<span>{{item.Date}}</span>-->
+                                    <span ng-if="msg.Type=='dynamic'">动态</span>
+                                    <span ng-if="msg.Type=='invited'">约球</span>
+                                    <span class="activity-log__like"><a href="" ng-click="liked(msg,$index,$parent.$index)"><i class="fa fa-heart" aria-hidden="true"></i></a>&nbsp{{msg.likeData.count}}</span>
+                                    <span class="activity-log__added"><i class="fa fa-commenting" aria-hidden="true"></i>&nbsp{{msg.commentData.count}}</span>
                                     <span class="hidden-xs">{{CurrentDT(msg.Created_TS)}}</span>
                                     <ul class="detail-amenities__list pull-right">
                                         <li class="mdc-bg-light-blue-500" ng-click="check(msg)">查看</li>
-                                        <li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>
+                                        <!--<li class="mdc-bg-deep-orange" ng-click="remove(msg)">删除</li>-->
                                     </ul>
                                 </div>
                             </div>
@@ -80,7 +77,7 @@
                 </div>
                 <div class="activity-log__block">
                     <div class="load-more load-more-msg">
-                        <a href=""  ng-click="loading()"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
+                        <a href=""  ng-click="loading();changeConfig(2)"><i ng-if="loadMore===true" class="zmdi zmdi-refresh-alt"></i> {{loadMore===true?'加载更多':'没有更多了'}}</a>
                     </div>
                 </div>
                 <!--<div class="side-tool">
@@ -98,14 +95,6 @@
                 <form class="card" style="margin-bottom: 0px;">
                     <div class="card__body">
                         <div class="row">
-
-                            <!-- <div class="col-sm-12">
-                                 <div class="form-group">
-                                     <label>封面路径</label>
-                                     <input type="text" ng-model="currentArticle.Cover" class="form-control">
-                                 </div>
-                             </div>
- -->
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label>消息内容</label>

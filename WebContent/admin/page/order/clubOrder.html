@@ -25,8 +25,9 @@
                 <div class="col-md-2">
                     <select class="form-control" ng-model="payment_method" style="background: white">
                         <option value="" selected="selected">支付方式</option>
-                        <option value="全额支付">全额支付</option>
-                        <option value="球场现付">球场现付</option>
+                        <option value="alipay">支付宝APP</option>
+                        <option value="alipay_pc_direct">支付宝PC</option>
+                        <option value="wx">微信APP</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -35,12 +36,12 @@
                         <option value="提交订单">提交订单</option>
                         <option value="确认球位">确认球位</option>
                         <option value="在线预订">在线预订</option>
-                        <option value="预订完成">预订完成</option>
+                        <option value="完成预订">完成预订</option>
                         <option value="取消订单">取消订单</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <button class="btn btn-warning" ng-click="payment_method=''; order_status = '';filterDay='0'">清空筛选</button>
+                    <button class="btn btn-warning" ng-click="payment_method=''; order_status =''; filterDay=0">清空筛选</button>
                 </div>
             </div>
             <hr>
@@ -49,52 +50,63 @@
                 <table class="table table-bordered table-hover">
                     <thead>
                     <tr>
-                        <th width="6%">订单编号</th>
-                        <th width="7%">球场名称</th>
-                        <th width="7%">供应商</th>
+                        <th width="7%">订单编号</th>
+                        <th width="8%">球场名称</th>
+                        <th width="8%">供应商</th>
                         <th width="7%">限时抢购</th>
                         <th width="6%">订单状态</th>
                         <th width="7%">订单时间</th>
                         <th width="7%">支付方式</th>
-                        <th width="6%">订场费用</th>
+                        <th width="7%">订场费用</th>
+                        <th width="7%">其他费用</th>
                         <th width="8%">打球日期</th>
                         <th width="6%">打球时间</th>
                         <th width="6%">客户姓名</th>
                         <th width="6%">联系电话</th>
-                        <th width="8%">服务说明</th>
-                        <th width="13%"></th>
+                        <th width="10%"></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="order in orderList | filter: payment_method | filter: order_status">
-                        <td width="6%">{{order.OrderID}}</td>
-                        <td width="7%">{{order.ClubName}}</td>
-                        <td width="7%">{{order.ClubserveName}}</td>
+                        <td width="7%">{{order.OrderID}}</td>
+                        <td width="8%">{{order.ClubName}}</td>
+                        <td width="8%">{{order.ClubserveName}}</td>
                         <td width="7%">{{order.ClubserveLimitTimeID}}</td>
                         <td width="6%">
                             <p ng-if="order.State==='提交订单'" style="color: green;">{{order.State}}</p>
                             <p ng-if="order.State==='确认球位'" style="color: #61b8ff;">{{order.State}}</p>
                             <p ng-if="order.State==='在线预订'" style="color: #0a6ebd;">{{order.State}}</p>
-                            <p ng-if="order.State==='预订完成'" style="color: blue;">{{order.State}}</p>
+                            <p ng-if="order.State==='完成预订'" style="color: blue;">{{order.State}}</p>
                             <p ng-if="order.State==='取消订单'" style="color: red;">{{order.State}}</p>
                         </td>
                         <td width="7%">{{order.CreateTime}}</td>
                         <td width="7%">
-                            <p ng-if="order.Type==='全额支付'" style="color: blue;">{{order.Type}}</p>
-                            <p ng-if="order.Type==='球场现付'" style="color: green;">{{order.Type}}</p>
+                            <p ng-if="order.Type==='alipay'" style="color: #0e84ff;">支付宝APP</p>
+                            <p ng-if="order.Type==='alipay_pc_direct'" style="color: #0e84ff;">支付宝PC</p> 
+                            <p ng-if="order.Type==='wx'" style="color: green;">微信APP</p>
                         </td>
-                        <td width="6%">{{order.DownPayment}}</td>
+                        <td width="7%">
+                            <p style="color: orange;font-size: 16px;"><i class="fa fa-jpy" aria-hidden="true"></i>{{order.DownPayment}}</p>
+                            <p ng-if="order.Refund=='退款处理中'" style="color: #2273f0;">处理中</p>
+                            <p ng-if="order.Refund=='退款成功'" style="color: #19974c;">退款成功</p>
+                            <p ng-if="order.Refund=='退款失败'" style="color: #e72627;">退款失败</p>
+                        </td>
+                        <td width="7%">
+                            <p ng-if="order.OtherPayment" style="color: orange;font-size: 16px;"><i class="fa fa-jpy" aria-hidden="true"></i>{{order.OtherPayment}}</p>
+                            <p ng-if="order.PayBillorNot==='0'&&order.OtherPayment - 0 > 0" style="color: #bf2425;">未付款</p>
+                            <p ng-if="order.PayBillorNot==='1'&&order.OtherPayment - 0 > 0" style="color: #2dbf39;">已付款</p>
+                        </td>
                         <td width="8%">{{order.StartDate}}</td>
                         <td width="6%">{{order.StartTime}}</td>
                         <td width="6%">{{order.Names}}</td>
                         <td width="6%">{{order.Tel}}</td>
-                        <td width="8%">{{order.ServiceExplain}}</td>
-                        <td width="13%" align="center">
+                        <td width="10%" align="center">
                             <button type="button" class="btn btn-success btn-xs"
                                     href="#OrderDetail" data-toggle="modal" ng-click="checkOrder(order)">查看</button>
-                            <button type="button" class="btn btn-info btn-xs" ng-if="order.State=='提交订单'" ng-click="confirmBall(order)">球位确认</button>
-                            <button type="button" class="btn btn-xs" ng-if="order.Type=='球场现付'&&order.State=='确认球位'"
-                                    data-toggle="modal" href="#PayCash" ng-click="checkOrder(order)">现金支付</button>
+                            <button ng-if="order.State=='提交订单'" type="button" class="btn btn-info btn-xs" ng-click="confirmBall(order)">球位确认</button>
+                            <button ng-if="order.Refund=='退款申请'" type="button" class="btn btn-success btn-xs" ng-click="applyRefund(order)">退款申请</button>
+                            <button ng-if="order.OtherPayment - 0 > 0&&order.state==='完成预订'&&order.PayBillorNot==='0'"
+                                    type="button" class="btn btn-xs" ng-click="checkOrder(order)" data-toggle="modal" href="#PayCash">现金支付</button>
                         </td>
                     </tr>
                     </tbody>
@@ -125,7 +137,10 @@
 
                     <table class="table table-bordered table-hover">
                         <tr><th width="40%">时间</th><th width="60%">操作</th></tr>
-                        <tr ng-repeat="activity in currentOrder.Activities"><td width="40%">{{activity.time}}</td><td width="60%">{{activity.action}}</td></tr>
+                        <tr ng-repeat="activity in currentOrder.Activities">
+                            <td width="40%">{{activity.time}}</td>
+                            <td width="60%">{{activity.action}}</td>
+                        </tr>
                     </table>
                 </div>
                 <div class="modal-footer">
@@ -149,12 +164,12 @@
                 <form name="cashForm" class="ng-pristine ng-valid" ng-submit="submitCashForm(cashForm.$valid)" novalidate>
                     <div class="modal-body">
                         <div class="form-group">
-                            订单编号为<span style="color:blue">{{currentOrder.OrderID}}</span>的订单需要收取现金￥<span style="color:blue">{{currentOrder.DownPayment-0}}</span>
+                            订单编号为<span style="color:blue">{{currentOrder.OrderID}}</span>的订单需要收取现金￥<span style="color:blue">{{currentOrder.OtherPayment-0}}</span>
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-group" ng-class="{ 'has-error' : cashForm.cash.$invalid && !cashForm.cash.$pristine
-                                        || cashForm.cash.$error.pattern || (cashForm.cash.$valid&&cash!=currentOrder.DownPayment) }">
+                                        || cashForm.cash.$error.pattern || (cashForm.cash.$valid&&cash!=currentOrder.OtherPayment) }">
                                     <label>确认已收款</label>
                                     <div class="input-group">
                                         <input type="text" name="cash" ng-model="cash"
@@ -165,13 +180,13 @@
                                         <span ng-show="cashForm.cash.$error.required">请输入金额</span>
                                         <span ng-show="cashForm.cash.$error.pattern">请输入正确的数值</span>
                                     </p>
-                                    <p ng-show="cashForm.cash.$valid&&cash!=currentOrder.DownPayment" class="help-block">输入金额不一致</p>
+                                    <p ng-show="cashForm.cash.$valid&&cash!=currentOrder.OtherPayment" class="help-block">输入金额不一致</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-success" ng-disabled="cashForm.$invalid || cash!=currentOrder.DownPayment"
+                        <button type="submit" class="btn btn-success" ng-disabled="cashForm.$invalid || cash!=currentOrder.OtherPayment"
                                 data-dismiss="modal" ng-click="cashForm.$setPristine()">确认已收款</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="cashForm.$setPristine()">关闭</button>
                     </div>

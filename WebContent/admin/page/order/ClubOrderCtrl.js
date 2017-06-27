@@ -20,14 +20,6 @@ var ClubOrderController = function ($scope,appConfig) {
         FinishBooking : "4"
     }
 
-
-    // var data = [
-    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"确认球位", CreateTime :"2017-04-20", Type :"球场现付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-    //     {OrderID :"100001", UserID :"23", ClubID :"26", ClubName :"大地宫宇", ClubserveID :"12", ClubserveName :"咔够", ClubserveLimitTimeID :"4567812345", ClubservePriceID :"33", State :"提交订单", CreateTime :"2017-04-20", Type :"全额支付", DownPayment :"5000", PayBillorNot :"", StartDate :"2017-04-22", StartTime :"07:30", Names :"金馆长,苦笑,提百万", Tel :"13334878756", ServiceExplain :"18洞果岭/僮/车/柜",},
-    // ]
-    // sc.orderList = data;
-
     sc.loading = function(){
         sc.rows += 60;
         sc.getClubOrder();
@@ -35,6 +27,11 @@ var ClubOrderController = function ($scope,appConfig) {
     sc.load = function () {
         sc.getClubOrder();
     }
+
+    sc.$on('loadClubOrder',function (event,data) {
+        sc.load()
+    })
+
 
     sc.getClubOrder = function () {
         var url = appConfig.url + 'ClubOrder/getClubOrder' + sc.filterDay;
@@ -49,20 +46,51 @@ var ClubOrderController = function ($scope,appConfig) {
                 sc.TotalOrder = data.count;
                 sc.orderList = data.clubOrders;
                 sc.Rows = sc.rows;
+                sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalOrder);
             }
         }),function (data) {
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalOrder);
+
     }
 
+    /**
+     * 查看订单
+     * @param e
+     */
     sc.checkOrder = function(e){
-        sc.currentOrder = e;
+        sc.currentOrder = angular.copy(e);
     }
 
+    /**
+     * 现金支付表单提交
+     * @param $valid
+     */
     sc.submitCashForm = function($valid){
         if($valid){
-            sc.updateOrder(sc.stateType.FinishBooking,sc.currentOrder.OrderID);
+            sc.CashPayment(sc.currentOrder.OrderID);
+        }
+    }
+
+    /**
+     * 现金支付
+     * @param OrderID
+     * @constructor
+     */
+    sc.CashPayment = function (OrderID) {
+        var url = appConfig.url + 'ClubOrder/CashPayment';
+        var method = 'POST';
+        var params = {
+            OrderID : OrderID,
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.processResult(data);
+            if(data.status == 'Success'){
+                sc.load();
+            }
+        }),function (data) {
+            sc.Load_Failed(data);
         }
     }
 
@@ -91,8 +119,12 @@ var ClubOrderController = function ($scope,appConfig) {
 
     }
 
+    /**
+     * 确认球位
+     * @param e
+     */
     sc.confirmBall = function (e) {
-        sc.currentOrder = e;
+        sc.currentOrder = angular.copy(e);
         swal({
             title : "是否已找到适合的球位?",
             text : "",
@@ -107,6 +139,94 @@ var ClubOrderController = function ($scope,appConfig) {
         })
     }
 
+    /**
+     * 申请退款
+     * @param e
+     */
+    sc.applyRefund = function (e) {
+        sc.currentOrder = angular.copy(e);
+        swal({
+            title : "客户申请退款,\n退款理由为:\n"+e.Description+"\n是否同意申请?",
+            text : "同意请按是,拒绝请按否",
+            type : "warning",
+            showCancelButton : true,
+            confirmButtonColor : "#DD6B55",
+            confirmButtonText : "是",
+            cancelButtonText : "否",
+            closeOnConfirm : false,
+            closeOnCancel : false
+        },function (isConfirm) {
+            if(isConfirm){
+                swal({
+                    title : "退款金额为: ¥"+e.DownPayment,
+                    text : "确认请按是,否则取消一切操作",
+                    type : "warning",
+                    showCancelButton : true,
+                    confirmButtonColor : "#DD6B55",
+                    confirmButtonText : "是",
+                    cancelButtonText : "取消",
+                    closeOnConfirm : true
+                },function (isConfirm) {
+                    if(isConfirm){
+                        sc.resolveRefund();
+                    }
+                })
+            }else{
+                swal({
+                    title : "确认拒绝客户的\n退款申请?",
+                    text : "确认请按是,否则取消一切操作",
+                    type : "warning",
+                    showCancelButton : true,
+                    confirmButtonColor : "#DD6B55",
+                    confirmButtonText : "是",
+                    cancelButtonText : "取消",
+                    closeOnConfirm : true
+                },function (isConfirm) {
+                    if(isConfirm){
+                        sc.rejectRefund();
+                    }
+                })
+            }
+        })
+    }
+
+    /**
+     * 拒绝退款
+     * @constructor
+     */
+    sc.rejectRefund = function () {
+        var url = appConfig.url + "ClubOrder/rejectRefund";
+        var method = 'POST';
+        var params = {
+            OrderID : sc.currentOrder.OrderID
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            sc.processResult(data);
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+    }
+
+    /**
+     * 同意退款
+     */
+    sc.resolveRefund = function () {
+        var url = appConfig.url + "PingPP/Refund";
+        var method = 'POST';
+        var params = {
+            ChargeID : sc.currentOrder.ChargeID,
+            amount : sc.currentOrder.DownPayment,
+            description : sc.currentOrder.Description
+        }
+        var promise = sc.httpParams(url,method,params);
+        promise.then(function (data) {
+            // sc.processResult(data);
+            sc.load();
+        }),function (data) {
+            sc.Load_Failed(data);
+        }
+    }
 
 
 }

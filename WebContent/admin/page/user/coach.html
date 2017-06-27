@@ -4,7 +4,7 @@
         <div class="action-header-alt">
             <div class="action-header__item action-header__item--search">
                 <form>
-                    <input type="text" placeholder="Search for contacts..." ng-model="keyword" ng-change="getCoachList()">
+                    <input type="text" placeholder="搜索相关教练信息" ng-model="keyword" ng-change="getCoachList()">
                 </form>
             </div>
 
@@ -172,7 +172,7 @@
                                         </a>
                                     </span>
                                     <span class="mdc-bg-green" ng-show="course.IsBatch=='1'">套课教学</span>
-                                    <span class="mdc-bg-blue-50" ng-show="course.IsVideo=='1'">直播教学</span>
+                                    <span class="mdc-bg-blue" ng-show="course.IsVideo=='1'">直播教学</span>
                                     <span class="mdc-bg-pink" ng-show="course.IsBatch=='0'&&course.IsVideo=='0'">预约教学</span>
                                     <span class="mdc-bg-teal-400" ng-show="course.Verify=='1'">
                                         <a class="tooltip_a" tooltips tooltip-side="top" tooltip-template="课程销量">
@@ -227,7 +227,7 @@
                         <tr><th width="25%">教学模式</th>
                             <td>
                                 <span class="mdc-text-green" ng-show="currentCourse.IsBatch=='1'">套课教学</span>
-                                <span class="mdc-text-blue-50" ng-show="currentCourse.IsVideo=='1'">直播教学</span>
+                                <span class="mdc-text-blue" ng-show="currentCourse.IsVideo=='1'">直播教学</span>
                                 <span class="mdc-text-deep-orange-400" ng-show="currentCourse.IsBatch=='0'&& currentCourse.IsVideo=='0'">预约教学</span>
                             </td>
                         </tr>

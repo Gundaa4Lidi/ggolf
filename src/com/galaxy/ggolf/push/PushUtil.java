@@ -1,4 +1,4 @@
-package com.galaxy.ggolf.tools;
+package com.galaxy.ggolf.push;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -8,11 +8,13 @@ import com.galaxy.ggolf.push.Android.AndroidBroadcast;
 import com.galaxy.ggolf.push.Android.AndroidCustomizedcast;
 import com.galaxy.ggolf.push.Android.AndroidFilecast;
 import com.galaxy.ggolf.push.Android.AndroidGroupcast;
+import com.galaxy.ggolf.push.Android.AndroidListCast;
 import com.galaxy.ggolf.push.Android.AndroidUnicast;
 import com.galaxy.ggolf.push.IOS.IOSBroadcast;
 import com.galaxy.ggolf.push.IOS.IOSCustomizedcast;
 import com.galaxy.ggolf.push.IOS.IOSFilecast;
 import com.galaxy.ggolf.push.IOS.IOSGroupcast;
+import com.galaxy.ggolf.push.IOS.IOSListcast;
 import com.galaxy.ggolf.push.IOS.IOSUnicast;
 
 import org.json.JSONArray;
@@ -52,7 +54,7 @@ public class PushUtil {
 	 * @param extraFieldMap		自定义字段的键值对
 	 * @throws Exception
 	 */
-	public void sendAndroidBroadcast(String ticker,String title,String text,
+	public boolean sendAndroidBroadcast(String ticker,String title,String text,
 			String after_open,String display_type,String production_mode,
 			Map<String,String> keyValueMap,Map<String,String> extraFieldMap) throws Exception {
         AndroidBroadcast broadcast = new AndroidBroadcast();
@@ -76,7 +78,7 @@ public class PushUtil {
         	}
         }
 //        broadcast.setExtraField("test", "helloworld");
-        broadcast.send();
+        return broadcast.send();
     }
 
 	/**
@@ -93,7 +95,7 @@ public class PushUtil {
 	 * @param extraFieldMap		自定义字段的键值对
 	 * @throws Exception
 	 */
-    public void sendAndroidUnicast(String token,String ticker,String title,String text,
+    public boolean sendAndroidUnicast(String token,String ticker,String title,String text,
     		String after_open,String display_type,String production_mode,
     		Map<String,String> keyValueMap,Map<String,String> extraFieldMap) throws Exception {
         AndroidUnicast unicast = new AndroidUnicast();
@@ -117,8 +119,48 @@ public class PushUtil {
         		unicast.setExtraField(key, extraFieldMap.get(key));
         	}
         }
-//        unicast.setExtraField("test", "helloworld");
-        unicast.send();
+        return unicast.send();
+    }
+    
+    /**
+	 * 安卓设备列播推送
+	 * @param token				设备的唯一标识(多个token用逗号隔开)
+	 * @param ticker			提示标识
+	 * @param title				标题
+	 * @param text				内容
+	 * @param after_open		点击"通知"的后续行为，默认为打开app。
+	 * @param display_type		消息类型，值可以为:
+                                notification-通知，message-消息
+	 * @param production_mode	正式/测试模式。测试模式下，只会将消息发给测试设备。
+	 * @param keyValueMap		可选字段的键值对
+	 * @param extraFieldMap		自定义字段的键值对
+	 * @throws Exception
+	 */
+    public boolean sendAndroidListcast(String tokens,String ticker,String title,String text,
+    		String after_open,String display_type,String production_mode,
+    		Map<String,String> keyValueMap,Map<String,String> extraFieldMap) throws Exception {
+    	AndroidListCast listcast = new AndroidListCast();
+        listcast.setAppMasterSecret(this.appMasterSecret);
+        listcast.setPredefinedKeyValue("appkey", this.appkey);
+        listcast.setPredefinedKeyValue("timestamp", this.timestamp);
+        listcast.setPredefinedKeyValue("device_tokens", tokens);
+        listcast.setPredefinedKeyValue("ticker", ticker);
+        listcast.setPredefinedKeyValue("title", title);
+        listcast.setPredefinedKeyValue("text", text);
+        listcast.setPredefinedKeyValue("after_open", after_open);
+        listcast.setPredefinedKeyValue("display_type", display_type);
+        listcast.setPredefinedKeyValue("production_mode", production_mode);
+        if(keyValueMap!=null){
+        	for(String k : keyValueMap.keySet()){
+        		listcast.setPredefinedKeyValue(k, keyValueMap.get(k));
+        	}
+        }
+        if(extraFieldMap!=null){
+        	for(String key : extraFieldMap.keySet()){
+        		listcast.setExtraField(key, extraFieldMap.get(key));
+        	}
+        }
+        return listcast.send();
     }
 
     /**
@@ -135,7 +177,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendAndroidGroupcast(JSONArray tagArray,String ticker,String title,String text,
+    public boolean sendAndroidGroupcast(JSONArray tagArray,String ticker,String title,String text,
     		String after_open,String display_type,String production_mode,
     		Map<String,String> keyValueMap,Map<String,String> extraFieldMap) throws Exception {
         AndroidGroupcast groupcast = new AndroidGroupcast();
@@ -171,7 +213,7 @@ public class PushUtil {
         		groupcast.setExtraField(key, extraFieldMap.get(key));
         	}
         }
-        groupcast.send();
+        return groupcast.send();
     }
 
     /**
@@ -193,7 +235,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendAndroidCustomizedcast(String alias, String alias_type, String ticker, String title,
+    public boolean sendAndroidCustomizedcast(String alias, String alias_type, String ticker, String title,
     		String text, String after_open, String display_type,String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         AndroidCustomizedcast customizedcast = new AndroidCustomizedcast();
@@ -218,7 +260,7 @@ public class PushUtil {
         		customizedcast.setExtraField(key, extraFieldMap.get(key));
         	}
         }
-        customizedcast.send();
+        return customizedcast.send();
     }
 
     /**
@@ -234,8 +276,8 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendAndroidFilecast(Collection<String> tokens, String ticker, String title,
-    		String text, String after_open, String display_type,
+    public boolean sendAndroidFilecast(Collection<String> tokens, String ticker, String title,
+    		String text, String after_open, String display_type,String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         AndroidFilecast filecast = new AndroidFilecast();
         filecast.setAppMasterSecret(this.appMasterSecret);
@@ -253,6 +295,7 @@ public class PushUtil {
         filecast.setPredefinedKeyValue("text", text);
         filecast.setPredefinedKeyValue("after_open", after_open);
         filecast.setPredefinedKeyValue("display_type", display_type);
+        filecast.setPredefinedKeyValue("production_mode",production_mode);
         if(keyValueMap!=null){
         	for(String k : keyValueMap.keySet()){
         		filecast.setPredefinedKeyValue(k, keyValueMap.get(k));
@@ -263,7 +306,7 @@ public class PushUtil {
         		filecast.setExtraField(key, extraFieldMap.get(key));
         	}
         }
-        filecast.send();
+        return filecast.send();
     }
 
     /**
@@ -274,7 +317,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendIOSBroadcast(String alert, String production_mode,
+    public boolean sendIOSBroadcast(String alert, String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         IOSBroadcast broadcast = new IOSBroadcast();
         broadcast.setAppMasterSecret(this.appMasterSecret);
@@ -295,7 +338,7 @@ public class PushUtil {
         	}
         }
 //        broadcast.setCustomizedField("test", "helloworld");
-        broadcast.send();
+        return broadcast.send();
     }
 
     /**
@@ -307,7 +350,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendIOSUnicast(String device_tokens, String alert, String production_mode,
+    public boolean sendIOSUnicast(String device_tokens, String alert, String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         IOSUnicast unicast = new IOSUnicast();
         unicast.setAppMasterSecret(this.appMasterSecret);
@@ -328,8 +371,40 @@ public class PushUtil {
         		unicast.setCustomizedField(key, extraFieldMap.get(key));
         	}
         }
-//        unicast.setCustomizedField("test", "helloworld");
-        unicast.send();
+        return unicast.send();
+    }
+    
+    /**
+     * IOS设备列播推送
+     * @param device_tokens     设备唯一标识(多个token用逗号隔开)
+     * @param alert             内容
+     * @param production_mode   正式/测试模式。测试模式下，只会将消息发给测试设备。
+     * @param keyValueMap       可选字段的键值对
+     * @param extraFieldMap     自定义字段的键值对
+     * @throws Exception
+     */
+    public boolean sendIOSListcast(String device_tokens, String alert, String production_mode,
+    		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
+        IOSListcast listcast = new IOSListcast();
+        listcast.setAppMasterSecret(this.appMasterSecret);
+        listcast.setPredefinedKeyValue("appkey", this.appkey);
+        listcast.setPredefinedKeyValue("timestamp", this.timestamp);
+        listcast.setPredefinedKeyValue("device_tokens", device_tokens);
+        listcast.setPredefinedKeyValue("alert", alert);
+        listcast.setPredefinedKeyValue("badge", Integer.valueOf(0));
+        listcast.setPredefinedKeyValue("sound", "chime");
+        listcast.setPredefinedKeyValue("production_mode", production_mode);
+        if(keyValueMap!=null){
+        	for(String k : keyValueMap.keySet()){
+        		listcast.setPredefinedKeyValue(k, keyValueMap.get(k));
+        	}
+        }
+        if(extraFieldMap!=null){
+        	for(String key : extraFieldMap.keySet()){
+        		listcast.setCustomizedField(key, extraFieldMap.get(key));
+        	}
+        }
+        return listcast.send();
     }
 
     /**
@@ -341,7 +416,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendIOSGroupcast(JSONArray tagArray, String alert, String production_mode,
+    public boolean sendIOSGroupcast(JSONArray tagArray, String alert, String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         IOSGroupcast groupcast = new IOSGroupcast();
         groupcast.setAppMasterSecret(this.appMasterSecret);
@@ -371,7 +446,7 @@ public class PushUtil {
         		groupcast.setCustomizedField(key, extraFieldMap.get(key));
         	}
         }
-        groupcast.send();
+        return groupcast.send();
     }
 
     /**
@@ -388,7 +463,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendIOSCustomizedcast(String alias, String alias_type, String alert, String production_mode,
+    public boolean sendIOSCustomizedcast(String alias, String alias_type, String alert, String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         IOSCustomizedcast customizedcast = new IOSCustomizedcast();
         customizedcast.setAppMasterSecret(this.appMasterSecret);
@@ -410,7 +485,7 @@ public class PushUtil {
         		customizedcast.setCustomizedField(key, extraFieldMap.get(key));
         	}
         }
-        customizedcast.send();
+        return customizedcast.send();
     }
 
     /**
@@ -422,7 +497,7 @@ public class PushUtil {
      * @param extraFieldMap     自定义字段的键值对
      * @throws Exception
      */
-    public void sendIOSFilecast(Collection<String> tokens, String alert, String production_mode,
+    public boolean sendIOSFilecast(Collection<String> tokens, String alert, String production_mode,
     		Map<String,String> keyValueMap, Map<String,String> extraFieldMap) throws Exception {
         IOSFilecast filecast = new IOSFilecast();
         filecast.setAppMasterSecret(this.appMasterSecret);
@@ -435,7 +510,7 @@ public class PushUtil {
         }
         String fileContents = sb.toString();
         filecast.uploadContents(fileContents);
-        filecast.setPredefinedKeyValue("alert", alert);
+        filecast.setPredefinedKeyValue("alert", alert); 
         filecast.setPredefinedKeyValue("badge", Integer.valueOf(0));
         filecast.setPredefinedKeyValue("sound", "chime");
         filecast.setPredefinedKeyValue("production_mode", production_mode);
@@ -449,6 +524,6 @@ public class PushUtil {
         		filecast.setCustomizedField(key, extraFieldMap.get(key));
         	}
         }
-        filecast.send();
+        return filecast.send();
     }
 }

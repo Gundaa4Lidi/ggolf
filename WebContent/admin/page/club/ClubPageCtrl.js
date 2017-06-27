@@ -4,10 +4,21 @@ var ClubPageController = function($scope){
     sc.isHot = false;
     sc.isTop = false;
     sc.isClub = true;
+    sc.keyword = '';
+    sc.rows = 20;
 
     sc.init =function(){
         sc.changeClubPage(1);
     }
+
+    sc.$on('ClubConfig',function (event,data) {
+        if(data.keyword&&data.keyword!=''){
+            sc.keyword = data.keyword;
+        }
+        if(data.rows){
+            sc.rows = data.rows;
+        }
+    })
 
     sc.changeClubPage = function(page){
         if(page == 1){

@@ -1,6 +1,6 @@
 package com.galaxy.ggolf.push.Android;
 
-import push.AndroidNotification;
+import com.galaxy.ggolf.push.AndroidNotification;
 
 /**
  * Created by Administrator on 2017-06-16.

@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
+import com.galaxy.ggolf.dto.PushOption;
+import com.galaxy.ggolf.push.PushManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +25,14 @@ import com.galaxy.ggolf.domain.Message;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.CommentData;
 import com.galaxy.ggolf.dto.Location;
+import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.manager.CommentManager;
 import com.galaxy.ggolf.manager.LocationSessionManager;
 import com.galaxy.ggolf.manager.MessageManager;
 import com.galaxy.ggolf.manager.UserManager;
 import com.galaxy.ggolf.tools.LocationUtil;
 import com.spatial4j.core.shape.Rectangle;
+import org.springframework.util.StringUtils;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -62,7 +66,7 @@ public class MessageService extends BaseService{
 	public String saveMessage(String data,@Context HttpHeaders headers){
 		Message ms = fromGson(data, Message.class);
 		try {
-			if(ms.getType().equals("约球")){
+			if(ms.getType().equals(CommonConfig.MSG_TYPE_INVITED)){
 				if(ms.getLongitude()!=null && ms.getLatitude()!=null && ms.getRadius()!=null){
 					double lon = Double.parseDouble(ms.getLongitude());
 					double lat = Double.parseDouble(ms.getLongitude());
@@ -88,7 +92,7 @@ public class MessageService extends BaseService{
 					return getErrormessage("请输入球场的类别");
 				}
 			}
-			if(ms.getType().equals("系统")){
+			if(ms.getType().equals(CommonConfig.MSG_TYPE_SYS)){
 				if(ms.getReleaseOrNot()!=null && ms.getReleaseOrNot().equalsIgnoreCase("Y")){
 					Collection<User> allUser = this.userManager.getAll();//目前先写成这样,若日后有订阅功能或选择用户发送再修改
 					ms.setUserList(allUser);
@@ -98,7 +102,7 @@ public class MessageService extends BaseService{
 			if(result.equals("")){
 				return getSuccessResponse();
 			}else{
-				return getResponse(result);
+				return getErrorResponse(result);
 			}
 			
 		} catch (Exception e) {
@@ -155,7 +159,6 @@ public class MessageService extends BaseService{
 	/**
 	 * 获取用户的信息列表
 	 * @param UserID
-	 * @param Type
 	 * @param keyword
 	 * @param rows
 	 * @param pageNum
@@ -327,5 +330,39 @@ public class MessageService extends BaseService{
 		}
 		return getErrorResponse();
 	}
-	
+
+	/**
+	 * 推送事件
+	 * @param data
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/PushCast")
+	public String PushCast(String data,@Context HttpHeaders headers){
+		String result = "Error";
+		try {
+			PushOption po = super.fromGson(data,PushOption.class);
+			if(po.getType().equalsIgnoreCase(CommonConfig.Send_Broadcast)){
+				result = PushManager.sendBroadcast(po);
+			}
+			if(po.getType().equalsIgnoreCase(CommonConfig.Send_Unicast)){
+				result = PushManager.sendUnicast(po);
+			}
+			if(po.getType().equalsIgnoreCase(CommonConfig.Send_Filecast)){
+				if(!StringUtils.isEmpty(po.getDevice_tokens())&&po.getDevice_tokens().indexOf(",")!=-1){
+					String[] tokens = po.getDevice_tokens().split(",");
+					result = PushManager.sendFilecast(tokens,po);
+				}
+			}
+			if(CommonConfig.Broadcast_Success.equals(result)||
+					CommonConfig.Unicast_Success.equals(result)||
+					CommonConfig.Filecast_Success.equals(result)){
+				return getResponse(result);
+			}
+		} catch (Exception e) {
+			logger.error("Error",e);
+		}
+		return getErrorResponse(result);
+	}
 }

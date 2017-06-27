@@ -40,10 +40,11 @@ var CoachController = function($scope,appConfig){
             sc.Coachs = data.coachs;
             sc.TotalCoach = data.count;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalCoach);
         }),function(data){
             sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalCoach);
+
     }
 
     sc.checkCoachDetail = function (e) {
@@ -157,6 +158,7 @@ var CoachController = function($scope,appConfig){
             if(sc.Method=='1'){//视频教学
                 sc.currentCourse.ClassHour = "1";
                 sc.currentCourse.IsVideo = '1';
+                sc.currentCourse.IsBatch = '0';
                 if(sc.currentCourse.MaxPeople>4){
                     swal("视频教学的人数上限不能超过4人","","warning");
                     return;

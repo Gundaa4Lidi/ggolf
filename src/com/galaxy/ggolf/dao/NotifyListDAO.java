@@ -17,7 +17,7 @@ public class NotifyListDAO extends GenericDAO<NotifyList> {
 	public boolean create(Collection<User> user,String MsgID){
 		Collection<String> sqls = new ArrayList<String>();
 		for(User u : user){
-			String sql = "insert into notifylist(MsgID,UserID,UserName,HeadPhoto,ReadOrNot)values("+MsgID+","+u.getUserID()+","+u.getName()+","+u.getHead_portrait()+",'0')";
+			String sql = "insert into notifylist(MsgID,UserID,UserName,HeadPhoto,ReadOrNot)values('"+MsgID+"','"+u.getUserID()+"','"+u.getName()+"','"+u.getHead_portrait()+"','0')";
 			sqls.add(sql);
 		}
 		return super.batchInsert(sqls);

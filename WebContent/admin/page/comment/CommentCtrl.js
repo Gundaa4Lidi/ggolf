@@ -47,13 +47,15 @@ var CommentController = function($scope,appConfig){
 		}
         var promise = sc.httpParams(url,method,params);
         promise.then(function(data){
+            console.log(data);
             sc.TotalMessage = data.count;
             sc.CommentList = data.Data;
             sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
         }),(function(data){
             sc.Load_Failed(data);
         })
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalMessage);
+
     }
 	
 	sc.itemClass = [

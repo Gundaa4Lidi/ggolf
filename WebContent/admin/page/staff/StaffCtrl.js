@@ -38,10 +38,11 @@ var StaffController = function($http, $scope, appConfig, $window, $timeout,Uploa
 			sc.Staffs = data.data;
 			sc.TotalStaff = data.count;
 			sc.Rows = sc.rows;
+            sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalStaff);
         }),function (data) {
 			sc.Load_Failed(data);
         }
-        sc.loadMore = sc.LoadMore(sc.Rows,sc.TotalStaff);
+
     }
 
     sc.getClubList = function(){

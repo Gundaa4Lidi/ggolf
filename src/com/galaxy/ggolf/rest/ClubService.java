@@ -136,6 +136,21 @@ public class ClubService extends BaseService {
 	}
 	
 	/**
+	 * 根据球场ID获取球场
+	 * @param ClubID
+	 * @param headers
+	 * @return
+	 * @throws Exception
+	 */
+	@GET
+	@Path("/getByClubID")
+	public String getByClubID(@FormParam("ClubID") String ClubID,
+			@Context HttpHeaders headers)throws Exception{
+		Club club = this.manager.getClub(ClubID);
+		return getResponse(club);
+	}
+	
+	/**
 	 * 根据关键字搜索球场或练习场
 	 * @param keyword
 	 * @param rows

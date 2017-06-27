@@ -24,9 +24,11 @@ import com.galaxy.ggolf.dao.ClubOrderDAO;
 import com.galaxy.ggolf.domain.ClubOrder;
 import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Umeng;
+import com.galaxy.ggolf.dto.PushOption;
 import com.galaxy.ggolf.jdbc.CommonConfig;
+import com.galaxy.ggolf.push.PushManager;
+import com.galaxy.ggolf.push.PushUtil;
 import com.galaxy.ggolf.tools.PingPPUtil;
-import com.galaxy.ggolf.tools.PushUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -45,6 +47,16 @@ import jdk.nashorn.internal.parser.JSONParser;
 public class PingPPService extends BaseService {
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
+	private static final String OrderType = "orderType";
+	private static final String OrderType_Club = "club";
+	private static final String OrderType_CoachCourse = "coachCourse";
+	private static final String Refund_Status_Pending = "pending";
+	private static final String Refund_Status_Success = "succeeded";
+	private static final String Refund_Status_Failed = "failed";
+	private static final String Refund_pending = "退款处理中";
+	private static final String Refund_success = "退款成功";
+	private static final String Refund_field = "退款失败";
 
 	private final ClubOrderDAO clubOrderDAO;
 
@@ -76,7 +88,7 @@ public class PingPPService extends BaseService {
 			ClubOrder clubOrder = this.clubOrderDAO.getOrderByOrderID(orderID);
 			Charge charge = null;
 			Map<String,Object> metadata = new HashMap<String,Object>();
-			metadata.put("orderType", "club");
+			metadata.put(OrderType, OrderType_Club);
 			String ip = "127.0.0.1";
 			if(clubOrder!=null){
 				//开始创建ping++订单
@@ -121,7 +133,7 @@ public class PingPPService extends BaseService {
 			CourseOrder co = this.courseOrderDAO.getOrderByOrderID(orderID);
 			Charge charge = null;
 			Map<String,Object> metadata = new HashMap<String,Object>();
-			metadata.put("orderType", "coachCourse");
+			metadata.put(OrderType, OrderType_CoachCourse);
 			String time = this.courseOrderDAO.Time();
 			String activity = "";
 			String ip = getIp(request);
@@ -210,9 +222,12 @@ public class PingPPService extends BaseService {
 			@FormParam("ChargeID") String ChargeID,
 			@FormParam("amount") String amount,
 			@FormParam("description") String description,
+			@FormParam("orderType") String orderType,
 			@Context HttpHeaders headers){
 		try {
-			Refund refund = PingPPUtil.refund(ChargeID, Integer.parseInt(amount), description, null);
+			Map<String,Object> metadata = new HashMap<String,Object>();
+			metadata.put(OrderType, orderType);
+			Refund refund = PingPPUtil.refund(ChargeID, Integer.parseInt(amount), description, metadata);
 			return getResponse(refund);
 		} catch (Exception e){
 			e.printStackTrace();
@@ -290,16 +305,25 @@ public class PingPPService extends BaseService {
 				if(event instanceof Charge){//支付
 					Charge ch = (Charge) event;
 					Map<String, Object> mMap = ch.getMetadata();
-					if(mMap.containsKey("orderType")){//是否有订单类型
-						String mVal = (String) mMap.get("orderType");
-						if(mVal.equals("club")){//球场订单
+					if(mMap.containsKey(OrderType)){//是否有订单类型
+						String mVal = (String) mMap.get(OrderType);
+						if(mVal.equalsIgnoreCase(OrderType_Club)){//球场订单
 							ClubOrderStatus(ch);
-						}else if(mVal.equals("coachCourse")){//教练课程订单
+						}else if(mVal.equalsIgnoreCase(OrderType_CoachCourse)){//教练课程订单
 							CourseOrderFinish(ch);
 						}
 					}
 				}else if(event instanceof Refund){//退款
 					Refund refund = (Refund) event;
+					Map<String, Object> reMap = refund.getMetadata();
+					if(reMap.containsKey(OrderType)){
+						String reVal = (String) reMap.get(OrderType);
+						if(reVal.equalsIgnoreCase(OrderType_Club)){
+							ClubOrderRefund(refund);//球场订单退款状态修改
+						}else if(reVal.equalsIgnoreCase(OrderType_CoachCourse)){
+							CourseOrderRefund(refund);//课程订单退款状态修改
+						}
+					}
 				}
 				
 			}
@@ -312,25 +336,14 @@ public class PingPPService extends BaseService {
 	//球场订单完成
 	private void ClubOrderStatus(Charge charge){
 		try {
-			logger.info("订单编号:{},支付渠道:{},ping++ID:{}",charge.getOrderNo(),charge.getChannel(),charge.getId());
+//			logger.info("订单编号:{},支付渠道:{},ping++ID:{}",charge.getOrderNo(),charge.getChannel(),charge.getId());
 			if(!this.clubOrderDAO.finishBooking(charge.getOrderNo(),charge.getChannel(),charge.getId())){
 					throw new GalaxyLabException("Error in finish booking");
 			}else{
 				ClubOrder co = this.clubOrderDAO.getOrderByOrderID(charge.getOrderNo());
 				Umeng umeng = this.umengDAO.getByUserID(co.getUserID());
-				PushUtil push = new PushUtil(CommonConfig.Umeng_AppKey,CommonConfig.Umeng_AppMaster_Secret);
-				String token = umeng.getUmeng_Token();
-				int long_token = token.length();
-				String ticker = "完成订单";
-				String title = "完成订单";
-				String text = "订单已生成,点击查看订单详情.";
-				String after_open = "go_app";
-				String display_type = "notification";
-				String production_mode = "false";
-				if(long_token == CommonConfig.Umeng_Android_Byte){
-					push.sendAndroidUnicast(token, ticker, title, text, after_open, display_type, production_mode, null, null);
-				}else if(long_token == CommonConfig.Umeng_IOS_Byte){
-					push.sendIOSUnicast(token, text, production_mode, null, null);
+				if(umeng!=null){
+					PushManager.sendFinish_booking(umeng.getUmeng_Token());
 				}
 			}
 			
@@ -349,10 +362,128 @@ public class PingPPService extends BaseService {
 				activity = time + ",购买完成|";
 			}
 			if(this.courseOrderDAO.updateOrderState(co.getCourseOrderID(), activity, "3", "2", ch.getChannel())){
-				throw new GalaxyLabException("Error in update Order state 3");
+//				throw new GalaxyLabException("Error in update Order state 3");
+				PushOption po = new PushOption();
+				PushOption po1 = new PushOption();
+				String ticker = "课程订单";
+				String title = ticker;
+				String text = "你的课程订单已生成,编号为:"+co.getCourseOrderID();
+				String text1 = "有一位学员订购你的"+co.getCourseTitle()+"课程,订单号为:"+co.getCourseOrderID()+",点击查看.";
+				String type = CommonConfig.Send_Unicast;
+				String after_open = PushManager.GoApp;
+				String display_type = PushManager.Display_Type_Notify;
+				Umeng um = this.umengDAO.getByUserID(co.getUserID());//学员
+				Umeng um1 = this.umengDAO.getByUserID(co.getCoachID());//教练
+				po.setDevice_tokens(um.getUmeng_Token());
+				po.setTicker(ticker);
+				po.setTitle(title);
+				po.setText(text);
+				po.setAfter_open(after_open);
+				po.setDisplay_type(display_type);
+				po.setType(type);
+				PushManager.sendUnicast(po);
+				po1.setDevice_tokens(um1.getUmeng_Token());
+				po1.setTicker(ticker);
+				po1.setTitle(title);
+				po1.setText(text1);
+				po1.setAfter_open(after_open);
+				po1.setDisplay_type(display_type);
+				po1.setType(type);
+				PushManager.sendUnicast(po1);
+				
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
+	//球场订单退款状态修改
+	private void ClubOrderRefund(Refund re) throws Exception{
+		String result = "";
+		if(re.getStatus().equalsIgnoreCase(Refund_Status_Pending)){
+			result = Refund_pending;
+		}else if(re.getStatus().equalsIgnoreCase(Refund_Status_Success)){
+			result = Refund_success;
+		}else if(re.getStatus().equalsIgnoreCase(Refund_Status_Failed)){
+			result = Refund_field;
+		}
+		if(!result.equals("")){
+			if(!this.clubOrderDAO.refundResult(result, re.getChargeOrderNo())){
+				throw new GalaxyLabException("Error in update refund");
+			}else if(!result.equals(Refund_pending)){
+				ClubOrder co = this.clubOrderDAO.getOrderByOrderID(re.getChargeOrderNo());
+				Umeng um = this.umengDAO.getByUserID(co.getUserID());
+				String ticker = "退款结果";
+				String title = ticker;
+				String text = "你的球场订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
+				String type = CommonConfig.Send_Unicast;
+				String after_open = PushManager.GoApp;
+				String display_type = PushManager.Display_Type_Notify;
+				PushOption po = new PushOption();
+				po.setDevice_tokens(um.getUmeng_Token());
+				po.setTicker(ticker);
+				po.setTitle(title);
+				po.setText(text);
+				po.setAfter_open(after_open);
+				po.setDisplay_type(display_type);
+				po.setType(type);
+				PushManager.sendUnicast(po);
+			}
+		}
+		
+	}
+	
+	//课程订单退款状态修改
+	private void CourseOrderRefund(Refund re) throws Exception{
+		String result = "";
+		if(re.getStatus().equalsIgnoreCase(Refund_Status_Pending)){
+			result = Refund_pending;
+		}else if(re.getStatus().equalsIgnoreCase(Refund_Status_Success)){
+			result = Refund_success;
+		}else if(re.getStatus().equalsIgnoreCase(Refund_Status_Failed)){
+			result = Refund_field;
+		}
+		if(!result.equals("")){
+			CourseOrder co = this.courseOrderDAO.getOrderByOrderID(re.getChargeOrderNo());
+			if(!this.courseOrderDAO.refundResult(result, re.getChargeOrderNo())){
+				throw new GalaxyLabException("Error in update refund");
+			}else if(!result.equals(Refund_pending)){
+				Umeng um = this.umengDAO.getByUserID(co.getUserID());
+				String ticker = "退款结果";
+				String title = ticker;
+				String text = "你的课程订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
+				String type = CommonConfig.Send_Unicast;
+				String after_open = PushManager.GoApp;
+				String display_type = PushManager.Display_Type_Notify;
+				PushOption po = new PushOption();
+				po.setDevice_tokens(um.getUmeng_Token());
+				po.setTicker(ticker);
+				po.setTitle(title);
+				po.setText(text);
+				po.setAfter_open(after_open);
+				po.setDisplay_type(display_type);
+				po.setType(type);
+				PushManager.sendUnicast(po);
+			}
+			if(result.equals(Refund_success)){
+				Umeng umeng = this.umengDAO.getByUserID(co.getCoachID());
+				String ticker = "退订课程";
+				String title = ticker;
+				String text = "你有一位学员退订你的课程,点击查看.";
+				String type = CommonConfig.Send_Unicast;
+				String after_open = PushManager.GoApp;
+				String display_type = PushManager.Display_Type_Notify;
+				PushOption po = new PushOption();
+				po.setDevice_tokens(umeng.getUmeng_Token());
+				po.setTicker(ticker);
+				po.setTitle(title);
+				po.setText(text);
+				po.setAfter_open(after_open);
+				po.setDisplay_type(display_type);
+				po.setType(type);
+				PushManager.sendUnicast(po);
+			}
+		}
+		
+	}
+	
 }

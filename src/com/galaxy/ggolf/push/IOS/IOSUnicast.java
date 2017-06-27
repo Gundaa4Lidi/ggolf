@@ -1,6 +1,6 @@
 package com.galaxy.ggolf.push.IOS;
 
-import push.IOSNotification;
+import com.galaxy.ggolf.push.IOSNotification;
 
 /**
  * Created by Administrator on 2017-06-16.
