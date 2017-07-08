@@ -1,0 +1,18 @@
+var WalletRecord = {
+    "RecordID":"",
+    "RecordSn":"",
+    "FromUID":"",
+    "ToUID":"",
+    "Type":"",
+    "Money":"",
+    "PayType":"",
+    "Remark":"",
+    "PayStatus":"",
+    "PayTime":"",
+    "FetchStatus":"",
+    "FetchTime":"",
+    "CheckStatus":"",
+    "CheckTime":"",
+    "Created_TS":"",
+    "Updated_TS":"",
+}

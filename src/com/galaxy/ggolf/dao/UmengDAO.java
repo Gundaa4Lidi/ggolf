@@ -33,7 +33,7 @@ public class UmengDAO extends GenericDAO<Umeng>{
 	}
 	
 	public Collection<Umeng> getAll(){
-		String sql = "select * from umeng";
+		String sql = "select * from umeng group by Umeng_Token";
 		return super.executeQuery(sql);
 	}
 	

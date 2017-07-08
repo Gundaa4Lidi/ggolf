@@ -106,7 +106,6 @@ var ArticleDataController = function($scope,appConfig,Upload){
         }
     }
 
-
     sc.back = function () {
         ArticlePageCtrl.changeArticlePage(1);
     }
@@ -167,7 +166,6 @@ var ArticleDataController = function($scope,appConfig,Upload){
         }
 
     }
-
 
     sc.deleteImage = function(e){
         var url = appConfig.url + "file/deleteImage";

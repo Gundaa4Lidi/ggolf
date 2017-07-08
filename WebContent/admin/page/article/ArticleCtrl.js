@@ -70,14 +70,12 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         sc.$emit('ArtConfig',sc.ArtConfig);
     }
 
-
     sc.loading = function(){
         if(sc.loadMore) {
             sc.rows += 30;
             sc.getSearch();
         }
     }
-
 
 	sc.selectSub = function(sub){
 		if(sub=='0'){
@@ -87,21 +85,23 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 		}
 		sc.SubOrNot = sub;
 	}
+
 	sc.selectKey = function(key){
 		sc.currentType.TypeKey = key;
 	}
 
-	
 	sc.load = function() {
         sc.getArticleTree();
         sc.getSearch();
 	
 	}
+
     sc.addCategory = function(e){
         sc.currentCategory = new Object();
         sc.saveCategory(e);
         sc.Category = null;
     }
+
     sc.addType = function(){
         sc.currentType = new Object();
         var key = sc.selects[0].type;
@@ -127,8 +127,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         }
     }
 
-
-
     sc.editArticle = function(e){
         sc.currentArticle = angular.copy(e);
         sc.setVideo(e.Video);
@@ -138,6 +136,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         sc.currentCategory = angular.copy(e);
         sc.status.indexC = index;
     }
+
     sc.check2 = function(e,indexC,indexT){
         sc.currentType = new Object();
         sc.currentSubject = new Object();
@@ -153,7 +152,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         sc.getSearch();
         // sc.getArticleByTypeID();
     }
-
 
     sc.check3 = function(e){
         sc.currentArticle = angular.copy(e);
@@ -214,7 +212,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         }
     }
 
-
     // sc.pageOptions = {
     //     currentPage : 1,
     //     itemsPerPage : 5,
@@ -222,7 +219,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
     //         sc.getSearch()
     //     }
     // }
-
 
     sc.getSearch = function () {
         sc.changeArtConfig();
@@ -258,7 +254,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         }
 
     }
-
 
 	sc.getArticleByTypeID = function(){
 		var at = sc.currentType
@@ -307,8 +302,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         }
 	}
 
-
-	
 	sc.getArticleTree = function(){
         var url = appConfig.url + 'Article/getTree';
         var method = 'GET';
@@ -664,8 +657,6 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
 	 //        reader.readAsDataURL(file);
     // };
     // angular.element(document.querySelector('#fileInput')).on('change', handleFileSelect);
-
-
 
     sc.videoTemplate =
         '<div>' +

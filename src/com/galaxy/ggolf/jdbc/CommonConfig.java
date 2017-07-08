@@ -19,7 +19,8 @@ public interface CommonConfig {
 	public static final long SESSION_EXPIRY = 1800000;
 	
 	public static final long SESSION_LOCATION_EXPIRY = 3600000 * 24;
-	
+
+	public static final long MIN = 3;
 	
 	
 	public static final String DateFormat = "yyyy年MM月dd日   HH:mm:ss";

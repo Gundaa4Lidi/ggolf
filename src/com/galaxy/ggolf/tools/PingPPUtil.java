@@ -17,10 +17,7 @@ import java.util.Map;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.pingplusplus.Pingpp;
 import com.pingplusplus.exception.*;
-import com.pingplusplus.model.Charge;
-import com.pingplusplus.model.ChargeCollection;
-import com.pingplusplus.model.ChargeRefundCollection;
-import com.pingplusplus.model.Refund;
+import com.pingplusplus.model.*;
 
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
@@ -101,6 +98,38 @@ public class PingPPUtil {
 			e.printStackTrace();
 		}
 		return charge;
+	}
+
+	public static Transfer createTransfer(String orderID,
+										  String channel,
+										  String price,
+										  String recipient,
+										  String description,
+										  Map<String,Object> initialMetadata) {
+		Transfer transfer = null;
+		Pingpp.apiKey = apiKey;
+		Pingpp.privateKeyPath = privateKeyFilePath;
+		double amount = Double.parseDouble(price) * 100;
+		Map<String, Object> transferParams = new HashMap<String, Object>();
+		transferParams.put("order_no", orderID);
+		transferParams.put("type",  "b2c");
+		transferParams.put("amount", amount);
+		transferParams.put("channel", channel);
+		transferParams.put("currency", "cny");
+		transferParams.put("recipient",recipient);
+		transferParams.put("description", description);
+		Map<String, String> app = new HashMap<String, String>();
+		app.put("id", appId);
+		transferParams.put("app", app);
+		if(initialMetadata!=null){
+			transferParams.put("metadata", initialMetadata);
+		}
+		try {
+			transfer = Transfer.create(transferParams);
+		} catch (PingppException e) {
+			e.printStackTrace();
+		}
+		return transfer;
 	}
 
 
@@ -280,11 +309,11 @@ public class PingPPUtil {
 		}
 		return refundList;
 	}
-	
+
 	/**
 	 * 验证 webhooks 签名
-	 * @param eventPath
-	 * @param signPath
+	 * @param eventData
+	 * @param Signature
 	 * @return
 	 */
 	public static boolean verifyWebhooks(String eventData,String Signature){

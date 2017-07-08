@@ -19,6 +19,10 @@ var CourseApplyController = function ($scope,appConfig) {
     sc.loadMore = false;
     sc.TotalMessage = 0;
 
+    sc.$on('loadCourseApply',function () {
+        sc.load();
+    })
+
     /**
      * 默认加载
      */

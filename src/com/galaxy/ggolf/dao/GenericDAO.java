@@ -206,6 +206,12 @@ public abstract class GenericDAO<T> {
 		return dt;
 	}
 	
+	public String Time2(){
+		Date now = new Date();
+		String dt = new String(new SimpleDateFormat("yyyyMMddHHmmss").format(now));
+		return dt;
+	}
+	
 	public String GetWeek(String dt){
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

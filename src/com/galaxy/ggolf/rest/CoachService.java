@@ -481,34 +481,35 @@ public class CoachService extends BaseService {
 			if(!this.coachCourseDAO.CourseVerify(CourseID, Verify)){
 				throw new GalaxyLabException("Error in verify Course");
 			}
-			
 			//审核结果进行推送
 			CoachCourse coachCourse = this.coachCourseDAO.getByCourseID(CourseID);
 			if(coachCourse!=null){
-				PushOption po = new PushOption();
-				String ticker = "教练申请开通课程";
-				String title = ticker;
-				String text = "课程审核已通过,点击查看详情";
-				String text1 = "课程审核已拒绝,若有疑问,请联系客服.";
-				String type = CommonConfig.Send_Unicast;
-				String after_open = PushManager.GoApp;
-				String display_type = PushManager.Display_Type_Notify;
 				Umeng um = this.umengDAO.getByUserID(CourseID);
-				po.setDevice_tokens(um.getUmeng_Token());
-				po.setTicker(ticker);
-				po.setTitle(title);
-				po.setAfter_open(after_open);
-				po.setDisplay_type(display_type);
-				po.setType(type);
-				if(coachCourse.getVerify().equals("1")){
-					if(coachCourse.getIsVideo().equals("1")){
-						text = "直播教学课程审核已通过,点击开通直播间";
+				if(um!=null){
+					PushOption po = new PushOption();
+					String ticker = "教练申请开通课程";
+					String title = ticker;
+					String text = "课程审核已通过,点击查看详情";
+					String text1 = "课程审核已拒绝,若有疑问,请联系客服.";
+					String type = CommonConfig.Send_Unicast;
+					String after_open = PushManager.GoApp;
+					String display_type = PushManager.Display_Type_Notify;
+					po.setDevice_tokens(um.getUmeng_Token());
+					po.setTicker(ticker);
+					po.setTitle(title);
+					po.setAfter_open(after_open);
+					po.setDisplay_type(display_type);
+					po.setType(type);
+					if(coachCourse.getVerify().equals("1")){
+						if(coachCourse.getIsVideo().equals("1")){
+							text = "直播教学课程审核已通过,点击开通直播间";
+						}
+						po.setText(text);
+					}else if(coachCourse.getVerify().equals("2")){
+						po.setText(text1);
 					}
-					po.setText(text);
-				}else if(coachCourse.getVerify().equals("2")){
-					po.setText(text1);
+					PushManager.sendUnicast(po);
 				}
-				PushManager.sendUnicast(po);
 				return getSuccessResponse();
 			}
 		} catch (Exception ex) {
@@ -787,7 +788,9 @@ public class CoachService extends BaseService {
 						if(corder.size()>0){
 							for(CourseOrder co : corder){
 								Umeng um = this.umengDAO.getByUserID(co.getUserID());
-								tokens += um.getUmeng_Token()+",";
+								if(um!=null){
+									tokens += um.getUmeng_Token()+",";
+								}
 								User user = this.userDAO.getUserByUserID(co.getUserID());
 								userList.add(user);
 							}
@@ -821,7 +824,7 @@ public class CoachService extends BaseService {
 								po.setDisplay_type(display_type);
 								po.setType(type);
 								PushManager.sendListcast(po);
-								return getResponse("密码修改成功,并通知该时段学员");
+								return getResponse("密码修改成功,并通知该时段的学员");
 							}
 						}
 						

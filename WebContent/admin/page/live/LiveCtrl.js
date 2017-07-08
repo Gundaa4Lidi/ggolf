@@ -54,7 +54,7 @@ var LiveController = function ($scope,appConfig,$timeout) {
 
     sc.eventPageConfig = {
         currentPage: 1,
-        itemsPerPage : 5,
+        itemsPerPage: 5,
         onChange:function () {
             sc.pageNum = (sc.eventPageConfig.currentPage - 1) * sc.eventPageConfig.itemsPerPage;
             sc.row = sc.eventPageConfig.itemsPerPage;

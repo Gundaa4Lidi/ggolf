@@ -22,6 +22,7 @@ public class Coach {
 	private String TeachLocation;
 	private String TeachCollege;
 	private String TeachAddress;
+	private String IsRead;
 	private String Created_TS;
 	private String Updated_TS;
 	private CoachScore coachScore;
@@ -30,7 +31,7 @@ public class Coach {
 	
 	public Coach(String uID, String userName, String coachID, String coachName, String coachHead, String coachPhone,
 			String birthday, String sex, String clubID,String clubName, String seniority, String intro, String aCHV,
-			String teachACHV, String verify,String teachLocation, String teachCollege, String teachAddress,
+			String teachACHV, String verify,String teachLocation, String teachCollege, String teachAddress, String isRead,
 			String created_TS, String updated_TS) {
 		UID = uID;
 		UserName = userName;
@@ -50,6 +51,7 @@ public class Coach {
 		TeachLocation = teachLocation;
 		TeachCollege = teachCollege;
 		TeachAddress = teachAddress;
+		IsRead = isRead;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 	}
@@ -172,6 +174,12 @@ public class Coach {
 	}
 	public void setTeachAddress(String teachAddress) {
 		TeachAddress = teachAddress;
+	}
+	public String getIsRead() {
+		return IsRead;
+	}
+	public void setIsRead(String isRead) {
+		IsRead = isRead;
 	}
 	public String getCreated_TS() {
 		return Created_TS;

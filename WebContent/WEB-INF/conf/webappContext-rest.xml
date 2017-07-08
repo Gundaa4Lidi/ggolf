@@ -59,7 +59,9 @@
 			<ref bean="commentService"/>
 			<ref bean="collectService"/>
 			<ref bean="pingPPService"/>
-			<ref bean="umengService"></ref>
+			<ref bean="umengService"/>
+			<ref bean="notifyService"/>
+			<ref bean="walletService"/>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>
 			<ref bean='jsonProvider' />

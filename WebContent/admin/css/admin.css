@@ -985,11 +985,18 @@ th,td{
     position: absolute;
     left: 22px;
     top: -4px;
-    border-radius: 50%;
-    padding: 2px 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    padding: 2px 4px;
+    text-align: center;
     display: inline-block;
     font-size: 11px;
     color: #fff;
+}
+.bg-primary{
+	color: #fff;
+    background-color: #2196F3;
 }
 .position_circle{
     color: #EF5350;
@@ -1052,3 +1059,4 @@ th,td{
 .activity-log__attrs > span.activity-log__like > a:hover {
     color: #d32526;
 }
+

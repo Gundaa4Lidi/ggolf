@@ -247,5 +247,37 @@ public class CourseOrderDAO extends GenericDAO<CourseOrder> {
 				+"', Updated_TS='"+Time()+"' where Refund='"+Refund_apply+"' and OrderID='"+OrderID+"'";
 		return super.executeUpdate(sql);
 	}
+	
+	/**
+	 * 获取退款订单
+	 * @param rows
+	 * @param pageNum
+	 * @return
+	 */
+	public Collection<CourseOrder> getRefundOrder(String rows,String pageNum){
+		String limit = super.limit(pageNum, rows);
+		String sql = "select * from courseOrder where DeletedFlag is null and Refund='"+Refund_apply+"'"
+				+ " order by Created_TS desc "+limit+"";
+		return super.executeQuery(sql);
+	}
+	
+	/**
+	 * 新增退款订单的数量
+	 * @return
+	 */
+	public int getRefundOrderCount(){
+		String sql = "select count(*) from courseOrder where DeletedFlag is null and Refund='"+Refund_apply+"'";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 新增退款订单未查阅的数量
+	 * @return
+	 */
+	
+	public int getRefundOrderRealCount(){
+		String sql = "select count(*) from courseOrder where DeletedFlag is null and Refund='"+Refund_apply+"' and IsRead='0'";
+		return super.count(sql);
+	}
 
 }

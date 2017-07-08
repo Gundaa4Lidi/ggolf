@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.cloopen.rest.sdk.utils.encoder.BASE64Decoder;
 import com.galaxy.ggolf.dao.CollectDAO;
 import com.galaxy.ggolf.dao.LikeDAO;
+import com.galaxy.ggolf.dao.WalletDAO;
 import com.galaxy.ggolf.domain.Collect;
 import com.galaxy.ggolf.domain.Follow;
 import com.galaxy.ggolf.domain.GalaxyLabException;
@@ -35,6 +36,7 @@ import com.galaxy.ggolf.domain.Likes;
 import com.galaxy.ggolf.domain.PhoneCode;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.domain.UserDetail;
+import com.galaxy.ggolf.domain.Wallet;
 import com.galaxy.ggolf.dto.FollowCount;
 import com.galaxy.ggolf.dto.LikeData;
 import com.galaxy.ggolf.dto.TokenResponse;
@@ -76,11 +78,14 @@ public class UserService extends BaseService {
 	
 	private final CollectDAO collectDAO;
 	
+	private final WalletDAO walletDAO;
+	
 	
 	
 	public UserService(UserManager manager,UserDetailManager userDetailManager, SessionManager sessionManager, 
 			PhoneCodeManager phonecode,FollowManager followManager,
-			OnlineManager onlineManager,LikeDAO likeDAO,CollectDAO collectDAO) {
+			OnlineManager onlineManager,LikeDAO likeDAO,CollectDAO collectDAO,
+			WalletDAO walletDAO) {
 		super.setSessionManager(sessionManager);
 		this.manager = manager;
 		this.userDetailManager = userDetailManager;
@@ -89,6 +94,7 @@ public class UserService extends BaseService {
 		this.onlineManager = onlineManager;
 		this.likeDAO = likeDAO;
 		this.collectDAO = collectDAO;
+		this.walletDAO = walletDAO;
 	}
 
 	long min = 3;
@@ -449,6 +455,9 @@ public class UserService extends BaseService {
 					this.manager.createUser(phone, password, name);
 					User user = this.manager.getUserByPhone(phone);
 					if(user!=null){
+						Wallet w = new Wallet();
+						w.setUserID(user.getUserID());
+						this.walletDAO.create(w);
 						UserDetail userDetail = new UserDetail(user.getUserID(), user.getPhone(), user.getHead_portrait(), user.getName(), "男");
 						this.userDetailManager.createUserDetail(userDetail);
 					}
@@ -532,8 +541,6 @@ public class UserService extends BaseService {
 	}
 	/**
 	 * 保存用户头像
-	 * @param head
-	 * @param phone
 	 * @return
 	 */
 	@POST

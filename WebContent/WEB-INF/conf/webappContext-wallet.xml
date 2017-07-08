@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+			
+	<bean id="walletService" class="com.galaxy.ggolf.rest.WalletService">
+		<constructor-arg ref="userDAO" />
+		<constructor-arg ref="walletDAO"/>
+		<constructor-arg ref="walletLogDAO"/>
+		<constructor-arg ref="walletRecordDAO"/>
+		<constructor-arg ref="phoneCodeManager"/>
+	</bean>
+	<bean id="phoneCodeManager" class="com.galaxy.ggolf.manager.PhoneCodeManager">
+		<constructor-arg ref="phoneCodeDAO"/>
+	</bean>
+	<bean id="phoneCodeDAO" class="com.galaxy.ggolf.dao.PhoneCodeDAO">
+	</bean>
+	<bean id="userDAO" class="com.galaxy.ggolf.dao.UserDAO">
+	</bean>
+	<bean id="walletDAO" class="com.galaxy.ggolf.dao.WalletDAO">
+	</bean>
+	<bean id="walletLogDAO" class="com.galaxy.ggolf.dao.WalletLogDAO">
+	</bean>
+	<bean id="walletRecordDAO" class="com.galaxy.ggolf.dao.WalletRecordDAO">
+	</bean>
+</beans>

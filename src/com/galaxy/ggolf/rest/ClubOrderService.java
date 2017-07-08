@@ -31,7 +31,7 @@ import com.galaxy.ggolf.domain.Umeng;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.ClubOrderData;
 import com.galaxy.ggolf.dto.GenericData;
-import com.galaxy.ggolf.dto.NewOrderData;
+import com.galaxy.ggolf.dto.NewNotifyData;
 import com.galaxy.ggolf.push.PushManager;
 
 //@Consumes("multipart/form-data")
@@ -191,18 +191,18 @@ public class ClubOrderService extends BaseService {
 			Collection<ClubOrder> clubOrder = this.orderDAO.getNewOrder(rows, pageNum);
 			int count = this.orderDAO.getNewOrderCount();
 			int realCount = this.orderDAO.getNewOrderRealCount();
-			Collection<NewOrderData> data = new ArrayList<NewOrderData>();
+			Collection<NewNotifyData> data = new ArrayList<NewNotifyData>();
 			if(clubOrder.size()>0){
 				for(ClubOrder co : clubOrder){
 					User user = this.userDAO.getUserByUserID(co.getUserID());
 					if(user!=null){
-						NewOrderData od = new NewOrderData(user.getUserID(),user.getName(),
+						NewNotifyData od = new NewNotifyData(user.getUserID(),user.getName(),
 								user.getHead_portrait(),"club",co.getOrderID(),co.getIsRead(),co.getCreated_TS());
 						data.add(od);
 					}
 				}
 			}
-			GenericData<NewOrderData> result = new GenericData<NewOrderData>(count, realCount, data);
+			GenericData<NewNotifyData> result = new GenericData<NewNotifyData>(count, realCount, data);
 			return getResponse(result);
 		} catch (Exception e) {
 			logger.error("Error occured",e);

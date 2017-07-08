@@ -25,6 +25,7 @@ public class CoachRowMapper implements RowMapper<Coach> {
 	private static final String COLUMN_TeachLocation = "TeachLocation";
 	private static final String COLUMN_TeachCollege = "TeachCollege";
 	private static final String COLUMN_TeachAddress = "TeachAddress";
+	private static final String COLUMN_IsRead = "IsRead";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 
@@ -48,9 +49,10 @@ public class CoachRowMapper implements RowMapper<Coach> {
 		String TeachLocation = res.getString(COLUMN_TeachLocation);
 		String TeachCollege = res.getString(COLUMN_TeachCollege);
 		String TeachAddress = res.getString(COLUMN_TeachAddress);
+		String IsRead = res.getString(COLUMN_IsRead);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
-		return new Coach(UID,UserName,CoachID,CoachName,CoachHead,CoachPhone,Birthday,Sex,ClubID,ClubName,Seniority,Intro,ACHV,TeachACHV,Verify,TeachLocation,TeachCollege,TeachAddress,Created_TS,Updated_TS);
+		return new Coach(UID,UserName,CoachID,CoachName,CoachHead,CoachPhone,Birthday,Sex,ClubID,ClubName,Seniority,Intro,ACHV,TeachACHV,Verify,TeachLocation,TeachCollege,TeachAddress,IsRead,Created_TS,Updated_TS);
 	}
 
 }

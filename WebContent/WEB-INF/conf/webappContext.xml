@@ -30,4 +30,6 @@
     <import resource="webappContext-collect.xml"/>
     <import resource="webappContext-pingpp.xml"/>
     <import resource="webappContext-umeng.xml"/>
+    <import resource="webappContext-notify.xml"/>
+    <import resource="webappContext-wallet.xml"/>
 </beans> 

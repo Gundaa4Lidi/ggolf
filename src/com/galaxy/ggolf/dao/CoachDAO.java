@@ -31,11 +31,12 @@ public class CoachDAO extends GenericDAO<Coach> {
 				+ "ACHV,"
 				+ "TeachACHV,"
 				+ "Verify,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "IsRead,"
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,coach.getCoachID(),coach.getUserName(),coach.getCoachName(),
 				coach.getCoachHead(),coach.getCoachPhone(),coach.getBirthday(),coach.getSex(),
 				coach.getClubID(),coach.getClubName(),coach.getSeniority(),coach.getIntro(),
-				coach.getACHV(),coach.getTeachACHV(),"0",Time());
+				coach.getACHV(),coach.getTeachACHV(),"0","0",Time());
 	}
 	
 	/**
@@ -129,4 +130,22 @@ public class CoachDAO extends GenericDAO<Coach> {
 		return super.executeUpdate(sql);
 	}
 	
+	/**
+	 * 获取未查阅的数量
+	 * @return
+	 */
+	public int getRealCount(){
+		String sql= "select count(*) from coach where DeletedFlag is null and Verify='0' and IsRead='0' ";
+		return super.count(sql);
+	}
+	
+	/**
+	 * 设置已查阅
+	 * @param coachID
+	 * @return
+	 */
+	public boolean IsRead(String coachID){
+		String sql = "update coach set IsRead='1', Updated_TS='"+Time()+"'where IsRead='0' and CoachID='"+coachID+"'";
+		return super.executeUpdate(sql);
+	}
 }

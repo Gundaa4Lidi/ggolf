@@ -13,6 +13,7 @@
 	    <constructor-arg ref="onlineManager"/>
 	    <constructor-arg ref="likeDAO"/>
 	    <constructor-arg ref="collectDAO"/>
+	    <constructor-arg ref="walletDAO"/>
 	</bean>
 	
 	<bean id="userManager" class="com.galaxy.ggolf.manager.UserManager">
@@ -57,6 +58,8 @@
 	<bean id="collectDAO" class="com.galaxy.ggolf.dao.CollectDAO">
 	</bean>
 	<bean id="coachDAO" class="com.galaxy.ggolf.dao.CoachDAO">
+	</bean>
+	<bean id="walletDAO" class="com.galaxy.ggolf.dao.WalletDAO">
 	</bean>
 	
 	<bean id="sessionManager" class="com.galaxy.ggolf.manager.SessionManager">

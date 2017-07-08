@@ -119,31 +119,39 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 
             $scope.Position = $window.sessionStorage.Position;
 
+            // $scope.getNotify();
+
 	        $interval(function () {
-	            $scope.getNewOrderCount();
+	            $scope.RealCount();
 	        },5000);
 
 	   		
 	   	}
 	}
 
+	$scope.pageNum = 0;
+	$scope.row = 5;
+
 	$scope.notifyPageConfig = {
         currentPage : 1,
         itemsPerPage : 5,
         onChange : function () {
-            $scope.getNewOrder();
+            // $scope.getNewOrder();
+            $scope.isNotifyLoad = true;
+            $scope.pageNum = ($scope.notifyPageConfig.currentPage - 1) * $scope.notifyPageConfig.itemsPerPage;
+            $scope.row = $scope.notifyPageConfig.itemsPerPage;
+            $timeout(function () {
+                $scope.isNotifyLoad = false;
+            },500);
         }
     }
     /**
      * 获取新的订单数据
      */
-	$scope.getNewOrder = function () {
-        var url = appConfig.url + "ClubOrder/getNewOrder";
+	$scope.getNotify = function () {
+        var url = appConfig.url + "Notify/getNotify";
         var method = "GET";
-        var params = {
-            pageNum : $scope.notifyPageConfig.currentPage,
-            rows : $scope.notifyPageConfig.itemsPerPage
-        }
+        var params = {};
         var promise = $scope.httpParams(url,method,params);
         promise.then(function (data) {
             if(data.status != 'Error'){
@@ -164,10 +172,29 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
     }
 
     /**
+     * 获取通知总数
+     */
+    $scope.getNotifyCount = function () {
+        var url = appConfig.url + "Notify/GetCount";
+        var method = "GET";
+        var params = {};
+        var promise = $scope.httpParams(url,method,params);
+        promise.then(function (data) {
+            if(data.status != 'Error'){
+                if(data!=$scope.TotalNotify){
+                    $scope.getNotify();
+                }
+            }
+        }),function (data) {
+            $scope.Load_Failed(data);
+        }
+    }
+
+    /**
      * 获取新增但未查阅订单的数量
      */
-    $scope.getNewOrderCount = function () {
-        var url = appConfig.url + "ClubOrder/getNewOrderCount";
+    $scope.RealCount = function () {
+        var url = appConfig.url + "Notify/RealCount";
         var method = "GET";
         var params = {};
         var promise = $scope.httpParams(url,method,params);
@@ -175,7 +202,9 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
             if(data.status != 'Error'){
                 if(data!=$scope.NewNotify){
                     $scope.NewNotify = data;
-                    $scope.getNewOrder();
+                    $scope.getNotify();
+                }else{
+                    $scope.getNotifyCount();
                 }
             }
         }),function (data) {
@@ -191,24 +220,37 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
     $scope.setRead = function (e) {
         $scope.currentNotify = angular.copy(e);
         if($scope.currentNotify.IsRead == '0'){
-            var url = appConfig.url + "ClubOrder/IsRead";
+            var url = appConfig.url + "Notify/IsRead";
             var method = "POST";
             var params = {
-                OrderID : $scope.currentNotify.OrderID
+                Type : $scope.currentNotify.Type,
+                ThemeID : $scope.currentNotify.ThemeID
             }
             var promise = $scope.httpParams(url,method,params);
             promise.then(function (data) {
                 if(data.status == 'Success'){
-                    $scope.getNewOrderCount();
-
+                    $scope.RealCount();
                 }
             }),function (data) {
                 $scope.Load_Failed(data);
             }
-
         }
-        $scope.navigate(7.1);
-        $scope.$broadcast('loadClubOrder','loadClubOrder');
+        if(e.Type == appConfig.AddClubOrder || e.Type == appConfig.RefundClubOrder){
+            $scope.navigate(7.1);
+            $scope.$broadcast('loadClubOrder','loadClubOrder');
+        }
+        if(e.Type == appConfig.AddCourseOrder || e.Type == appConfig.RefundCourseOrder){
+            $scope.navigate(7.2);
+            $scope.$broadcast('loadCourseOrder','loadCourseOrder');
+        }
+        if(e.Type == appConfig.ApplyCoach){
+            $scope.navigate(10.1);
+            $scope.$broadcast('loadCoachApply','loadCoachApply');
+        }
+        if(e.Type == appConfig.ApplyCourse){
+            $scope.navigate(10.2);
+            $scope.$broadcast('loadCourseApply','loadCourseApply');
+        }
     }
 
     $scope.STOP = function () {
@@ -295,10 +337,10 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 		$http({
 			url:'/GGolfz/rest/Staff/saveHead',
 			method:'POST',
-			data:{
-				StaffID: $scope.currentStaffID,
-				Head: e
-			}
+			data: {
+                StaffID: $scope.currentStaffID,
+                Head: e
+            }
 		}).then(function(response){
 			dfd.resolve(response.data);
 			console.log(response)
@@ -446,9 +488,6 @@ app.controller('PageController', function($scope,$rootScope,$window,$q,$http,$ti
 	/*根据出生日期算出年龄*/
     $rootScope.GetAge = function (strDay) {
         var returnAge = -1;
-        // if(strBirthday.indexOf("-")==-1){
-        	// return returnAge;
-		// }
         var bir = new Date(strDay);
         var birthYear = bir.getFullYear();
         var birthMonth = bir.getMonth() + 1;

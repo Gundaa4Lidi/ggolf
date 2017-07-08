@@ -21,6 +21,7 @@ public class CoachCourseRowMapper implements RowMapper<CoachCourse> {
 	private static final String COLUMN_ClassHour = "ClassHour";
 	private static final String COLUMN_ContainExplain = "ContainExplain";
 	private static final String COLUMN_IsVideo = "IsVideo";
+	private static final String COLUMN_IsRead = "IsRead";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 	@Override
@@ -40,9 +41,10 @@ public class CoachCourseRowMapper implements RowMapper<CoachCourse> {
 		String ClassHour = res.getString(COLUMN_ClassHour);
 		String ContainExplain = res.getString(COLUMN_ContainExplain);
 		String IsVideo = res.getString(COLUMN_IsVideo);
+		String IsRead = res.getString(COLUMN_IsRead);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
-		return new CoachCourse(CourseID,CoachID,Title,Price,Verify,Valid,IsOpen,MaxPeople,IsBatch,ClassHour,ContainExplain,IsVideo,Created_TS,Updated_TS);
+		return new CoachCourse(CourseID,CoachID,Title,Price,Verify,Valid,IsOpen,MaxPeople,IsBatch,ClassHour,ContainExplain,IsVideo,IsRead,Created_TS,Updated_TS);
 
 
 	}

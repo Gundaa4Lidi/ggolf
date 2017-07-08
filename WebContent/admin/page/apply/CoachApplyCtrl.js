@@ -19,6 +19,10 @@ var CoachApplyController = function ($scope,appConfig) {
     sc.loadMore = false;
     sc.TotalMessage = 0;
 
+    sc.$on('loadCoachApply',function () {
+        sc.load();
+    })
+
     sc.load = function () {
         sc.getCoachApplyList();
     }

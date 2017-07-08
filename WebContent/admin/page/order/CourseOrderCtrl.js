@@ -16,8 +16,12 @@ var CourseOrderController = function ($scope,$timeout,appConfig) {
     sc.loadMore = false;
     sc.currentOrder = new Object();
 
+    sc.$on('loadCourseOrder',function () {
+        sc.load();
+    })
+
     sc.load = function () {
-        sc.CourseOrderList = null;
+        sc.getCourseOrder();
     }
     
     sc.loading = function () {

@@ -13,17 +13,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 
-import com.galaxy.ggolf.dao.CourseOrderDAO;
-import com.galaxy.ggolf.dao.UmengDAO;
-import com.galaxy.ggolf.domain.CourseOrder;
+import com.galaxy.ggolf.dao.*;
+import com.galaxy.ggolf.domain.*;
 import com.mysql.jdbc.StringUtils;
+import com.pingplusplus.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.galaxy.ggolf.dao.ClubOrderDAO;
-import com.galaxy.ggolf.domain.ClubOrder;
-import com.galaxy.ggolf.domain.GalaxyLabException;
-import com.galaxy.ggolf.domain.Umeng;
 import com.galaxy.ggolf.dto.PushOption;
 import com.galaxy.ggolf.jdbc.CommonConfig;
 import com.galaxy.ggolf.push.PushManager;
@@ -32,12 +28,6 @@ import com.galaxy.ggolf.tools.PingPPUtil;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.pingplusplus.model.Charge;
-import com.pingplusplus.model.ChargeCollection;
-import com.pingplusplus.model.ChargeRefundCollection;
-import com.pingplusplus.model.Event;
-import com.pingplusplus.model.Refund;
-import com.pingplusplus.model.Webhooks;
 
 import jdk.nashorn.internal.parser.JSONParser;
 
@@ -51,6 +41,8 @@ public class PingPPService extends BaseService {
 	private static final String OrderType = "orderType";
 	private static final String OrderType_Club = "club";
 	private static final String OrderType_CoachCourse = "coachCourse";
+	private static final String OrderType_RechargeWallet = "rechargeWallet";
+	private static final String OrderType_WithdrawalsWallet = "withdrawalsWallet";
 	private static final String Refund_Status_Pending = "pending";
 	private static final String Refund_Status_Success = "succeeded";
 	private static final String Refund_Status_Failed = "failed";
@@ -64,11 +56,22 @@ public class PingPPService extends BaseService {
 	
 	private final UmengDAO umengDAO;
 
+	private final WalletDAO walletDAO;
+
+	private final WalletLogDAO walletLogDAO;
+
+	private final WalletRecordDAO walletRecordDAO;
+
 	public PingPPService(ClubOrderDAO clubOrderDAO,CourseOrderDAO courseOrderDAO,
-			UmengDAO umengDAO) {
+			UmengDAO umengDAO,WalletDAO walletDAO,
+		 	WalletLogDAO walletLogDAO,
+		 	WalletRecordDAO walletRecordDAO) {
 		this.clubOrderDAO = clubOrderDAO;
 		this.courseOrderDAO = courseOrderDAO;
 		this.umengDAO = umengDAO;
+		this.walletDAO = walletDAO;
+		this.walletLogDAO = walletLogDAO;
+		this.walletRecordDAO = walletRecordDAO;
 	}
 	
 	/**
@@ -311,6 +314,8 @@ public class PingPPService extends BaseService {
 							ClubOrderStatus(ch);
 						}else if(mVal.equalsIgnoreCase(OrderType_CoachCourse)){//教练课程订单
 							CourseOrderFinish(ch);
+						}else if(mVal.equalsIgnoreCase(OrderType_RechargeWallet)){//充值订单
+							WalletRecordStatus(ch);
 						}
 					}
 				}else if(event instanceof Refund){//退款
@@ -352,6 +357,42 @@ public class PingPPService extends BaseService {
 		}
 	}
 
+	//改变钱包支付的状态
+	private void WalletRecordStatus(Charge charge){
+		try {
+			WalletRecord wr = this.walletRecordDAO.getByRecordSn(charge.getOrderNo());
+			String time = this.walletRecordDAO.Time();
+			String payType = "";
+			if(wr.getFetchStatus().equals("0")){
+				if(charge.getChannel().indexOf("wx")>-1){
+					payType = "2";
+				}else if(charge.getChannel().indexOf("alipay")>-1){
+					payType = "1";
+				}else{
+					payType = "3";
+				}
+				String sqlString = "PayType='"+payType+"',FetchStatus='1',FetchTime='"+time+"'";
+				if(this.walletRecordDAO.updateStatus(sqlString,wr.getRecordSn())){
+					WalletRecord wRecord = this.walletRecordDAO.getByRecordSn(wr.getRecordSn());
+					Wallet wallet = this.walletDAO.getByUserID(wRecord.getToUID(),null);
+					WalletLog wLog = new WalletLog();
+					if(wRecord.getFetchStatus().equals("1")){
+						int money = Integer.parseInt(wRecord.getMoney()) + Integer.parseInt(wallet.getMoney());
+						wLog.setRecordSn(wRecord.getRecordSn());
+						wLog.setUserID(wallet.getUserID());
+						wLog.setRemark(wRecord.getRemark());
+						wLog.setChangeMoney("+"+wRecord.getMoney());
+						wLog.setMoney(money+"");
+						this.walletLogDAO.create(wLog);//生成日志
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	//教练课程订单完成
 	private void CourseOrderFinish(Charge ch){
 		try {
@@ -374,28 +415,33 @@ public class PingPPService extends BaseService {
 				String display_type = PushManager.Display_Type_Notify;
 				Umeng um = this.umengDAO.getByUserID(co.getUserID());//学员
 				Umeng um1 = this.umengDAO.getByUserID(co.getCoachID());//教练
-				po.setDevice_tokens(um.getUmeng_Token());
-				po.setTicker(ticker);
-				po.setTitle(title);
-				po.setText(text);
-				po.setAfter_open(after_open);
-				po.setDisplay_type(display_type);
-				po.setType(type);
-				PushManager.sendUnicast(po);
-				po1.setDevice_tokens(um1.getUmeng_Token());
-				po1.setTicker(ticker);
-				po1.setTitle(title);
-				po1.setText(text1);
-				po1.setAfter_open(after_open);
-				po1.setDisplay_type(display_type);
-				po1.setType(type);
-				PushManager.sendUnicast(po1);
-				
+				if(um!=null){
+					po.setDevice_tokens(um.getUmeng_Token());
+					po.setTicker(ticker);
+					po.setTitle(title);
+					po.setText(text);
+					po.setAfter_open(after_open);
+					po.setDisplay_type(display_type);
+					po.setType(type);
+					PushManager.sendUnicast(po);
+				}
+				if(um1!=null){
+					po1.setDevice_tokens(um1.getUmeng_Token());
+					po1.setTicker(ticker);
+					po1.setTitle(title);
+					po1.setText(text1);
+					po1.setAfter_open(after_open);
+					po1.setDisplay_type(display_type);
+					po1.setType(type);
+					PushManager.sendUnicast(po1);
+				}
+
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
+
 	//球场订单退款状态修改
 	private void ClubOrderRefund(Refund re) throws Exception{
 		String result = "";
@@ -412,21 +458,24 @@ public class PingPPService extends BaseService {
 			}else if(!result.equals(Refund_pending)){
 				ClubOrder co = this.clubOrderDAO.getOrderByOrderID(re.getChargeOrderNo());
 				Umeng um = this.umengDAO.getByUserID(co.getUserID());
-				String ticker = "退款结果";
-				String title = ticker;
-				String text = "你的球场订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
-				String type = CommonConfig.Send_Unicast;
-				String after_open = PushManager.GoApp;
-				String display_type = PushManager.Display_Type_Notify;
-				PushOption po = new PushOption();
-				po.setDevice_tokens(um.getUmeng_Token());
-				po.setTicker(ticker);
-				po.setTitle(title);
-				po.setText(text);
-				po.setAfter_open(after_open);
-				po.setDisplay_type(display_type);
-				po.setType(type);
-				PushManager.sendUnicast(po);
+				if(um!=null){
+					String ticker = "退款结果";
+					String title = ticker;
+					String text = "你的球场订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
+					String type = CommonConfig.Send_Unicast;
+					String after_open = PushManager.GoApp;
+					String display_type = PushManager.Display_Type_Notify;
+					PushOption po = new PushOption();
+					po.setDevice_tokens(um.getUmeng_Token());
+					po.setTicker(ticker);
+					po.setTitle(title);
+					po.setText(text);
+					po.setAfter_open(after_open);
+					po.setDisplay_type(display_type);
+					po.setType(type);
+					PushManager.sendUnicast(po);
+				}
+
 			}
 		}
 		
@@ -448,42 +497,117 @@ public class PingPPService extends BaseService {
 				throw new GalaxyLabException("Error in update refund");
 			}else if(!result.equals(Refund_pending)){
 				Umeng um = this.umengDAO.getByUserID(co.getUserID());
-				String ticker = "退款结果";
-				String title = ticker;
-				String text = "你的课程订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
-				String type = CommonConfig.Send_Unicast;
-				String after_open = PushManager.GoApp;
-				String display_type = PushManager.Display_Type_Notify;
-				PushOption po = new PushOption();
-				po.setDevice_tokens(um.getUmeng_Token());
-				po.setTicker(ticker);
-				po.setTitle(title);
-				po.setText(text);
-				po.setAfter_open(after_open);
-				po.setDisplay_type(display_type);
-				po.setType(type);
-				PushManager.sendUnicast(po);
+				if(um!=null){
+					String ticker = "退款结果";
+					String title = ticker;
+					String text = "你的课程订单"+re.getChargeOrderNo()+","+result+",若有疑问,请联系客服.";
+					String type = CommonConfig.Send_Unicast;
+					String after_open = PushManager.GoApp;
+					String display_type = PushManager.Display_Type_Notify;
+					PushOption po = new PushOption();
+					po.setDevice_tokens(um.getUmeng_Token());
+					po.setTicker(ticker);
+					po.setTitle(title);
+					po.setText(text);
+					po.setAfter_open(after_open);
+					po.setDisplay_type(display_type);
+					po.setType(type);
+					PushManager.sendUnicast(po);
+				}
 			}
 			if(result.equals(Refund_success)){
 				Umeng umeng = this.umengDAO.getByUserID(co.getCoachID());
-				String ticker = "退订课程";
-				String title = ticker;
-				String text = "你有一位学员退订你的课程,点击查看.";
-				String type = CommonConfig.Send_Unicast;
-				String after_open = PushManager.GoApp;
-				String display_type = PushManager.Display_Type_Notify;
-				PushOption po = new PushOption();
-				po.setDevice_tokens(umeng.getUmeng_Token());
-				po.setTicker(ticker);
-				po.setTitle(title);
-				po.setText(text);
-				po.setAfter_open(after_open);
-				po.setDisplay_type(display_type);
-				po.setType(type);
-				PushManager.sendUnicast(po);
+				if(umeng!=null){
+					String ticker = "退订课程";
+					String title = ticker;
+					String text = "你有一位学员退订你的课程,点击查看.";
+					String type = CommonConfig.Send_Unicast;
+					String after_open = PushManager.GoApp;
+					String display_type = PushManager.Display_Type_Notify;
+					PushOption po = new PushOption();
+					po.setDevice_tokens(umeng.getUmeng_Token());
+					po.setTicker(ticker);
+					po.setTitle(title);
+					po.setText(text);
+					po.setAfter_open(after_open);
+					po.setDisplay_type(display_type);
+					po.setType(type);
+					PushManager.sendUnicast(po);
+				}
+
 			}
 		}
 		
+	}
+
+
+	/**
+	 * 钱包充值
+	 * @param recordSn 流水账编号
+	 * @param channel  支付方式
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/rechargeWallet")
+	public String rechargeWallet(@FormParam("recordSn") String recordSn,
+							   @FormParam("channel") String channel,
+							   @Context HttpServletRequest request,
+							   @Context HttpHeaders headers){
+		try {
+			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
+			Charge charge = null;
+			Map<String,Object> metadata = new HashMap<String,Object>();
+			metadata.put(OrderType, OrderType_RechargeWallet);
+			String ip = "127.0.0.1";
+			if(wr!=null){
+				//开始创建ping++订单
+				charge = PingPPUtil.createCharge(wr.getRecordSn(),
+						wr.getMoney(), channel, ip,
+						wr.getRemark(), wr.getRemark(), metadata);
+				return getResponse(charge);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+
+	/**
+	 * 钱包提现
+	 * @param recordSn
+	 * @param channel
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/withdrawalsWallet")
+	public String withdrawalsWallet(@FormParam("recordSn") String recordSn,
+									@FormParam("channel") String channel,
+									@FormParam("recipient") String recipient,
+									@Context HttpServletRequest request,
+									@Context HttpHeaders headers){
+		try {
+			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
+			Transfer transfer = null;
+			Map<String,Object> metadata = new HashMap<String,Object>();
+			metadata.put(OrderType, OrderType_WithdrawalsWallet);
+			String description = "提现"+wr.getMoney()+"元";
+			String ip = "127.0.0.1";
+			if(wr!=null){
+				transfer = PingPPUtil.createTransfer(wr.getRecordSn(),
+						channel, wr.getMoney(), recipient,
+						description, metadata);
+				return getResponse(transfer);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
 	}
 	
 }

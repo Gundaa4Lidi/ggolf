@@ -152,12 +152,12 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	}
 	
 	/**
-	 * 新增退款订单
+	 * 获取退款订单
 	 * @param rows
 	 * @param pageNum
 	 * @return
 	 */
-	public Collection<ClubOrder> getNewRefund(String rows,String pageNum){
+	public Collection<ClubOrder> getRefundOrder(String rows,String pageNum){
 		String limit = super.limit(pageNum, rows);
 		String sql = "select * from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"'"
 				+ " order by Created_TS desc "+limit+"";
@@ -168,16 +168,17 @@ public class ClubOrderDAO extends GenericDAO<ClubOrder> {
 	 * 新增退款订单的数量
 	 * @return
 	 */
-	public int getNewRefundCount(){
+	public int getRefundOrderCount(){
 		String sql = "select count(*) from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"'";
 		return super.count(sql);
 	}
 	
 	/**
-	 * 新增退款订单为查阅的数量
+	 * 新增退款订单未查阅的数量
 	 * @return
 	 */
-	public int getNewRefundRealCount(){
+	
+	public int getRefundOrderRealCount(){
 		String sql = "select count(*) from cluborder where DeletedFlag is null and Refund='"+Refund_apply+"' and IsRead='0'";
 		return super.count(sql);
 	}

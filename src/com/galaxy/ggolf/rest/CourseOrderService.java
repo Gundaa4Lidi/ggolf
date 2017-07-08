@@ -25,7 +25,7 @@ import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.dto.CourseOrderData;
 import com.galaxy.ggolf.dto.GenericData;
-import com.galaxy.ggolf.dto.NewOrderData;
+import com.galaxy.ggolf.dto.NewNotifyData;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -84,8 +84,17 @@ public class CourseOrderService extends BaseService {
 				if(coachCourse!=null){
 					sqlString = "and CourseID='"+coachCourse.getCourseID()+"' and StartDateTime='"+co.getStartDateTime()+"' and State='3' ";
 					Collection<CourseOrder> orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
-					if(orders.size()>Integer.parseInt(coachCourse.getMaxPeople())){
+					int maxPeople = Integer.parseInt(coachCourse.getMaxPeople());
+					int realCount = orders.size();
+					if(realCount == maxPeople){
 						return getErrormessage("当前时段已满人数");
+					}else if(realCount < maxPeople){
+						sqlString = "and CourseID='"+coachCourse.getCourseID()+"' and StartDateTime='"+co.getStartDateTime()+"' and State!='0' ";
+						orders = this.courseOrderDAO.getCourseOrder(sqlString, null, null);
+						realCount = orders.size();
+						if(realCount == maxPeople){
+							return getErrormessage("当前下单人数过多,请稍候再试");
+						}
 					}
 				}
 				CourseOrder courseOrder = this.courseOrderDAO.getByStartDateTime(co.getStartDateTime(), co.getUserID());
@@ -288,18 +297,18 @@ public class CourseOrderService extends BaseService {
 			Collection<CourseOrder> courseOrder = this.courseOrderDAO.getNewOrder(rows, pageNum);
 			int count = this.courseOrderDAO.getNewOrderCount();
 			int realCount = this.courseOrderDAO.getNewOrderRealCount();
-			Collection<NewOrderData> data = new ArrayList<NewOrderData>();
+			Collection<NewNotifyData> data = new ArrayList<NewNotifyData>();
 			if(courseOrder.size()>0){
 				for(CourseOrder co : courseOrder){
 					User user = this.userDAO.getUserByUserID(co.getUserID());
 					if(user!=null){
-						NewOrderData od = new NewOrderData(user.getUserID(),user.getName(),
+						NewNotifyData od = new NewNotifyData(user.getUserID(),user.getName(),
 								user.getHead_portrait(),"course",co.getCourseOrderID(),co.getIsRead(),co.getCreated_TS());
 						data.add(od);
 					}
 				}
 			}
-			GenericData<NewOrderData> result = new GenericData<NewOrderData>(count, realCount, data);
+			GenericData<NewNotifyData> result = new GenericData<NewNotifyData>(count, realCount, data);
 			return getResponse(result);
 		} catch (Exception e) {
 			logger.error("Error occured",e);

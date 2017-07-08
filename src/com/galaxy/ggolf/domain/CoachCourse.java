@@ -16,6 +16,7 @@ public class CoachCourse {
 	private String ClassHour;
 	private String ContainExplain;
 	private String IsVideo;
+	private String IsRead;
 	private String Created_TS;
 	private String Updated_TS;
 	private CourseVideo courseVideo;
@@ -23,7 +24,7 @@ public class CoachCourse {
 	
 	public CoachCourse(String courseID, String coachID,String title, String price, String verify, String valid,
 			String isOpen, String maxPeople, String isBatch,String classHour, String containExplain,
-			String isVideo, String created_TS, String updated_TS) {
+			String isVideo, String isRead, String created_TS, String updated_TS) {
 		CourseID = courseID;
 		CoachID = coachID;
 		Title = title;
@@ -36,6 +37,7 @@ public class CoachCourse {
 		ClassHour = classHour;
 		ContainExplain = containExplain;
 		IsVideo = isVideo;
+		IsRead = isRead;
 		Created_TS = created_TS;
 		Updated_TS = updated_TS;
 	}
@@ -152,6 +154,12 @@ public class CoachCourse {
 	}
 	public void setCourseTime(CourseTime courseTime) {
 		this.courseTime = courseTime;
+	}
+	public String getIsRead() {
+		return IsRead;
+	}
+	public void setIsRead(String isRead) {
+		IsRead = isRead;
 	}
 	
 	

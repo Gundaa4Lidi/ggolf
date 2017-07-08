@@ -44,7 +44,4 @@ var ArticlePageController = function($scope){
         sc.ArticleData = data
     }
 
-
-
-
 }

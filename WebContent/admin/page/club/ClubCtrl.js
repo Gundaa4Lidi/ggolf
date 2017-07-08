@@ -313,7 +313,6 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
         }
     }
 
-
     var Marker = function (lng,lat) {
         sc.marker = new AMap.Marker({
             position: [lng,lat],
@@ -331,6 +330,7 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
                                 <div id="lng"></div>\
                                 <div id="lat"></div>\
                               </div>');
+
     var markerInfoWindow = new AMap.InfoWindow({
         content: markerInfoContent[0],
         offset: new AMap.Pixel(0,-25),
@@ -372,8 +372,6 @@ var ClubController = function($scope,$http,appConfig,$window,$q,Upload,$timeout,
             });
         });
     }
-
-
 
     var clickMapEvent = function(lng,lat,infoWindow,infoContent){
         sc.createPointLng = lng;

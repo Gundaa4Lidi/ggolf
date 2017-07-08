@@ -8,11 +8,20 @@
 		<constructor-arg ref="clubOrderDAO"/>
 		<constructor-arg ref="courseOrderDAO"/>
 		<constructor-arg ref="umengDAO"/>
+		<constructor-arg ref="walletDAO"/>
+		<constructor-arg ref="walletLogDAO"/>
+		<constructor-arg ref="walletRecordDAO"/>
 	</bean>
 	<bean id="clubOrderDAO" class="com.galaxy.ggolf.dao.ClubOrderDAO">
 	</bean>
 	<bean id="courseOrderDAO" class="com.galaxy.ggolf.dao.CourseOrderDAO">
 	</bean>
 	<bean id="umengDAO" class="com.galaxy.ggolf.dao.UmengDAO">
+	</bean>
+	<bean id="walletDAO" class="com.galaxy.ggolf.dao.WalletDAO">
+	</bean>
+	<bean id="walletLogDAO" class="com.galaxy.ggolf.dao.WalletLogDAO">
+	</bean>
+	<bean id="walletRecordDAO" class="com.galaxy.ggolf.dao.WalletRecordDAO">
 	</bean>
 </beans>
