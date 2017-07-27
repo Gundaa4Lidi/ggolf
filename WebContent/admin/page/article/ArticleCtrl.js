@@ -120,7 +120,7 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
         	$('#new-note').modal('show');
 		}
 		if(type.TypeKey == '图片'){
-            $('#new-photo').modal('show');
+            $('#new-note').modal('show');
         }
         if(type.TypeKey == '视频'){
             $('#new-note').modal('show');
@@ -391,8 +391,9 @@ var ArticleController = function($scope,$rootScope,$http,$q,$window,Upload,appCo
             swal("请上传视频!","","warning");
 		}else{
             var td = sc.currentType;
+            console.log(td);
             sc.currentArticle.TypeKey = td.TypeKey;
-            if(sc.currentSubject==null){
+            if(!sc.currentSubject.SubjectID){
                 sc.currentArticle.CategoryID =td.CategoryID;
                 sc.currentArticle.TypeID = td.TypeID;
                 sc.currentArticle.TypeName = td.TypeName;

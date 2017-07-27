@@ -105,7 +105,7 @@ public class PingPPUtil {
 										  String price,
 										  String recipient,
 										  String description,
-										  Map<String,Object> initialMetadata) {
+										  Map<String,String> initialMetadata) {
 		Transfer transfer = null;
 		Pingpp.apiKey = apiKey;
 		Pingpp.privateKeyPath = privateKeyFilePath;
@@ -308,6 +308,18 @@ public class PingPPUtil {
 			e.printStackTrace();
 		}
 		return refundList;
+	}
+
+	public static Transfer GetTransfer(String TransferID){
+		Pingpp.apiKey = apiKey;
+		Transfer transfer = null;
+		try {
+			transfer = Transfer.retrieve(TransferID);
+		} catch (Exception e){
+			logger.error("Error ping++ transfer");
+			e.printStackTrace();
+		}
+		return transfer;
 	}
 
 	/**

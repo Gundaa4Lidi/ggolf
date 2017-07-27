@@ -20,6 +20,7 @@ public class WalletRecordRowMapper implements RowMapper<WalletRecord> {
 	private static final String COLUMN_FetchTime = "FetchTime";
 	private static final String COLUMN_CheckStatus = "CheckStatus";
 	private static final String COLUMN_CheckTime = "CheckTime";
+	private static final String COLUMN_TransferID = "TransferID";
 	private static final String COLUMN_Created_TS = "Created_TS";
 	private static final String COLUMN_Updated_TS = "Updated_TS";
 	@Override
@@ -38,9 +39,10 @@ public class WalletRecordRowMapper implements RowMapper<WalletRecord> {
 		String FetchTime = res.getString(COLUMN_FetchTime);
 		String CheckStatus = res.getString(COLUMN_CheckStatus);
 		String CheckTime = res.getString(COLUMN_CheckTime);
+		String TransferID = res.getString(COLUMN_TransferID);
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
-		return new WalletRecord(RecordID, RecordSn, FromUID, ToUID, Type, Money, PayType, Remark, PayStatus, PayTime, FetchStatus, FetchTime, CheckStatus, CheckTime,Created_TS,Updated_TS);
+		return new WalletRecord(RecordID, RecordSn, FromUID, ToUID, Type, Money, PayType, Remark, PayStatus, PayTime, FetchStatus, FetchTime, CheckStatus, CheckTime, TransferID, Created_TS, Updated_TS);
 	}
 
 }

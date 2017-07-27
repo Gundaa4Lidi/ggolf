@@ -17,6 +17,7 @@ public class Message {
 	private String Period;
 	private String Status;
 	private String Type;
+	private String ClubID;
 	private String Club;
 	private String Longitude;
 	private String Latitude;
@@ -35,9 +36,9 @@ public class Message {
 	}
 	
 	public Message(String msgID, String senderID, String senderName, String senderPhoto, String title, String details,
-			Collection<String> photoList, String video, String period, String status, String type, String club, String longitude,
-			String latitude, String radius, String site, String releaseOrNot, String created_TS, String updated_TS,
-			Collection<User> userList) {
+			Collection<String> photoList, String video, String period, String status, String type, String clubID,
+		    String club, String longitude,String latitude, String radius, String site, String releaseOrNot,
+		    String created_TS, String updated_TS, Collection<User> userList) {
 		MsgID = msgID;
 		SenderID = senderID;
 		SenderName = senderName;
@@ -49,6 +50,7 @@ public class Message {
 		Period = period;
 		Status = status;
 		Type = type;
+		ClubID = clubID;
 		Club = club;
 		Longitude = longitude;
 		Latitude = latitude;
@@ -197,7 +199,12 @@ public class Message {
 	public void setLikeData(LikeData likeData) {
 		this.likeData = likeData;
 	}
-	
-	
 
+	public String getClubID() {
+		return ClubID;
+	}
+
+	public void setClubID(String clubID) {
+		ClubID = clubID;
+	}
 }

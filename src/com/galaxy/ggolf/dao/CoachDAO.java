@@ -101,7 +101,7 @@ public class CoachDAO extends GenericDAO<Coach> {
 		if(Verify!=null){
 			sqlString += "and Verify='"+Verify+"' ";
 		}
-		String sql = "select * from coach where DeletedFlag is null and CoachID="+CoachID+" "+sqlString+"";
+		String sql = "select * from coach where DeletedFlag is null and CoachID='"+CoachID+"' "+sqlString+"";
 		Collection<Coach> result = super.executeQuery(sql);
 		if(result.size() > 0){
 			return (Coach) result.toArray()[0];

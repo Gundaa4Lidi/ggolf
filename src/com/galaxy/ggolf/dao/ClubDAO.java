@@ -105,7 +105,7 @@ public class ClubDAO extends GenericDAO<Club> {
 				+ "IsTop,"
 				+ "Longitude,"
 				+ "Latitude,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		return super.sqlUpdate(sql,club.getClubID(),club.getClubName(),club.getClubPhoneNumber(),
 							club.getClubAddress(),photo,club.getLogo(),club.getClubType(),club.getProvince(),club.getCity(),
 							club.getArea(),club.getTotalStemNum(),club.getTotalHole(),club.getIsHot(),club.getIsTop(),

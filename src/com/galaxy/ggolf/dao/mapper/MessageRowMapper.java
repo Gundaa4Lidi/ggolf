@@ -19,6 +19,7 @@ public class MessageRowMapper implements RowMapper<Message> {
     private static final String COLUMN_Period = "Period";
     private static final String COLUMN_Status = "Status";
     private static final String COLUMN_Type = "Type";
+    private static final String COLUMN_ClubID = "ClubID";
     private static final String COLUMN_Club = "Club";
     private static final String COLUMN_Longitude = "Longitude";
     private static final String COLUMN_Latitude = "Latitude";
@@ -42,6 +43,7 @@ public class MessageRowMapper implements RowMapper<Message> {
 		String Period = res.getString(COLUMN_Period);
 		String Status = res.getString(COLUMN_Status);
 		String Type = res.getString(COLUMN_Type);
+		String ClubID = res.getString(COLUMN_ClubID);
 		String Club = res.getString(COLUMN_Club);
 		String Longitude = res.getString(COLUMN_Longitude);
 		String Latitude = res.getString(COLUMN_Latitude);
@@ -51,7 +53,7 @@ public class MessageRowMapper implements RowMapper<Message> {
 		String Created_TS = res.getString(COLUMN_Created_TS);
 		String Updated_TS = res.getString(COLUMN_Updated_TS);
 		return new Message(MsgID,SenderID,SenderName,SenderPhoto,Title,Details,
-				PhotoList,Video,Period,Status,Type,Club,Longitude,Latitude,Radius,Site,ReleaseOrNot,Created_TS,Updated_TS,null);
+				PhotoList,Video,Period,Status,Type,ClubID,Club,Longitude,Latitude,Radius,Site,ReleaseOrNot,Created_TS,Updated_TS,null);
 	}
 
 }

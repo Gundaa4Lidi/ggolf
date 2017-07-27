@@ -40,12 +40,12 @@ import com.spatial4j.core.shape.Rectangle;
 
 public class MessageManager {
 	
-	public GenericCache<String, Message> cache;
-	public MessageDAO messageDAO;
-	public UserDAO userDAO;
-	public NotifyListDAO notifyListDAO;
-	public CommentDAO commentDAO;
-	public LikeDAO likeDAO;
+	private GenericCache<String, Message> cache;
+	private MessageDAO messageDAO;
+	private UserDAO userDAO;
+	private NotifyListDAO notifyListDAO;
+	private CommentDAO commentDAO;
+	private LikeDAO likeDAO;
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -99,11 +99,22 @@ public class MessageManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public UserMessageData getSearch(String Type,String keyword, String rows)throws Exception{
+	public UserMessageData getSearch(String Type,String keyword, String rows, String pageNum,
+			String clubID, String userID, String topicID, String isHot)throws Exception{
 		String sqlString = "";
-		if(!StringUtils.isEmpty(Type)&&Type.equalsIgnoreCase("null")){
-			sqlString += "and Type='"+Type+"'";
+		if(!StringUtils.isEmpty(Type)&&!Type.equalsIgnoreCase("null")){
+			sqlString += "and Type='"+Type+"' ";
+		}else{
+			throw new GalaxyLabException("消息类型必需");
 		}
+		if(!StringUtils.isEmpty(clubID)&&!clubID.equalsIgnoreCase("null")){
+			sqlString += "and ClubID='"+clubID+"' ";
+		}
+		if(!StringUtils.isEmpty(userID)&&!userID.equalsIgnoreCase("null")){
+			sqlString += "and SenderID='"+userID+"' ";
+		}
+		
+		
 		if(!StringUtils.isEmpty(keyword)&&keyword.equalsIgnoreCase("null")){
 			sqlString += "and"
 					+ "(SenderID like '%"
@@ -118,7 +129,7 @@ public class MessageManager {
 					+ keyword 
 					+ "%') ";
 		}
-		Collection<Message> message = this.messageDAO.getSearch(rows, sqlString);
+		Collection<Message> message = this.messageDAO.getSearch(rows, pageNum, sqlString);
 		for(Message ms : message){
 			if(ms.getType().equals(CommonConfig.MSG_TYPE_DYNAMIC)){
 				String comRows = "5";
@@ -145,7 +156,7 @@ public class MessageManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public MessageGroupData groupSearch(String Type, String keyword, String rows, int days)throws Exception{
+	public MessageGroupData groupSearch(String Type, String keyword, String rows, String pageNum, int days)throws Exception{
 		String sqlString = "";
 		int row = Integer.parseInt(rows);
 		if(!StringUtils.isEmpty(Type)&&!Type.equalsIgnoreCase("null")){
@@ -183,7 +194,7 @@ public class MessageManager {
 				
 				String dateFormat = "and date_format(Created_TS,'%Y-%m-%d')='"+date+"'";
 				
-				Collection<Message> result = this.messageDAO.getSearch(row+"", sqlString+dateFormat);
+				Collection<Message> result = this.messageDAO.getSearch(row+"", pageNum, sqlString+dateFormat);
 				if(result.size() <= row && row > 0){
 					for(Message ms : result){
 						if(ms.getType().equalsIgnoreCase(CommonConfig.MSG_TYPE_DYNAMIC)
@@ -431,14 +442,14 @@ public class MessageManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public UserMessageData getNearMessage(Rectangle rec, String rows)throws Exception{
+	public UserMessageData getNearMessage(Rectangle rec, String rows, String pageNum)throws Exception{
 		String sqlString = "and Status!='已关闭'";
 		if(rec!=null){
 			sqlString += "and (longitude between '"+rec.getMinX()+"' and '"+rec.getMaxX()+"') "
 						+ "and (latitude between '"+rec.getMinY()+"' and '"+rec.getMaxY()+"')";
 		}
 		String type = CommonConfig.MSG_TYPE_INVITED;
-		Collection<Message> msgList = this.messageDAO.getSearch(rows, sqlString);
+		Collection<Message> msgList = this.messageDAO.getSearch(rows, pageNum, sqlString);
 		msgList = getDistance(rec.getMinX(), rec.getMinY(), msgList);
 		int count = this.messageDAO.getSearchCount(sqlString, type);
 		UserMessageData umd = new UserMessageData(msgList, count);

@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.galaxy.ggolf.domain.Comment;
+import com.galaxy.ggolf.domain.GalaxyLabException;
 import com.galaxy.ggolf.domain.Likes;
 import com.galaxy.ggolf.domain.Message;
 import com.galaxy.ggolf.domain.User;
@@ -127,7 +128,7 @@ public class MessageService extends BaseService{
 			@FormParam("rows") String rows,
 			@FormParam("pageNum") String pageNum, @Context HttpHeaders headers){
 		try {
-			return getResponse(this.manager.groupSearch(type, keyword, rows, days));
+			return getResponse(this.manager.groupSearch(type, keyword, rows, pageNum, days));
 		} catch (Exception e) {
 			logger.error("Error",e);
 		}
@@ -145,10 +146,15 @@ public class MessageService extends BaseService{
 	@Path("/getSearch")
 	public String getSearch(@FormParam("keyword") String keyword,
 			@FormParam("rows") String rows, 
+			@FormParam("pageNum") String pageNum,
 			@FormParam("type") String type,
+			@FormParam("clubID") String clubID,
+			@FormParam("userID") String userID,
+			@FormParam("topicID") String topicID,
+			@FormParam("isHot") String isHot,
 			@Context HttpHeaders headers){
 		try {
-			return getResponse(this.manager.getSearch(type, keyword, rows));
+			return getResponse(this.manager.getSearch(type, keyword, rows, pageNum, clubID, userID, topicID, isHot));
 		} catch (Exception e) {
 			logger.error("Error",e);
 		}
@@ -170,8 +176,9 @@ public class MessageService extends BaseService{
 	public String getMessageByUserID(@FormParam("UserID") String UserID,
 			@FormParam("keyword") String keyword,
 			@FormParam("rows") String rows,
+			@FormParam("pageNum") String pageNum,
 			@FormParam("type") String type,
-			@FormParam("pageNum") String pageNum,@Context HttpHeaders headers){
+			@Context HttpHeaders headers){
 		try {
 			return getResponse(this.manager.getByUserID(UserID, type, keyword, rows, pageNum));
 		} catch (Exception e) {
@@ -325,6 +332,9 @@ public class MessageService extends BaseService{
 			@Context HttpHeaders headers){
 		try {
 			return getResponse(this.commentManager.getReplyList(rows, UserID, CommentID));
+		} catch (GalaxyLabException ex) {
+			logger.error(ex.getMessage(), ex);
+			return getErrorResponse(ex.getMessage());	
 		} catch (Exception e) {
 			logger.error("Error",e);
 		}

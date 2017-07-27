@@ -67,7 +67,7 @@ public class PhoneCodeManager {
 					result = "验证码已超时，请重新获取！";
 				}
 			} else {
-				result = "验证码错误";
+				result = "验证码错误,或与判定的手机不匹配";
 			}
 		} catch (Exception e){
 			e.printStackTrace();

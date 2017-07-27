@@ -454,6 +454,7 @@ public class ArticleService extends BaseService {
 				articles = this.articleManager.getBykeyword(sqlString, rows, pageNum);
 				count = this.articleManager.getCount(sqlString);
 			}
+			setArticleList(articles);
 			ArticleData articleData = new ArticleData(count,articles);
 			return getResponse(articleData);
 		} catch (GalaxyLabException ex) {
@@ -464,6 +465,22 @@ public class ArticleService extends BaseService {
 			return getErrorResponse();
 		}
 	}
+	
+	public Collection<Article> setArticleList(Collection<Article> articleList)throws Exception{
+		if(articleList.size()>0){
+			for(Article art : articleList){
+				if(art.getTypeKey().equals("图片")){
+					ArticleContent ac = this.articleManager.getArticleContent(art.getArticleID());
+					if(ac!=null){
+						art.setContent(ac.getContent());
+					}
+				}
+			}
+		}
+		return articleList;
+		
+	}
+	
 	
 	//搜索关键字
 	public String search(String keyword,String type){

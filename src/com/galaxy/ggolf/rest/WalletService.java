@@ -13,6 +13,8 @@ import com.galaxy.ggolf.dao.*;
 import com.galaxy.ggolf.domain.User;
 import com.galaxy.ggolf.domain.WalletLog;
 import com.galaxy.ggolf.manager.PhoneCodeManager;
+import com.galaxy.ggolf.tools.PingPPUtil;
+import com.pingplusplus.model.Transfer;
 import org.apache.cxf.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ import com.galaxy.ggolf.tools.CipherUtil;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -251,6 +255,9 @@ public class WalletService extends BaseService {
 						User user = this.userDAO.getUserByUserID(UserID);
 						String codeResult = this.phoneCodeManager.ValidCode(user.getPhone(),Code);
 						if(codeResult.equals("")){
+							if(StringUtils.isEmpty(NewPassword)||NewPassword.length()>6){
+								return getErrormessage("请设置6位的支付密码.");
+							}
 							if(this.walletDAO.updatePayPWD(NewPassword,UserID)){
 								return getSuccessResponse();
 							}
@@ -347,19 +354,31 @@ public class WalletService extends BaseService {
 	public String WithdrawalsWallet(
 			@FormParam("Money") String Money,
 			@FormParam("UserID") String UserID,
+			@FormParam("PayPassword") String PayPassword,
 			@FormParam("Remark") String Remark,
+			@FormParam("channel") String channel,
+			@FormParam("recipient") String recipient,
 			@Context HttpHeaders headers){
 		try {
-			if(StringUtils.isEmpty(Money)||Money.equalsIgnoreCase("null")){
-				return getErrormessage("请填写金额");
+			int wMoney = Integer.parseInt(Money);
+			if(StringUtils.isEmpty(Money)||Money.equalsIgnoreCase("null")||wMoney<=0){
+				return getErrormessage("请填写正确的金额");
 			}
 			User user = this.userDAO.getUserByUserID(UserID);
 			if(user==null){
 				return getErrormessage("该用户不存在");
 			}
 			WalletRecord wr = new WalletRecord();
-			Wallet wallet = this.walletDAO.getByUserID(UserID,null);
-			int money = Integer.parseInt(wallet.getMoney()) - Integer.parseInt(Money);
+			Wallet wallet = this.walletDAO.getByUserID(UserID,"0");
+			if(!StringUtils.isEmpty(wallet.getPayPassword())&&!wallet.getPayPassword().equalsIgnoreCase("null")){
+				CipherUtil cipher = new CipherUtil();
+				PayPassword = cipher.generatePassword(PayPassword);
+				if(!PayPassword.equals(wallet.getPayPassword())){
+					return getErrormessage("请输入支付密码");
+				}
+			}
+
+			int money = Integer.parseInt(wallet.getMoney()) - wMoney;
 			if(money < 0){
 				return getErrormessage("钱包余额不足");
 			}
@@ -376,14 +395,24 @@ public class WalletService extends BaseService {
 			wr.setPayStatus("0");
 			if(this.walletRecordDAO.create(wr)){
 				WalletRecord wRecord = this.walletRecordDAO.getByRecordSn(recordSn);
-				WalletLog wLog = new WalletLog();
-				wLog.setRecordSn(wRecord.getRecordSn());
-				wLog.setUserID(wallet.getUserID());
-				wLog.setRemark(wRecord.getRemark());
-				wLog.setChangeMoney("-"+wRecord.getMoney());
-				wLog.setMoney(money+"");
-				this.walletLogDAO.create(wLog);//生成日志
-//				return getResponse(result);
+				Transfer transfer = null;
+				Map<String,String> metadata = new HashMap<String,String>();
+				metadata.put("orderType", "withdrawalsWallet");
+				String description = "提现"+wr.getMoney()+"元";
+				transfer = PingPPUtil.createTransfer(wRecord.getRecordSn(),
+						channel, wr.getMoney(), recipient,
+						description, metadata);
+				if(transfer!=null){
+					WalletLog wLog = new WalletLog();
+					wLog.setRecordSn(wRecord.getRecordSn());
+					wLog.setUserID(wallet.getUserID());
+					wLog.setRemark(wRecord.getRemark());
+					wLog.setChangeMoney("-"+wRecord.getMoney());
+					wLog.setMoney(money+"");
+					this.walletLogDAO.create(wLog);//生成日志
+					this.walletRecordDAO.updateTransferID(transfer.getId(), wRecord.getRecordSn());
+				}
+				return getResponse(transfer);
 			}
 		} catch (Exception e) {
 			logger.error("Error occured",e);
@@ -400,10 +429,7 @@ public class WalletService extends BaseService {
 	 */
 	@GET
 	@Path("/VerificationCode/{time}")
-	public void VerificationCode(@PathParam("time") String time,
-								 @Context HttpServletRequest request,
-								 @Context HttpServletResponse response,
-								 @Context HttpHeaders headers){
+	public void VerificationCode(@PathParam("time") String time,@Context HttpServletRequest request, @Context HttpServletResponse response, @Context HttpHeaders headers){
 		try {
 			//定义随机数类
 			Random r = new Random();

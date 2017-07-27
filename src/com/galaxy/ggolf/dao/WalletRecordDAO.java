@@ -74,4 +74,15 @@ public class WalletRecordDAO extends GenericDAO<WalletRecord> {
 		String sql = "update walletrecord set "+sqlString+" Updated_TS='"+Time()+"' where RecordSn='"+RecordSn+"'";
 		return super.executeUpdate(sql);
 	}
+	
+	/**
+	 * 添加企业付款编号
+	 * @param TransferID
+	 * @param RecordSn
+	 * @return
+	 */
+	public boolean updateTransferID(String TransferID,String RecordSn){
+		String sql = "update walletrecord set TransferID='"+TransferID+"', Updated_TS='"+Time()+"' where RecordSn='"+RecordSn+"' and PayStatus='0'";
+		return super.executeUpdate(sql);
+	}
 }

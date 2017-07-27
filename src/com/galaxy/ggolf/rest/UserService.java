@@ -684,7 +684,7 @@ public class UserService extends BaseService {
 			int radius = Integer.parseInt(Radius);
 			Rectangle rec = LocationUtil.GetRange(lon, lat, radius);
 			Collection<User> userList = this.manager.getNearByUser(rec, Rows);
-			int count = userList.size();
+			int count = this.manager.getNearUserCount(rec);
 			UserData data = new UserData(count, userList);
 			return getResponse(data);
 		} catch (Exception ex) {

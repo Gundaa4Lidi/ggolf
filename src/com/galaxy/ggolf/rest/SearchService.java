@@ -84,7 +84,7 @@ public class SearchService extends BaseService {
 				}else{
 					Collection<User> users = this.userDAO.getUsers(null, rows, userSql);
 					Collection<Article> articles = this.articleDAO.getRelease(null,rows, articleSql);
-					Collection<Message> messages = this.messageDAO.getSearch(rows, messageSql);
+					Collection<Message> messages = this.messageDAO.getSearch(rows, null, messageSql);
 					Collection<Club> clubs = this.clubDAO.getSearch(null, rows, clubSql);
 					Collection<Coach> coachs =this.coachDAO.getAll(rows, coachSql);
 					if(users.size() > 0){
@@ -139,7 +139,7 @@ public class SearchService extends BaseService {
 			}
 			break;
 		case TYPE_DYNAMIC:
-			Collection<Message> messages = this.messageDAO.getSearch(rows, messageSql);
+			Collection<Message> messages = this.messageDAO.getSearch(rows, null, messageSql);
 			if(messages.size() > 0){
 				data.setMessages(messages);
 			}

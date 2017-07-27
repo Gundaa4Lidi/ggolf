@@ -29,7 +29,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import jdk.nashorn.internal.parser.JSONParser;
 
 //@Consumes("multipart/form-data")
 @Produces("application/json")
@@ -49,6 +48,13 @@ public class PingPPService extends BaseService {
 	private static final String Refund_pending = "退款处理中";
 	private static final String Refund_success = "退款成功";
 	private static final String Refund_field = "退款失败";
+	//企业付款(提现)回调状态
+	private static final String Transfer_status_pending = "pending";//处理中
+	private static final String Transfer_status_paid = "paid";//付款成功
+	private static final String Transfer_status_failed = "failed";//付款失败
+	private static final String Transfer_status_scheduled = "scheduled";//待发送
+
+
 
 	private final ClubOrderDAO clubOrderDAO;
 
@@ -92,7 +98,8 @@ public class PingPPService extends BaseService {
 			Charge charge = null;
 			Map<String,Object> metadata = new HashMap<String,Object>();
 			metadata.put(OrderType, OrderType_Club);
-			String ip = "127.0.0.1";
+//			String ip = "127.0.0.1";
+			String ip = super.getIp(request);
 			if(clubOrder!=null){
 				//开始创建ping++订单
 				charge = PingPPUtil.createCharge(clubOrder.getOrderID(),
@@ -287,7 +294,99 @@ public class PingPPService extends BaseService {
 		}
 		return getErrorResponse();
 	}
-	
+
+	/**
+	 * 钱包充值
+	 * @param recordSn 流水账编号
+	 * @param channel  支付方式
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/rechargeWallet")
+	public String rechargeWallet(@FormParam("recordSn") String recordSn,
+								 @FormParam("channel") String channel,
+								 @Context HttpServletRequest request,
+								 @Context HttpHeaders headers){
+		try {
+			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
+			Charge charge = null;
+			Map<String,Object> metadata = new HashMap<String,Object>();
+			metadata.put(OrderType, OrderType_RechargeWallet);
+//			String ip = "127.0.0.1";
+			String ip = super.getIp(request);
+			if(wr!=null){
+				//开始创建ping++订单
+				charge = PingPPUtil.createCharge(wr.getRecordSn(),
+						wr.getMoney(), channel, ip,
+						wr.getRemark(), wr.getRemark(), metadata);
+				return getResponse(charge);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+
+	/**
+	 * 钱包提现
+	 * @param recordSn
+	 * @param channel
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
+	@POST
+	@Path("/withdrawalsWallet")
+	public String withdrawalsWallet(@FormParam("recordSn") String recordSn,
+									@FormParam("channel") String channel,
+									@FormParam("recipient") String recipient,
+									@Context HttpServletRequest request,
+									@Context HttpHeaders headers){
+		try {
+			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
+			Transfer transfer = null;
+			Map<String,String> metadata = new HashMap<String,String>();
+			metadata.put(OrderType, OrderType_WithdrawalsWallet);
+			String description = "提现"+wr.getMoney()+"元";
+			if(wr!=null){
+				transfer = PingPPUtil.createTransfer(wr.getRecordSn(),
+						channel, wr.getMoney(), recipient,
+						description, metadata);
+				return getResponse(transfer);
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+
+	/**
+	 * 查询企业付款(提现)状态
+	 * @param TransferID
+	 * @param request
+	 * @param headers
+	 * @return
+	 */
+	@GET
+	@Path("/checkTransfer")
+	public String checkTransfer(@FormParam("TransferID") String TransferID,
+								@Context HttpServletRequest request,
+								@Context HttpHeaders headers){
+		try {
+			Transfer transfer = PingPPUtil.GetTransfer(TransferID);
+			return getResponse(transfer);
+		} catch (Exception e){
+			e.printStackTrace();
+			logger.error("Error occured",e);
+		}
+		return getErrorResponse();
+	}
+
+
 	/**
 	 * ping++成功回调后验证签名
 	 * @param data
@@ -329,6 +428,15 @@ public class PingPPService extends BaseService {
 							CourseOrderRefund(refund);//课程订单退款状态修改
 						}
 					}
+				}else if(event instanceof Transfer){//企业付款(提现)
+					Transfer transfer = (Transfer) event;
+					Map<String,String> traMap = transfer.getMetadata();
+					if(traMap.containsKey(OrderType)){
+						String traVal = traMap.get(OrderType);
+						if(traVal.equalsIgnoreCase(OrderType_WithdrawalsWallet)){
+							WalletTransfer(transfer);//查看企业付款返回状态
+						}
+					}
 				}
 				
 			}
@@ -357,21 +465,60 @@ public class PingPPService extends BaseService {
 		}
 	}
 
+	//查看企业付款返回状态
+	public String WalletTransfer(Transfer transfer){
+		String result = "";
+		String time = this.walletRecordDAO.Time();
+		String payType = setPayType(transfer.getChannel());
+		String sqlString = "";
+		WalletRecord walletRecord = this.walletRecordDAO.getByRecordSn(transfer.getOrderNo());
+		try {
+			if(transfer.getStatus().equalsIgnoreCase(Transfer_status_pending)){
+				result = "处理中";
+			}else if(transfer.getStatus().equalsIgnoreCase(Transfer_status_paid)){
+				result = "付款成功";
+				if(walletRecord!=null&&walletRecord.getPayStatus().equals("0")){
+					sqlString = "PayType='"+payType+"',PayStatus='1',PayTime='"+time+"',";
+					if(this.walletRecordDAO.updateStatus(sqlString,walletRecord.getRecordSn())){
+
+					}
+				}
+			}else if(transfer.getStatus().equalsIgnoreCase(Transfer_status_failed)){
+				result = "付款失败";
+				if(walletRecord!=null&&walletRecord.getPayStatus().equals("0")){
+					sqlString = "PayType='"+payType+"',PayStatus='2',PayTime='"+time+"',";
+					if(this.walletRecordDAO.updateStatus(sqlString,walletRecord.getRecordSn())){
+						Wallet wallet = this.walletDAO.getByUserID(walletRecord.getFromUID(),null);
+						int money = Integer.parseInt(wallet.getMoney()) + Integer.parseInt(walletRecord.getMoney());
+						WalletLog wLog = new WalletLog();
+						wLog.setRecordSn(walletRecord.getRecordSn());
+						wLog.setUserID(walletRecord.getFromUID());
+						wLog.setRemark("提现失败,返回¥"+walletRecord.getMoney());
+						wLog.setChangeMoney("+"+walletRecord.getMoney());
+						wLog.setMoney(money+"");
+						this.walletLogDAO.create(wLog);
+					}
+				}
+
+			}else if(transfer.getStatus().equalsIgnoreCase(Transfer_status_scheduled)){
+				result = "待发送";
+			}
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
 	//改变钱包支付的状态
 	private void WalletRecordStatus(Charge charge){
 		try {
 			WalletRecord wr = this.walletRecordDAO.getByRecordSn(charge.getOrderNo());
 			String time = this.walletRecordDAO.Time();
-			String payType = "";
 			if(wr.getFetchStatus().equals("0")){
-				if(charge.getChannel().indexOf("wx")>-1){
-					payType = "2";
-				}else if(charge.getChannel().indexOf("alipay")>-1){
-					payType = "1";
-				}else{
-					payType = "3";
-				}
-				String sqlString = "PayType='"+payType+"',FetchStatus='1',FetchTime='"+time+"'";
+				String payType = setPayType(charge.getChannel());
+				String sqlString = "PayType='"+payType+"',FetchStatus='1',FetchTime='"+time+"',";
 				if(this.walletRecordDAO.updateStatus(sqlString,wr.getRecordSn())){
 					WalletRecord wRecord = this.walletRecordDAO.getByRecordSn(wr.getRecordSn());
 					Wallet wallet = this.walletDAO.getByUserID(wRecord.getToUID(),null);
@@ -540,74 +687,20 @@ public class PingPPService extends BaseService {
 		
 	}
 
-
-	/**
-	 * 钱包充值
-	 * @param recordSn 流水账编号
-	 * @param channel  支付方式
-	 * @param request
-	 * @param headers
-	 * @return
-	 */
-	@POST
-	@Path("/rechargeWallet")
-	public String rechargeWallet(@FormParam("recordSn") String recordSn,
-							   @FormParam("channel") String channel,
-							   @Context HttpServletRequest request,
-							   @Context HttpHeaders headers){
-		try {
-			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
-			Charge charge = null;
-			Map<String,Object> metadata = new HashMap<String,Object>();
-			metadata.put(OrderType, OrderType_RechargeWallet);
-			String ip = "127.0.0.1";
-			if(wr!=null){
-				//开始创建ping++订单
-				charge = PingPPUtil.createCharge(wr.getRecordSn(),
-						wr.getMoney(), channel, ip,
-						wr.getRemark(), wr.getRemark(), metadata);
-				return getResponse(charge);
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-			logger.error("Error occured",e);
+	//变更支付状态
+	private String setPayType(String channel){
+		String payType = "";
+		if(channel.indexOf("wx")>-1){
+			payType = "2";
+		}else if(channel.indexOf("alipay")>-1){
+			payType = "1";
+		}else{
+			payType = "3";
 		}
-		return getErrorResponse();
+		return payType;
 	}
 
-	/**
-	 * 钱包提现
-	 * @param recordSn
-	 * @param channel
-	 * @param request
-	 * @param headers
-	 * @return
-	 */
-	@POST
-	@Path("/withdrawalsWallet")
-	public String withdrawalsWallet(@FormParam("recordSn") String recordSn,
-									@FormParam("channel") String channel,
-									@FormParam("recipient") String recipient,
-									@Context HttpServletRequest request,
-									@Context HttpHeaders headers){
-		try {
-			WalletRecord wr = this.walletRecordDAO.getByRecordSn(recordSn);
-			Transfer transfer = null;
-			Map<String,Object> metadata = new HashMap<String,Object>();
-			metadata.put(OrderType, OrderType_WithdrawalsWallet);
-			String description = "提现"+wr.getMoney()+"元";
-			String ip = "127.0.0.1";
-			if(wr!=null){
-				transfer = PingPPUtil.createTransfer(wr.getRecordSn(),
-						channel, wr.getMoney(), recipient,
-						description, metadata);
-				return getResponse(transfer);
-			}
-		} catch (Exception e){
-			e.printStackTrace();
-			logger.error("Error occured",e);
-		}
-		return getErrorResponse();
-	}
-	
+
+
+
 }

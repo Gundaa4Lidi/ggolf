@@ -22,7 +22,6 @@ public interface CommonConfig {
 
 	public static final long MIN = 3;
 	
-	
 	public static final String DateFormat = "yyyy年MM月dd日   HH:mm:ss";
 	
     public static final String DateFormat_Database = "yyyy-MM-dd HH:mm";
@@ -50,13 +49,13 @@ public interface CommonConfig {
 	
 	public static final String WECHA_APPID = "";
 	
-	public static final String MSG_TYPE_SYS = "system";//系统类型信息
-	
 	public static final String MSG_TYPE_NOTSYS = "no_system";//不是系统类型信息
 	
-	public static final String MSG_TYPE_DYNAMIC = "dynamic";//动态类型信息
+	public static final String MSG_TYPE_SYS =      "system";//系统类型信息
 	
-	public static final String MSG_TYPE_INVITED = "invited";//约球类型信息
+	public static final String MSG_TYPE_DYNAMIC =  "dynamic";//动态类型信息
+	
+	public static final String MSG_TYPE_INVITED =  "invited";//约球类型信息
  	
 	public static final String TYPE_CLUB_COMMENT = "club";//球场
 	

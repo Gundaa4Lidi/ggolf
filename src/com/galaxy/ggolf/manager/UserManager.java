@@ -88,16 +88,15 @@ public class UserManager {
 	
 	//获取附近的人
 	public Collection<User> getNearByUser(Rectangle rec, String rows){
-		String sqlString = "";
-		if(rows != null){
-			sqlString = "limit 0 , "+rows+"";
-		}
-		Collection<User> userList = this.userDAO.getNearByUser(rec,sqlString); 
+		Collection<User> userList = this.userDAO.getNearByUser(rec,rows);
 		userList = getDistance(rec.getMinX(),rec.getMinY(),userList);
 		return userList;
 	}
 	
-	
+	public int getNearUserCount(Rectangle rec){
+		int count = this.userDAO.getCountNearUser(rec);
+		return count;
+	}
 	
 	//登录记录
 	public void loginRecord(String longitude,String latitude,String login_place,String userid)throws Exception{
@@ -199,18 +198,31 @@ public class UserManager {
 	
 	//修改用户
 	public void updateUser(User user)throws Exception{
-		if(user.getHead_portrait() == null||user.getHead_portrait() ==""){
+		if(user.getHead_portrait() == null||user.getHead_portrait()==""){
 			String key = "HeadPhoto";
 			Common_config config = configDAO.getCommon_cofig(key);
 			user.setHead_portrait(config.getVALUE());
 		}
-		if(!userDAO.updateUser(user)){
+		String sqlString = "";
+		if(!StringUtils.isEmpty(user.getName())&&!user.getName().equalsIgnoreCase("null")){
+			sqlString += "Name='"+user.getName()+"',";
+		}
+		if(!StringUtils.isEmpty(user.getSex())&&!user.getSex().equalsIgnoreCase("null")){
+			sqlString += "Sex='"+user.getSex()+"',";
+		}
+		if(!StringUtils.isEmpty(user.getHead_portrait())&&!user.getHead_portrait().equalsIgnoreCase("null")){
+			sqlString += "head_portrait='"+user.getHead_portrait()+"',";
+		}
+		if(!StringUtils.isEmpty(user.getLongitude())&&!user.getLongitude().equalsIgnoreCase("null")&&!StringUtils.isEmpty(user.getLatitude())&&!user.getLatitude().equalsIgnoreCase("null")){
+			sqlString += "Longitude='"+user.getLongitude()+"',Latitude='"+user.getLatitude()+"',";
+		}
+		if(!userDAO.updateUser(sqlString,user.getUserID())){
 			throw new GalaxyLabException("Error in update user");
 		}
 		if(this.coachDAO.getCoachByCoachID(user.getUserID(),null)!=null){
 			String sql = "CoachName='"+user.getName()+"',"
 					+ "CoachHead='"+user.getHead_portrait()+"',"
-					+ "CoachPhone='"+user.getPhone()+"'";
+					+ "CoachPhone='"+user.getPhone()+"',";
 			if(!this.coachDAO.update(user.getUserID(), sql)){
 				throw new GalaxyLabException("Error in update Coach");
 			}

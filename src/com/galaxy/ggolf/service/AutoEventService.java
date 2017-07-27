@@ -14,8 +14,14 @@ import com.galaxy.ggolf.dao.CoachScoreDAO;
 import com.galaxy.ggolf.dao.CourseOrderDAO;
 import com.galaxy.ggolf.dao.CourseTimeDAO;
 import com.galaxy.ggolf.dao.MessageDAO;
+import com.galaxy.ggolf.dao.WalletDAO;
+import com.galaxy.ggolf.dao.WalletLogDAO;
+import com.galaxy.ggolf.dao.WalletRecordDAO;
 import com.galaxy.ggolf.domain.CoachScore;
 import com.galaxy.ggolf.domain.CourseOrder;
+import com.galaxy.ggolf.domain.WalletRecord;
+import com.galaxy.ggolf.tools.PingPPUtil;
+import com.pingplusplus.model.Transfer;
 
 
 public class AutoEventService {
@@ -29,11 +35,9 @@ public class AutoEventService {
 	private final CoachScoreDAO coachScoreDAO;
 	private final CourseOrderDAO courseOrderDAO;
 	
-	public AutoEventService(MessageDAO messageDAO,
-			CourseTimeDAO courseTimeDAO,
-			ClubOrderDAO clubOrderDAO,
-			CoachScoreDAO coachScoreDAO,
-			CourseOrderDAO courseOrderDAO){
+	
+	public AutoEventService(MessageDAO messageDAO, CourseTimeDAO courseTimeDAO, ClubOrderDAO clubOrderDAO,
+			CoachScoreDAO coachScoreDAO, CourseOrderDAO courseOrderDAO) {
 		this.messageDAO = messageDAO;
 		this.courseTimeDAO = courseTimeDAO;
 		this.clubOrderDAO = clubOrderDAO;
@@ -41,6 +45,7 @@ public class AutoEventService {
 		this.courseOrderDAO = courseOrderDAO;
 		startTask();
 	}
+
 	
 	public void startTask(){
 		Runnable task = new MessageCloseRunner();
@@ -162,4 +167,6 @@ public class AutoEventService {
 		}
 		
 	}
+	
+	
 }

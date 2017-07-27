@@ -15,6 +15,7 @@ public class WalletRecord {
     private String FetchTime;
     private String CheckStatus;
     private String CheckTime;
+    private String TransferID;
     private String Created_TS;
     private String Updated_TS;
 
@@ -24,7 +25,7 @@ public class WalletRecord {
     public WalletRecord(String recordID, String recordSn, String fromUID,
                         String toUID, String type, String money, String payType, String remark,
                         String payStatus, String payTime, String fetchStatus, String fetchTime,
-                        String checkStatus, String checkTime, String created_TS, String updated_TS) {
+                        String checkStatus, String checkTime, String transferID, String created_TS, String updated_TS) {
         RecordID = recordID;
         RecordSn = recordSn;
         FromUID = fromUID;
@@ -39,6 +40,7 @@ public class WalletRecord {
         FetchTime = fetchTime;
         CheckStatus = checkStatus;
         CheckTime = checkTime;
+        TransferID = transferID;
         Created_TS = created_TS;
         Updated_TS = updated_TS;
     }
@@ -154,6 +156,14 @@ public class WalletRecord {
     public void setCheckTime(String checkTime) {
         CheckTime = checkTime;
     }
+
+	public String getTransferID() {
+		return TransferID;
+	}
+
+	public void setTransferID(String transferID) {
+		TransferID = transferID;
+	}
 
 	public String getCreated_TS() {
 		return Created_TS;

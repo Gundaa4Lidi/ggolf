@@ -26,20 +26,21 @@ public class MessageDAO extends GenericDAO<Message> {
 				+ "Period,"
 				+ "Status,"
 				+ "Type,"
+				+ "ClubID,"
 				+ "Club,"
 				+ "Longitude,"
 				+ "Latitude,"
 				+ "Radius,"
 				+ "Site,"
 				+ "ReleaseOrNot,"
-				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "Created_TS)values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		String photoList = "";
 		if(ms.getPhotoList()!=null && ms.getPhotoList().size() > 0){
 			photoList = new ListUtil().ListToString(ms.getPhotoList());
 		}
 		return super.sqlUpdate(sql, ms.getMsgID(),ms.getSenderID(),ms.getSenderName(),ms.getSenderPhoto(),ms.getTitle(),
-				ms.getDetails(),photoList,ms.getVideo(),ms.getPeriod(),ms.getStatus(),ms.getType(),ms.getClub(),ms.getLongitude(),
-				ms.getLatitude(),ms.getRadius(),ms.getSite(),ms.getReleaseOrNot(),Time());
+				ms.getDetails(),photoList,ms.getVideo(),ms.getPeriod(),ms.getStatus(),ms.getType(),ms.getClubID(),
+				ms.getClub(),ms.getLongitude(),ms.getLatitude(),ms.getRadius(),ms.getSite(),ms.getReleaseOrNot(),Time());
 	}
 	
 	/*public boolean update(Message ms){
@@ -65,8 +66,8 @@ public class MessageDAO extends GenericDAO<Message> {
 	}
 	
 	//根据关键字搜索
-	public Collection<Message> getSearch(String rows,String sqlString){
-		String limit = super.limit(null, rows);
+	public Collection<Message> getSearch(String rows,String pageNum, String sqlString){
+		String limit = super.limit(pageNum, rows);
 		String sql = "select * from message where DeletedFlag is null "+sqlString+" order by Created_TS desc "+limit+"";
 		return super.executeQuery(sql);
 	}

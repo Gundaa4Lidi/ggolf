@@ -62,12 +62,9 @@ public class UserDAO extends GenericDAO<User> {
 	}
 	
 	//修改用户基本信息
-	public boolean updateUser(User user){
-		String sql = "update user set Name='"+ user.getName()
-					+"', Sex='"+ user.getSex()
-					+"', head_portrait='"+ user.getHead_portrait()
-					+"', Updated_TS='"+ Time()
-					+"' where UserID='"+ user.getUserID() +"'";
+	public boolean updateUser(String sqlString,String UserID){
+		String sql = "update user set "+sqlString+" Updated_TS='"+ Time()
+					+"' where UserID='"+ UserID +"'";
 		return super.executeUpdate(sql);
 	}
 	
@@ -164,17 +161,18 @@ public class UserDAO extends GenericDAO<User> {
 	}
 	
 	//搜索附近的人
-	public Collection<User> getNearByUser(Rectangle rec, String sqlString){
+	public Collection<User> getNearByUser(Rectangle rec, String rows){
+		String limit = super.limit(null,rows);
 		String sql = "select * from user where(longitude between '"+rec.getMinX()+"' and '"+rec.getMaxX()+"') "
 				+ "and (latitude between '"+rec.getMinY()+"' and '"+rec.getMaxY()+"')"
-				+ "and DeletedFlag is null "+sqlString+"";
+				+ "and DeletedFlag is null "+limit+"";
 		return GetUserList(super.executeQuery(sql));
 	}
 	//附近的人数
-	public int getCountNearUser(Rectangle rec,String sqlString){
+	public int getCountNearUser(Rectangle rec){
 		String sql = "select count(*) from user where(longitude between '"+rec.getMinX()+"' and '"+rec.getMaxX()+"') "
 				+ "and (latitude between '"+rec.getMinY()+"' and '"+rec.getMaxY()+"')"
-				+ "and DeletedFlag is null "+sqlString+"";
+				+ "and DeletedFlag is null";
 		return super.count(sql);
 	}
 	
@@ -219,7 +217,7 @@ public class UserDAO extends GenericDAO<User> {
 	public Collection<User> getLikeList(String ThemeID,String Type){
 		String sql = "select * from user where UserID in(select UserID from likes where ThemeID='"+ThemeID+"' and Type='"+Type+"') and DeletedFlag is null";
 		Collection<User> users = super.executeQuery(sql);
-		Collection<User> userList = new ArrayList<>();
+		Collection<User> userList = new ArrayList<User>();
 		User u = new User();
 		if(users.size()>0){
 			for(User user : users){
